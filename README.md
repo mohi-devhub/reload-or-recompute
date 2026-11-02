@@ -1,8 +1,8 @@
 # Reload or Recompute
 
-The approved second phase replaces the old full grid with a **simulated transport bandwidth** sweep. See [the redesigned protocol](docs/PHASE2_PROTOCOL.md) and [the running budget](docs/BUDGET.md). The pilot and its report below remain historical records. Phase-two execution is limited to the approved queue and its budget gate.
+The redesigned phase is complete: seven fp16 models on T4, three varied-dialogue main-model sessions, 26,040 timing samples, and 9.900916 conservative GPU-hours against the cap of 10. Read [the phase-two report](docs/PHASE2_REPORT.md), [coverage and deviations](docs/NOTES.md), [the budget](docs/BUDGET.md), and [the crossover figure](figures/phase2-crossover-bandwidth-by-length.png). The Qwen0.5B 16k point is excluded by budget; native context limits and a reduced auxiliary control are explicit in the report. The study is stopped; further GPU work needs new authorization.
 
-A small systems study of when a returning conversation's KV cache is faster to reload than to recompute on older GPUs. The pilot uses Qwen2.5-1.5B on a Kaggle T4 allocation. The full grid requires the user's approval after the pilot.
+A small systems study of when a returning conversation's KV cache is faster to reload than to recompute on older GPUs. The pilot uses Qwen2.5-1.5B on a Kaggle T4 allocation. The original grid was replaced by the approved simulated-bandwidth study.
 
 The reference pilot passed with limitations. Reload won at every sampled length, so no crossover length was identified. The production install failed on the selected vLLM release's Python requirement. Read [the pilot report](docs/PILOT_REPORT.md), [the GPU ledger](docs/BUDGET.md), and [the timing figure](figures/pilot-ttft.png).
 
@@ -109,7 +109,7 @@ python3 scripts/report_phase2.py
 python3 scripts/consolidate_phase2.py
 ```
 
-The phase-two JSONL keeps sessions separate. It includes individual timings, independently measured file legs, rate-limiter diagnostics, within-session confidence intervals, crossover brackets, session spread, and telemetry summaries. Every rate-limited path is simulated bandwidth. It must not be described as measured physical storage throughput.
+Phase-two records in the canonical JSONL keep sessions separate. It includes individual timings, independently measured file legs, rate-limiter diagnostics, within-session confidence intervals, crossover brackets, session spread, and telemetry summaries. Every rate-limited path is simulated bandwidth. It must not be described as measured physical storage throughput.
 
 After consolidation, a public checkout can rebuild the statistics and figures without the private Kaggle downloads:
 
@@ -119,3 +119,7 @@ python3 scripts/report_phase2.py
 ```
 
 The public archive includes individual GPU telemetry samples used in clock summaries. Instrumented profile summaries are retained; the larger profiler trace remains in ignored raw artifacts. The physical-work audit additionally requires the original fetched artifacts and saved source metadata.
+
+## Rule of thumb
+
+Use `B* = transfer_bytes / (T_recompute - T_GPU_hit - overhead - deserialization - other_transfer_legs)` as a calibrated threshold: reload above it when the denominator is positive, and recompute otherwise.
