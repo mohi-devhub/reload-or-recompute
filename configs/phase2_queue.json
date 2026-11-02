@@ -1,4 +1,6 @@
 [
+  {"name":"calibration-llama-mirror","purpose":"calibration","models":"unsloth/Llama-3.2-3B-Instruct","workloads":"repeated_control","timeout":900,"seed":7510},
+  {"name":"llama-mirror-control","models":"unsloth/Llama-3.2-3B-Instruct","workloads":"repeated_control","timeout":6000,"seed":7511},
   {"name":"qwen-3b-control","models":"Qwen/Qwen2.5-3B","workloads":"repeated_control","timeout":3000,"seed":7503},
   {"name":"main-session-3","models":"Qwen/Qwen2.5-1.5B","workloads":"ultrachat","timeout":2200,"seed":7403},
   {"name":"main-repeated-control","models":"Qwen/Qwen2.5-1.5B","workloads":"repeated_control","timeout":2200,"seed":7501},

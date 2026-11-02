@@ -63,3 +63,7 @@ MB and GB are decimal throughout the bandwidth sweep. The user's approximate 125
 
 - The corrected MHA calibration passed. Layerwise diagnostics show full-versus-standalone prefix KV differences already exist before any reload; resident-cache continuations likewise differ from full prefill. Exact H2D tensor comparisons and the same-shape continuation check test transfer correctness separately. Full-versus-cached logit differences and first-token agreement remain recorded rather than being discarded by a widened elementwise tolerance.
 - All three primary main-model replications use the varied-dialogue fixture. A separate complete repeated-text main-model session supplies the control. Other full model sweeps use that same repeated-text control for the GQA/MHA comparison. This is an allocation of corpus coverage, not a claim that every model received a natural dialogue sweep.
+
+## Authorized Llama substitution
+
+The user subsequently directed use of `unsloth/Llama-3.2-3B-Instruct`, an ungated mirror, without waiting on a Hugging Face secret. It is an instruction-tuned substitution for the originally requested base model. The public config lookup shows the Llama architecture and no weight-quantization configuration. The benchmark must independently verify its tensor layout before accepting a full sweep. If the mirror fails, the user authorizes SmolLM3-3B as the fallback GQA comparison. No secret is requested or supplied for this substitution.

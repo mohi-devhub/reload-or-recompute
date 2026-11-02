@@ -14,11 +14,15 @@ Test decimal rates of 50, 100, 200, 400, 800, and 1600 MB/s, plus an unthrottled
 
 Record target rate, achieved transport rate, transfer duration, cumulative sleep time, payload bytes, and chunk size. Include GPU allocation in the measured transport cost. The resumed transformer must consume the copied tensors, with output logits and first token checked against full recomputation. Keep all simulated conditions explicitly labelled in data, figures, and reports.
 
+The cumulative deadline begins before GPU-buffer allocation, so the pacing budget includes that allocation. Tensor-view construction follows the transfer timer and remains inside TTFT. Consequently, a fitted unthrottled fixed-overhead term is an approximation for paced transfer, particularly for short contexts. Preserve this boundary when interpreting residuals; do not adjust the observed rate to force an additive fit.
+
 ## File-leg decomposition
 
 Keep direct `torch.load` as a baseline. Add a staged torch-serialization path and a packed raw fp16 byte path. The staged paths read a file into a byte buffer, deserialize or construct a tensor view, and transfer to GPU, recording each leg. Raw-byte metadata and tensor shapes are held with the cache-layout record. The raw format uses a zero-copy CPU tensor view, then an actual H2D copy.
 
 Independent microbenchmarks calibrate raw reads, deserialization, and H2D without a new turn. Compare old predictions omitting deserialization against predictions including it on the separate TTFT samples. Never fit file residuals back into the TTFT outcomes. Buffer allocation and the BytesIO copy belong to their measured legs. Advisory per-file eviction and physical-read accounting retain the pilot's storage caveats.
+
+Restored-cache outputs are checked against an independent resident-cache continuation with the same input shape, and the generated first token must agree with full recomputation. Full-versus-cached fp16 logit differences remain explicit diagnostic fields. The initial calibration's elementwise check and the subsequent revised check are both retained in NOTES.md.
 
 ## Drift and uncertainty
 

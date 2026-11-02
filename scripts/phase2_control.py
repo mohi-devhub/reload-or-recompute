@@ -24,7 +24,9 @@ def ledger():
 
 def write_ledger(data):
     LEDGER.parent.mkdir(exist_ok=True)
-    LEDGER.write_text(json.dumps(data, indent=2) + '\n')
+    temporary=LEDGER.with_suffix('.json.tmp')
+    temporary.write_text(json.dumps(data, indent=2) + '\n')
+    temporary.replace(LEDGER)
     doc = ROOT / 'docs/BUDGET.md'
     prefix = doc.read_text().split('\n## Phase two')[0]
     prefix = prefix.replace('The full grid has not started and requires explicit user approval.',
@@ -64,6 +66,10 @@ def cli(arguments, log=None):
 
 def submit(args):
     data = ledger()
+    if args.timeout <= 330:
+        raise ValueError('Session timeout must leave time for setup and worker finalization')
+    if args.purpose == 'sweep' and args.repeats < 10:
+        raise ValueError('Full sweeps require at least ten measured repeats')
     if any(r['name'] == args.name for r in data['runs']):
         raise ValueError('Run name already exists; use a distinct session ID')
     reserved = args.timeout * (2 if args.gpu == 'NvidiaTeslaT4' else 1) / 3600
@@ -79,6 +85,10 @@ def submit(args):
         missing = set(models) - calibrated
         if missing:
             raise ValueError('Models not yet calibrated: ' + str(sorted(missing)))
+        from phase2_project import project
+        projections=project()
+    else:
+        projections=[]
     fixture = json.loads((ROOT / 'data/phase2_conversations.json').read_text())
     spec = dict(run_id='phase2-' + args.name, gpu=args.gpu, models=models,
                 purpose=args.purpose, lengths=[int(x) for x in args.lengths.split(',')],
@@ -111,6 +121,7 @@ def submit(args):
     record = dict(name=args.name, purpose=args.purpose, gpu=args.gpu, reference=reference,
                   timeout_s=args.timeout, reserved_gpu_hours=reserved, status='reserved',
                   specification=spec, submitted_at=datetime.datetime.now(datetime.timezone.utc).isoformat())
+    record['calibration_projections']=[r for r in projections if r['model'] in models]
     data['runs'].append(record)
     write_ledger(data)  # Concrete budget and model plan exist before any GPU submission.
     cli(['quota', '--format', 'json'], RAW / args.name / 'quota-before.json')
@@ -174,7 +185,7 @@ if __name__ == '__main__':
     p = commands.add_parser('submit')
     p.add_argument('--name', required=True)
     p.add_argument('--purpose', choices=['calibration', 'sweep', 'diagnostic'], required=True)
-    p.add_argument('--gpu', default='NvidiaTeslaT4')
+    p.add_argument('--gpu', default='NvidiaTeslaT4',choices=['NvidiaTeslaT4','NvidiaTeslaP100'])
     p.add_argument('--models')
     p.add_argument('--lengths', default=','.join(map(str, FULL_LENGTHS)))
     p.add_argument('--turns', default='32,256')

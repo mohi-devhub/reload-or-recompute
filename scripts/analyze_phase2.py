@@ -155,6 +155,10 @@ def analyze():
             emit('simulated_rule_prediction', **dict(zip(FIELDS,shape)), condition=key[-1],
                  simulated_bandwidth=True, target_mb_s=target/1e6 if target else None,
                  achieved_mb_s=achieved, predicted_ttft_ms=hit+expected_load,
+                 recompute_ttft_ms=rec, gpu_hit_ms=hit, prefix_prefill_ms=prefill,
+                 prefix_rule_predicts_reload=expected_load<prefill,
+                 ttft_rule_predicts_reload=hit+expected_load<rec,
+                 measured_reload_faster=(True if delta['ci95'][1]<0 else False if delta['ci95'][0]>0 else None),
                  measured_ttft_ms=summaries[key]['median'],
                  measured_transport_ms=statistics.median(r['transfer_ms'] for r in values),
                  paired_delta_ms=delta, sleep_median_ms=statistics.median(r['rate_limiter_sleep_ms'] for r in values))

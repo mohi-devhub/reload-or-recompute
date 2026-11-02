@@ -31,9 +31,23 @@ def main():
         active=[r for r in ledger['runs'] if r['status']=='submitted']
         pending=[r for r in queue if r['name'] not in names]
         while len(active)<2 and pending:
-            item=pending.pop(0)
-            control(['submit','--name',item['name'],'--purpose','sweep','--models',item['models'],
-                     '--workloads',item['workloads'],'--timeout',str(item['timeout']),'--seed',str(item['seed'])])
+            calibrated={model for run in ledger['runs'] if run['purpose']=='calibration' and run['status']=='fetched'
+                        and run['gpu']=='NvidiaTeslaT4' for model in run.get('calibrated_models',[])}
+            eligible=[item for item in pending if item.get('purpose','sweep')=='calibration'
+                      or set(item['models'].split(','))<=calibrated]
+            if not eligible:
+                if not active:
+                    raise RuntimeError('Queue blocked by a failed model calibration; inspect results before choosing a fallback')
+                break
+            item=eligible[0]
+            pending.remove(item)
+            purpose=item.get('purpose','sweep')
+            arguments=['submit','--name',item['name'],'--purpose',purpose,'--models',item['models'],
+                       '--workloads',item['workloads'],'--timeout',str(item['timeout']),'--seed',str(item['seed'])]
+            if purpose=='calibration':
+                arguments += ['--lengths','32,512','--turns','32','--rates','50,200',
+                              '--repeats','3','--micro-repeats','3','--stabilize','3']
+            control(arguments)
             ledger=json.loads((ROOT/'outputs/phase2_ledger.json').read_text())
             active=[r for r in ledger['runs'] if r['status']=='submitted']
         snapshot=[(r['name'],r['status'],r.get('actual_gpu_hours')) for r in ledger['runs']]

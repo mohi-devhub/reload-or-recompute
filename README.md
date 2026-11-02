@@ -103,6 +103,7 @@ Analyze fetched artifacts and generate the report after the queue finishes:
 ```sh
 python3 scripts/analyze_phase2.py
 python3 scripts/report_phase2.py
+python3 scripts/consolidate_phase2.py
 ```
 
 The phase-two JSONL keeps sessions separate. It includes individual timings, independently measured file legs, rate-limiter diagnostics, within-session confidence intervals, crossover brackets, session spread, and telemetry summaries. Every rate-limited path is simulated bandwidth. It must not be described as measured physical storage throughput.
