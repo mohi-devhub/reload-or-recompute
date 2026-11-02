@@ -61,6 +61,12 @@ def report():
                                                                       for r in files if r['format']==fmt))
                             for fmt in ['torch','raw'] if any(r['format']==fmt for r in files)})
     stats['model_file_errors']={}
+    stats['recompute_session_spread_by_turn']={}
+    for turn in [32,256]:
+        values=[r['relative_range'] for r in rows if r['kind']=='session_spread'
+                and r['condition']=='recompute' and r['turn_tokens']==turn]
+        if values:stats['recompute_session_spread_by_turn'][str(turn)]=dict(
+            median_relative_range=statistics.median(values),maximum_relative_range=max(values))
     for model in sorted({r['model'] for r in files}):
         stats['model_file_errors'][model]={}
         for fmt in ['torch','raw']:
@@ -287,6 +293,15 @@ def report():
                 and r['run_id']==key[0] and r['workload']==key[1] and r['prefix_tokens']==8192 and r['turn_tokens']==32}
         lines.append(f"| {key[0]}, {key[1]} | {number(v.get('prefix_only'))} | {number(v.get('recompute'))} | "
                      f"{clocks.get('prefix_only','Unavailable')} | {clocks.get('recompute','Unavailable')} |")
+    lines.extend(['','| Session/workload | Paired prefix-only minus prefix + 32, ms | Bootstrap 95% CI, ms |',
+                  '| --- | --- | --- |'])
+    for r in rows:
+        if r['kind']=='prefill_anomaly_pair':
+            v=r['prefix_minus_prefix_plus_turn_ms']
+            lines.append(f"| {r['run_id']}/{r['workload']} | {v['median']:.3f} | [{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}] |")
+    lines.extend(['','A positive difference would reproduce the pilot ordering. An interval spanning zero '
+                  'does not resolve the ordering. The original pilot has no matching clock trace, '
+                  'so these new observations cannot identify its historical cause.'])
     profiles=[r for r in rows if r['kind']=='anomaly_shape_profile']
     if profiles:
         lines.extend(['','| Excluded profile input tokens | Wall, ms | GPU kernels, ms | GEMM kernels, ms |',
@@ -355,6 +370,10 @@ def report():
         findings.extend([f"At prefixes {', '.join(map(str,short))} with a 32-token new turn, "
                          'recompute beats the unthrottled chunked-copy control in every completed main-model session '
                          'with resolved paired intervals. The prefix-only bandwidth threshold is insufficient in this regime.',''])
+    for turn,v in stats['recompute_session_spread_by_turn'].items():
+        findings.extend([f"For a {turn}-token new turn, the median across lengths of the recompute "
+                         f"session-range/median ratio is {v['median_relative_range']:.1%}, reaching "
+                         f"{v['maximum_relative_range']:.1%}. This is observed session spread, not a population confidence interval.",''])
     for mha in ['EleutherAI/pythia-1.4b','facebook/opt-1.3b']:
         gqa='Qwen/Qwen2.5-1.5B'
         if mha in comparison and gqa in comparison:

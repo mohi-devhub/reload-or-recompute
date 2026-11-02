@@ -89,6 +89,15 @@ def audit():
     hashes=sorted({r['reference_functions_sha256'] for r in report['runs']})
     report['reference_function_hashes']=hashes
     assert len(hashes)<=1, 'Reference function source changed between sweep sessions'
+    revisions={}
+    for run in ledger['runs']:
+        if run['status']!='fetched' or run['purpose']!='sweep':continue
+        path=ROOT/'outputs/raw/phase2'/run['name']/'phase2-output/results.jsonl'
+        for line in path.read_text().splitlines():
+            row=json.loads(line)
+            if row['kind']=='model_config':revisions.setdefault(row['model'],set()).add(row['model_revision'])
+    assert all(len(values)==1 for values in revisions.values()),'Model revision changed across sweep sessions'
+    report['model_revisions']={model:sorted(values) for model,values in revisions.items()}
     report['queue_complete']=not report['pending_run_names'] and not report['coverage_issues']
     output=ROOT/'outputs/phase2_audit.json'
     output.write_text(json.dumps(report,indent=2)+'\n')
