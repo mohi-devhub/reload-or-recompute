@@ -187,6 +187,17 @@ def analyze(source_results=None):
         prefix_threshold = payload * 1000 / prefill / 1e6
         rec_values = {r['repeat']:r['wall_ms'] for r in groups[shape+('recompute',)]}
         hit_values = {r['repeat']:r['wall_ms'] for r in groups[shape+('gpu_hit',)]}
+        for condition in ['gpu_hit','cpu_pageable','simulated_unthrottled',
+                          'file_torch_direct','file_torch_staged','file_raw_staged']:
+            values=groups[shape+(condition,)]
+            delta=interval([r['wall_ms']-rec_values[r['repeat']] for r in values if r['repeat'] in rec_values])
+            path_summary=summaries[shape+(condition,)]
+            emit('return_path_comparison',**dict(zip(FIELDS,shape)),condition=condition,
+                 simulated_bandwidth=condition.startswith('simulated_'),
+                 recompute_ttft_ms=rec,recompute_ci95_ms=summaries[shape+('recompute',)]['ci95'],
+                 path_ttft_ms=path_summary['median'],path_ci95_ms=path_summary['ci95'],
+                 paired_path_minus_recompute_ms=delta,
+                 path_faster=True if delta['ci95'][1]<0 else False if delta['ci95'][0]>0 else None)
         points = []
         for key, values in groups.items():
             if key[:5] != shape or not key[-1].startswith('simulated_'):

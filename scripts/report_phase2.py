@@ -227,6 +227,19 @@ def report():
             lines.append(f"| {r['model']} | {r['workload']}/{r['run_id']} | {r['prefix_tokens']} | "
                          f"{r['turn_tokens']} | {delta['median']:.3f} [{delta['ci95'][0]:.3f}, {delta['ci95'][1]:.3f}] |")
     lines.extend(['',
+                  '### Measured returning-turn paths at prefix 512, new turn 32','',
+                  'These matched repeated-text measurements distinguish real unthrottled memory and local-file '
+                  'paths from the simulated bandwidth sweep. The pinned path is the unthrottled chunked-copy '
+                  'control; it imposes no bandwidth limit. Positive paired differences favor recompute.','',
+                  '| Model | Path | Recompute median, ms | Path median and 95% CI, ms | Paired path minus recompute, ms (95% CI) |',
+                  '| --- | --- | --- | --- | --- |'])
+    for r in rows:
+        if r['kind']=='return_path_comparison' and r['workload']=='repeated_control' and r['prefix_tokens']==512 and r['turn_tokens']==32 and r['condition']!='gpu_hit':
+            delta=r['paired_path_minus_recompute_ms']
+            lines.append(f"| {r['model']} | {r['condition']} | {r['recompute_ttft_ms']:.3f} | "
+                         f"{r['path_ttft_ms']:.3f} [{r['path_ci95_ms'][0]:.3f}, {r['path_ci95_ms'][1]:.3f}] | "
+                         f"{delta['median']:.3f} [{delta['ci95'][0]:.3f}, {delta['ci95'][1]:.3f}] |")
+    lines.extend(['',
                   '### Additivity diagnostic','',
                   'The next table subtracts the measured transfer leg and a same-round resident-hit TTFT from '
                   'the simulated 50 MB/s reload TTFT at prefix 64 with a 256-token new turn. A negative resolved '
@@ -252,6 +265,9 @@ def report():
                   'microbenchmark medians plus the GPU-hit new-turn baseline. '
                   'The raw-read API leg includes buffer allocation, and the BytesIO materialization belongs '
                   'to the torch deserialization leg; neither is advertised as pure physical-media bandwidth.','',
+                  'The staged torch path materializes the full byte buffer before deserializing it, '
+                  'and BytesIO adds another host copy. It can be slower than direct torch.load. The raw format '
+                  'is likewise not assumed to be the fastest file path; the measured direct baseline remains visible.','',
                   '| Format | Median absolute relative TTFT error, old rule | Median absolute relative TTFT error, with deserialization |',
                   '| --- | --- | --- |'])
     for fmt,v in stats['file_errors'].items():
