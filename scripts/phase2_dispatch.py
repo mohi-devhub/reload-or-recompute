@@ -35,6 +35,8 @@ def main():
                         and run['gpu']=='NvidiaTeslaT4' for model in run.get('calibrated_models',[])}
             eligible=[item for item in pending if item.get('purpose','sweep')=='calibration'
                       or set(item['models'].split(','))<=calibrated]
+            finished={run['name'] for run in ledger['runs'] if run['status']=='fetched'}
+            eligible=[item for item in eligible if set(item.get('after',[]))<=finished]
             available=10-sum(run.get('actual_gpu_hours',run['reserved_gpu_hours']) for run in ledger['runs'])
             eligible=[item for item in eligible if item['timeout']*2/3600<=available]
             if not eligible:

@@ -68,6 +68,9 @@
     "workloads": "repeated_control",
     "timeout": 1030,
     "seed": 7500,
-    "setup_reserve": 60
+    "setup_reserve": 60,
+    "after": [
+      "opt-control"
+    ]
   }
 ]

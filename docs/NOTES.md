@@ -93,3 +93,5 @@ Phase two packs KV tensors into one contiguous fp16 buffer, with tensor shapes r
 ### Unthrottled prediction accounting
 
 Unthrottled achieved bandwidth already includes allocation time in its transfer interval. The pointwise unthrottled prediction now uses the independent pinned-H2D microbenchmark duration directly, instead of adding a fitted overhead to an observed TTFT-transfer duration that already contains it. This also avoids using the tested TTFT transfer as its own calibration. Measured samples, crossover brackets, and the existing held-out-session method are unchanged. Paced predictions retain their declared additive approximation, including the known allocation/deadline overlap described in the protocol.
+
+The final Qwen0.5B control waits until OPT has ended. This keeps the remaining MHA comparison ahead of an additional long-context GQA sweep when reservations are tight. It changes host scheduling only; active kernels and measurement functions are unchanged. Any eventual length reduction will be recorded separately with its actual budget evidence.
