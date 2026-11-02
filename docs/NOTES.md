@@ -36,3 +36,17 @@ The ellipses shorten pip's list of other releases; the version-specific requirem
 - The simple file model overestimates the longest-context TTFT and its overhead fit reaches a nonnegative constraint. These residuals are retained, not tuned away.
 - Synthetic text controls token count but does not establish application quality or trace-level cache hit rates. Offload writes and cache creation are outside returning-turn TTFT.
 - The full-grid projection is a pilot-model service-time proxy with explicit assumptions. It does not measure larger-model, quantized-model, or P100 cost.
+
+## Phase two: pilot break-even bandwidth
+
+Phase two replaces the original full grid. The user authorizes a separate ceiling of 10 GPU-hours. Every throttled path is simulated bandwidth; it is not a measurement of a physical storage device.
+
+`B*_prefix(L) = L × kv_bytes_per_token / T_prefill(L) = kv_bytes_per_token × prefill_tokens_per_second(L)`. With reload fixed overhead `h`, use `B* = bytes / (T_prefill - h)` when the denominator is positive. For resumed-turn TTFT, the appropriate threshold is `bytes / (T_recompute(prefix + turn) - T_gpu_hit(turn | prefix) - h)`. The pilot anomaly and shape-dependent new-turn cost make these two thresholds differ.
+
+| Prefix tokens | Prefix-only B*, MB/s | Bootstrap 95% CI, MB/s | With H2D overhead, MB/s | TTFT B*, turn 32, MB/s | TTFT B*, turn 256, MB/s |
+| --- | --- | --- | --- | --- | --- |
+| 512 | 178.611 | [174.935, 181.927] | 179.123 | 272.930 | 198.112 |
+| 2048 | 172.441 | [171.369, 173.040] | 172.561 | 184.064 | 178.787 |
+| 8192 | 124.937 | [124.034, 127.024] | 124.953 | 139.987 | 134.027 |
+
+MB and GB are decimal throughout the bandwidth sweep. The user's approximate 125–180 MB/s range is supported by the prefix-only pilot medians after rounding. It is not the same as an end-to-end TTFT threshold. Source: `pilot_bstar` records in `outputs/results.jsonl`, regenerated with `python3 scripts/pilot_bstar.py`. Small KV size is a plausible contributor, not an isolated causal conclusion from one model.
