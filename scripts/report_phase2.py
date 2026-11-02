@@ -418,6 +418,7 @@ def plots(summaries,crossings,files):
     ax.legend(fontsize=8);ax.grid(alpha=.2)
     fig.savefig(folder/'phase2-simulated-bandwidth.png',dpi=180);plt.close(fig)
     fig,ax=plt.subplots(figsize=(7,5),constrained_layout=True)
+    bounds=[]
     for family in ['GQA','MHA']:
         values=[r for r in crossings if r['workload']=='repeated_control' and r['turn_tokens']==32
                 and r['attention_family']==family and r['predicted_ttft_bstar_mb_s'] is not None
@@ -426,11 +427,14 @@ def plots(summaries,crossings,files):
             selected=[r for r in values if r['measured']['brackets'][0]['paired_ci_resolved']==resolved]
             xs=[r['predicted_ttft_bstar_mb_s'] for r in selected]
             ys=[r['measured']['brackets'][0]['interpolated_mb_s'] for r in selected]
+            bounds.extend(xs+ys)
             if xs:ax.scatter(xs,ys,label=family+(' resolved' if resolved else ' median only'),marker=marker,alpha=.7)
-    lim=ax.get_xlim();low=max(1,min(lim));high=max(lim)
+    low=min(bounds)*.8 if bounds else 1
+    high=max(bounds)*1.2 if bounds else 10
     ax.plot([low,high],[low,high],color='gray',ls='--')
     ax.set(xscale='log',yscale='log',xlabel='Predicted TTFT break-even bandwidth (MB/s)',
-           ylabel='Interpolated simulated crossover (MB/s)',title='Simulated transport: predictions and bracket interpolations')
+           ylabel='Interpolated simulated crossover (MB/s)',title='Simulated transport: predictions and bracket interpolations',
+           xlim=(low,high),ylim=(low,high))
     ax.legend();ax.grid(alpha=.2)
     fig.savefig(folder/'phase2-predicted-simulated-crossover.png',dpi=180);plt.close(fig)
     fig,axes=plt.subplots(1,2,figsize=(12,5),sharey=True,constrained_layout=True)
@@ -476,12 +480,14 @@ def plots(summaries,crossings,files):
     ax.set_xticks(x,formats);ax.set(ylabel='Median absolute TTFT prediction error (%)',title='Measured file paths: predictive residuals')
     ax.legend(fontsize=8)
     fig.savefig(folder/'phase2-file-residuals.png',dpi=180);plt.close(fig)
-    selected=['recompute','gpu_hit','simulated_50_MBps','simulated_200_MBps',
-              'simulated_1600_MBps','simulated_unthrottled','file_torch_direct','file_raw_staged']
+    selected=['recompute','gpu_hit','cpu_pageable','simulated_50_MBps','simulated_200_MBps',
+              'simulated_1600_MBps','simulated_unthrottled','file_torch_direct','file_torch_staged','file_raw_staged']
     pretty={'recompute':'Recompute','gpu_hit':'Resident GPU control',
+            'cpu_pageable':'CPU RAM: pageable',
             'simulated_50_MBps':'Simulated 50 MB/s','simulated_200_MBps':'Simulated 200 MB/s',
-            'simulated_1600_MBps':'Simulated 1600 MB/s','simulated_unthrottled':'Unthrottled chunked-copy control',
-            'file_torch_direct':'Local file: torch.load','file_raw_staged':'Local file: raw bytes'}
+            'simulated_1600_MBps':'Simulated 1600 MB/s','simulated_unthrottled':'CPU pinned: unthrottled copy control',
+            'file_torch_direct':'Local file: direct torch.load','file_torch_staged':'Local file: staged torch.load',
+            'file_raw_staged':'Local file: raw bytes'}
     from matplotlib.ticker import NullLocator,ScalarFormatter
     for model in sorted(set(r['model'] for r in summaries)):
         workload='ultrachat' if model=='Qwen/Qwen2.5-1.5B' else 'repeated_control'
