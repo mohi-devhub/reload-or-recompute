@@ -15,7 +15,7 @@ def label(measured):
                          (str(b['target_mb_s'][1]) if b['target_mb_s'][1] else 'unthrottled')+']'
                          +f" target / [{b['achieved_mb_s'][0]:.1f}, {b['achieved_mb_s'][1]:.1f}] achieved"
                          +('' if b['paired_ci_resolved'] else ' (median only)')
-                         for b in measured['brackets'])
+                         for b in measured['brackets'])+('; nonmonotone' if measured.get('nonmonotone') else '')
     if measured['status']=='reload_faster_at_all_tested_simulated_rates':
         return '<= '+str(measured['upper_bound_target_mb_s'])+' (bound only)'
     if measured['status']=='recompute_faster_at_all_tested_simulated_rates':
@@ -395,10 +395,12 @@ def plots(summaries,crossings,files):
     for family in ['GQA','MHA']:
         values=[r for r in crossings if r['workload']=='repeated_control' and r['turn_tokens']==32
                 and r['attention_family']==family and r['predicted_ttft_bstar_mb_s'] is not None
-                and r['measured']['status']=='bracketed']
-        xs=[r['predicted_ttft_bstar_mb_s'] for r in values]
-        ys=[r['measured']['brackets'][0]['interpolated_mb_s'] for r in values]
-        if xs:ax.scatter(xs,ys,label=family,alpha=.7)
+                and r['measured']['status']=='bracketed' and not r['measured'].get('nonmonotone')]
+        for resolved,marker in [(True,'o'),(False,'x')]:
+            selected=[r for r in values if r['measured']['brackets'][0]['paired_ci_resolved']==resolved]
+            xs=[r['predicted_ttft_bstar_mb_s'] for r in selected]
+            ys=[r['measured']['brackets'][0]['interpolated_mb_s'] for r in selected]
+            if xs:ax.scatter(xs,ys,label=family+(' resolved' if resolved else ' median only'),marker=marker,alpha=.7)
     lim=ax.get_xlim();low=max(1,min(lim));high=max(lim)
     ax.plot([low,high],[low,high],color='gray',ls='--')
     ax.set(xscale='log',yscale='log',xlabel='Predicted TTFT break-even bandwidth (MB/s)',
