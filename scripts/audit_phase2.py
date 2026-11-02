@@ -1,5 +1,7 @@
 """Audit physical work, correctness, coverage, and budget in fetched phase-two runs."""
 from collections import Counter
+import ast
+import hashlib
 import json
 from pathlib import Path
 
@@ -27,6 +29,12 @@ def audit():
         if run['purpose']!='sweep':continue
         assert run.get('saved_source_matches_execution'), 'Saved source differs from executed source'
         assert run['saved_kernel_metadata']['is_private'], 'Kernel was not private'
+        saved=ROOT/'outputs/raw/phase2'/run['name']/'source'
+        metadata=json.loads((saved/'kernel-metadata.json').read_text())
+        source=(saved/metadata['code_file']).read_text()
+        functions='\n\n'.join(ast.get_source_segment(source,node) for node in ast.parse(source).body
+                               if isinstance(node,ast.FunctionDef) and node.name!='main')
+        function_hash=hashlib.sha256(functions.encode()).hexdigest()
         samples=[r for r in rows if r['kind']=='measurement']
         assert all(r['valid'] for r in samples), 'Invalid sweep measurement'
         keys=set()
@@ -76,7 +84,11 @@ def audit():
         report['runs'].append(dict(name=run['name'],measurements=len(samples),
                                   completed_shapes=len(finished),rate_limit_checks=rate_checks,
                                   missing_shapes=len(missing),
-                                  run_complete=complete,invalid_measurements=0))
+                                  run_complete=complete,invalid_measurements=0,
+                                  reference_functions_sha256=function_hash))
+    hashes=sorted({r['reference_functions_sha256'] for r in report['runs']})
+    report['reference_function_hashes']=hashes
+    assert len(hashes)<=1, 'Reference function source changed between sweep sessions'
     report['queue_complete']=not report['pending_run_names'] and not report['coverage_issues']
     output=ROOT/'outputs/phase2_audit.json'
     output.write_text(json.dumps(report,indent=2)+'\n')

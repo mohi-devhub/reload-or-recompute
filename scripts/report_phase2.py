@@ -53,11 +53,22 @@ def report():
                accepted_measurements=len(accepted),invalid_measurements=len(invalid),
                full_sessions=len(sweeps),incomplete_sweep_run_ids=incomplete,
                unscheduled_run_names=unscheduled,
+               rule_counts={field:sum(r[field] for r in rows if r['kind']=='phase2_rule_classification')
+                            for field in ['resolved_comparisons','prefix_rule_agreements','ttft_rule_agreements']},
                file_errors={fmt:dict(old_median_ape=statistics.median(abs(r['old_signed_relative_error'])
                                                                       for r in files if r['format']==fmt),
                                     new_median_ape=statistics.median(abs(r['new_signed_relative_error'])
                                                                       for r in files if r['format']==fmt))
                             for fmt in ['torch','raw'] if any(r['format']==fmt for r in files)})
+    stats['model_file_errors']={}
+    for model in sorted({r['model'] for r in files}):
+        stats['model_file_errors'][model]={}
+        for fmt in ['torch','raw']:
+            values=[r for r in files if r['model']==model and r['format']==fmt]
+            if not values:continue
+            stats['model_file_errors'][model][fmt]=dict(cells=len(values),
+                old_median_ape=statistics.median(abs(r['old_signed_relative_error']) for r in values),
+                new_median_ape=statistics.median(abs(r['new_signed_relative_error']) for r in values))
     rows=[r for r in rows if r['kind']!='phase2_report_totals']+[stats]
     path.write_text(''.join(json.dumps(r,allow_nan=False)+'\n' for r in rows))
     lines=['# Phase two: simulated bandwidth crossovers','',
@@ -107,6 +118,18 @@ def report():
         saved=run.get('saved_kernel_metadata',{})
         lines.append(f"| {run['name']} | {run.get('saved_source_matches_execution','Unavailable')} | "
                      f"{saved.get('is_private','Unavailable')} | {saved.get('docker_image','Unavailable')} |")
+    lines.extend(['',
+                  '## Independent bandwidth microbenchmarks','',
+                  'These are measured unthrottled bandwidths, rather than simulated-rate results. '
+                  'File bandwidth includes buffer allocation in the read API leg. The table selects prefix 512; '
+                  'the JSONL contains every measured length and separate read, deserialization, and H2D intervals.','',
+                  '| Model/session | Workload | Path | Median MB/s | Bootstrap 95% CI, MB/s |',
+                  '| --- | --- | --- | --- | --- |'])
+    for r in rows:
+        if r['kind']=='phase2_micro_summary' and r['purpose']=='sweep' and r['publication_repeat_count_met'] and r['prefix_tokens']==512:
+            v=r['bandwidth_mb_s']
+            lines.append(f"| {r['model']}/{r['run_id']} | {r['workload']} | {r['condition']} | "
+                         f"{v['median']:.1f} | [{v['ci95'][0]:.1f}, {v['ci95'][1]:.1f}] |")
     lines.extend(['',
                   '## Crossover bandwidths by model and length','',
                   '`B*_prefix = KV bytes / prefix-prefill seconds`. The overhead-adjusted TTFT prediction is '
@@ -166,6 +189,21 @@ def report():
                   'parameter count, prefill throughput, and kernels; this is an association, not an isolated GQA treatment. '
                   'The short-length rows expose fixed-overhead regimes where prefix-only and resumed-TTFT thresholds '
                   'can disagree. A censored threshold is not assigned an exact crossover value.','',
+                  'The following short-context table gives the paired unthrottled-copy TTFT minus recompute TTFT. '
+                  'A positive interval favors recompute; an interval containing zero is unresolved. '
+                  'It includes tensor-view construction and cache reconstruction inside TTFT. '
+                  'The microbenchmark overhead fit captures the transfer path, so it need not explain every '
+                  'Python or shape-dependent cost at very short lengths.','',
+                  '| Model | Workload/session | Prefix | New turn | Unthrottled copy minus recompute, ms (paired 95% CI) |',
+                  '| --- | --- | --- | --- | --- |'])
+    for r in sorted(crossings,key=lambda r:(r['model'],r['run_id'],r['turn_tokens'],r['prefix_tokens'])):
+        if r['prefix_tokens'] not in [16,32,64,128]:continue
+        point=next((p for p in r['points'] if p['condition']=='simulated_unthrottled'),None)
+        if point:
+            delta=point['paired_delta']
+            lines.append(f"| {r['model']} | {r['workload']}/{r['run_id']} | {r['prefix_tokens']} | "
+                         f"{r['turn_tokens']} | {delta['median']:.3f} [{delta['ci95'][0]:.3f}, {delta['ci95'][1]:.3f}] |")
+    lines.extend(['',
                   '## File-tier decomposition and predictive residuals','',
                   'Staged torch serialization and raw fp16 bytes use separate raw-read and CPU-deserialization timers, '
                   'followed by actual H2D copies. Direct torch.load remains an additional baseline. '
@@ -177,10 +215,19 @@ def report():
                   '| --- | --- | --- |'])
     for fmt,v in stats['file_errors'].items():
         lines.append(f"| {fmt} | {v['old_median_ape']:.1%} | {v['new_median_ape']:.1%} |")
+    lines.extend(['','The overall median weights each completed model/length/turn/session cell equally. '
+                  'The replicated main model therefore contributes more cells; per-model residuals follow.','',
+                  '| Model | Format | Cells | Old median absolute relative error | With deserialization |',
+                  '| --- | --- | --- | --- | --- |'])
+    for model,formats in stats['model_file_errors'].items():
+        for fmt,v in formats.items():
+            lines.append(f"| {model} | {fmt} | {v['cells']} | {v['old_median_ape']:.1%} | {v['new_median_ape']:.1%} |")
     lines.extend(['','Adding a measured leg does not guarantee lower residuals: host dispatch, overlapping copies, '
                   'allocation, cold-read patterns, and GPU clock state can make independently measured costs nonadditive. '
                   'The raw-byte view avoids tensor deserialization but still performs the file read and GPU transfer. '
-                  'Physical-read accounting and advisory eviction status remain in the records.','',
+                  'Physical-read accounting and advisory eviction status remain in the records. '
+                  'Phase two uses per-file DONTNEED advice, without a privileged global page-cache flush; '
+                  'advice alone does not guarantee a cold physical device.','',
                   '## Clocks, drift, and the pilot anomaly','',
                   'Telemetry samples SM and memory clocks, temperature, power, utilization, and active throttle reasons '
                   'at approximately one Hz. Subsecond timing joins use nearby samples where needed; they cannot '
@@ -261,12 +308,47 @@ def report():
                    'The original Llama base-model access was gated. Any attempted substitute is identified by its actual model ID above. ')
                   + 'The P100 request returned T4s and aborted '
                   'at the allocation check. That attempt provides no P100 measurements. '
+                  'Consequently, transfer of the rule across GPU types and the slower-versus-faster GPU hypothesis remain untested. '
                   'Production work was optional and was omitted to prioritize this reference study. '
                   'NOTES.md records the exact deviations, and BUDGET.md records every submitted kernel.','',
                   '## Updated rule of thumb','',
                   'Reload when effective bandwidth exceeds `B* = transfer_bytes / (recompute_TTFT - GPU_hit_new_turn_TTFT - overhead - deserialization - other_transfer_legs)` '
                   'with a positive denominator, and recompute otherwise.','',
                   'This report ends the redesigned phase. Further experiments require a new user instruction.'])
+    counts=stats['rule_counts']
+    findings=['## Findings','',
+              f"The TTFT-adjusted rule agrees with {counts['ttft_rule_agreements']} of "
+              f"{counts['resolved_comparisons']} resolved simulated-rate cells; the prefix-only rule agrees with "
+              f"{counts['prefix_rule_agreements']}. These use measured same-session recompute and GPU-hit baselines; "
+              'the fixed-calibration later-session test below is the separate check of prediction across sessions.','']
+    main=[r for r in crossings if r['workload']=='ultrachat' and r['turn_tokens']==32]
+    main_runs={r['run_id'] for r in main}
+    short=[]
+    for length in [16,32,64,128]:
+        points=[p for r in main if r['prefix_tokens']==length for p in r['points']
+                if p['condition']=='simulated_unthrottled']
+        if len(points)==len(main_runs) and points and all(p['paired_delta']['ci95'][0]>0 for p in points):
+            short.append(length)
+    if short:
+        findings.extend([f"At prefixes {', '.join(map(str,short))} with a 32-token new turn, "
+                         'recompute beats the unthrottled chunked-copy control in every completed main-model session '
+                         'with resolved paired intervals. The prefix-only bandwidth threshold is insufficient in this regime.',''])
+    for mha in ['EleutherAI/pythia-1.4b','facebook/opt-1.3b']:
+        gqa='Qwen/Qwen2.5-1.5B'
+        if mha in comparison and gqa in comparison:
+            findings.extend([f"At prefix 512 and new turn 32 on matched repeated text, {mha} has simulated crossover "
+                             f"{label(comparison[mha]['measured'])} MB/s, versus "
+                             f"{label(comparison[gqa]['measured'])} MB/s for {gqa}. "
+                             'This model comparison includes prefill-kernel and model-size differences as well as KV layout.',''])
+    findings.extend(['The pilot anomaly is assessed with interleaved measurements and a separate excluded profile. '
+                     'A failure to reproduce it does not establish its historical cause. P100 transfer remains untested '
+                     'because the requested allocation returned T4 hardware.',''])
+    findings.extend(['Figures: [main-model TTFT](../figures/phase2-ttft-qwen2.5-1.5b.png), '
+                     '[crossover bandwidth versus length](../figures/phase2-crossover-bandwidth-by-length.png), '
+                     '[predicted versus interpolated crossover](../figures/phase2-predicted-simulated-crossover.png), '
+                     'and [file-rule residuals](../figures/phase2-file-residuals.png).',''])
+    position=lines.index('## What was measured')
+    lines[position:position]=findings
     (ROOT/'docs/PHASE2_REPORT.md').write_text('\n'.join(lines)+'\n')
     plots(summaries,crossings,files)
     print('Wrote docs/PHASE2_REPORT.md and phase-two figures')
@@ -305,6 +387,38 @@ def plots(summaries,crossings,files):
            ylabel='Interpolated simulated crossover (MB/s)',title='Simulated transport: predictions and bracket interpolations')
     ax.legend();ax.grid(alpha=.2)
     fig.savefig(folder/'phase2-predicted-simulated-crossover.png',dpi=180);plt.close(fig)
+    fig,axes=plt.subplots(1,2,figsize=(12,5),sharey=True,constrained_layout=True)
+    for ax,family in zip(axes,['GQA','MHA']):
+        values=[r for r in crossings if r['workload']=='repeated_control' and r['turn_tokens']==32
+                and r['attention_family']==family]
+        for model in sorted({r['model'] for r in values}):
+            points=sorted([r for r in values if r['model']==model],key=lambda r:r['prefix_tokens'])
+            predicted=[r for r in points if r['predicted_ttft_bstar_mb_s'] is not None]
+            line,=ax.plot([r['prefix_tokens'] for r in predicted],
+                          [r['predicted_ttft_bstar_mb_s'] for r in predicted],
+                          ls='--',lw=1,label=model.split('/')[-1])
+            color=line.get_color()
+            for r in points:
+                measured=r['measured'];length=r['prefix_tokens']
+                if measured['status']=='bracketed':
+                    for bracket in measured['brackets']:
+                        low,high=sorted(bracket['achieved_mb_s'])
+                        center=bracket['interpolated_mb_s']
+                        ax.errorbar(length,center,yerr=[[center-low],[high-center]],fmt='o',ms=4,
+                                    color=color,capsize=3,alpha=1 if bracket['paired_ci_resolved'] else .4)
+                elif measured['status']=='reload_faster_at_all_tested_simulated_rates':
+                    ax.scatter(length,measured['upper_bound_target_mb_s'],marker='v',color=color,s=25)
+                elif measured['status']=='recompute_faster_at_all_tested_simulated_rates':
+                    ax.scatter(length,measured['largest_achieved_mb_s'],marker='^',color=color,s=25)
+        ax.set(xscale='log',yscale='log',xlabel='Prefix tokens',title=family+', repeated text, new turn 32')
+        ax.grid(alpha=.2)
+        if ax.get_legend_handles_labels()[0]:ax.legend(fontsize=8)
+    axes[0].set_ylabel('Simulated break-even transport bandwidth (MB/s)')
+    fig.suptitle('T4: observed brackets and harmonic estimates; dashed: TTFT prediction\n'
+                 'Faint bars: unresolved endpoint CIs; triangles: bounds only',fontsize=10)
+    fig.savefig(folder/'phase2-crossover-bandwidth-by-length.png',dpi=180)
+    fig.savefig(folder/'phase2-crossover-bandwidth-by-length.pdf',metadata={'CreationDate':None,'ModDate':None})
+    plt.close(fig)
     fig,ax=plt.subplots(figsize=(7,4),constrained_layout=True)
     formats=['torch','raw'];old=[];new=[]
     for fmt in formats:

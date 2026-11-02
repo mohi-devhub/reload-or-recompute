@@ -138,8 +138,19 @@ def analyze(source_results=None):
                       purpose=purposes[key[0]], simulated_bandwidth=values[0]['simulated_bandwidth'])
         summary = interval([r['wall_ms'] for r in values])
         summary['publication_repeat_count_met'] = len(values) >= 10
+        if key[-1]=='prefix_only':
+            summary['prefill_tokens_s']=key[3]*1000/summary['median']
+            summary['prefill_tokens_s_ci95']=[key[3]*1000/t for t in reversed(summary['ci95'])]
         summaries[key] = summary
         emit('phase2_summary', **fields, **summary)
+    for key,values in micros.items():
+        leg='transfer_ms' if key[-1].startswith('h2d_') else 'raw_read_ms'
+        emit('phase2_micro_summary',**dict(zip(['run_id','model','workload','prefix_tokens','condition'],key)),
+             purpose=purposes[key[0]],publication_repeat_count_met=len(values)>=10,
+             bandwidth_leg='H2D' if leg=='transfer_ms' else 'file-read API including buffer allocation',
+             bandwidth_mb_s=interval([r['bytes']/r[leg]/1000 for r in values]),
+             leg_timings_ms={field:interval([r[field] for r in values])
+                             for field in ['raw_read_ms','deserialize_ms','transfer_ms'] if field in values[0]})
     overhead = {}
     by_model_run = defaultdict(list)
     for key, values in micros.items():

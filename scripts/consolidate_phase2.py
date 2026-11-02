@@ -18,6 +18,8 @@ planning=json.loads((ROOT/'outputs/phase2_projection.json').read_text())
 data.append(dict(schema_version=2,kind='phase2_budget_ledger',phase='phase2',ledger=ledger,
                  charged_gpu_hours=sum(r.get('actual_gpu_hours',r['reserved_gpu_hours']) for r in ledger['runs'])))
 data.append(dict(schema_version=2,kind='phase2_planning_projections',phase='phase2',projections=planning))
+audit=ROOT/'outputs/phase2_audit.json'
+if audit.exists():data.append(json.loads(audit.read_text()))
 unique=set()
 for r in data:
     if r['kind']=='measurement':
