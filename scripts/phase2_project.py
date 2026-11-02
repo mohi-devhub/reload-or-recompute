@@ -63,7 +63,9 @@ def project():
             file_per_byte = statistics.median((r['raw_read_ms'] + r['deserialize_ms'] + r['transfer_ms']) /
                                               r['bytes'] for r in micros if r['condition'].startswith('file_legs_'))
             seconds = 0
+            by_length = {}
             for length in lengths:
+                before_length=seconds
                 payload = bpt * length
                 for turn in [32, 256]:
                     if length + turn > limit:
@@ -75,10 +77,12 @@ def project():
                     per_round_ms = prefill + recompute + 12 * tail + 8 * payload * copy_per_byte + 3 * payload * file_per_byte
                     seconds += 11 * (per_round_ms / 1000 + throttle)
                 seconds += 10 * (2 * payload * file_per_byte + 2 * payload * copy_per_byte) / 1000
+                by_length[str(length)]=seconds-before_length
             result.append(dict(model=model, calibration_run=run['name'], kv_bytes_per_token=bpt,
                                attention_family=config['attention_family'], native_context=limit,
                                planned_lengths=lengths, repeats=10, warmups=1, turns=[32, 256],
                                projected_worker_s=seconds,
+                               projected_worker_s_by_length=by_length,
                                projected_two_device_hours=seconds * 2 / 3600,
                                suggested_timeout_s=max(900, int(seconds * 1.25 + 390)),
                                timing_base=timebase,

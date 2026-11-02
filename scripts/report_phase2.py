@@ -61,6 +61,20 @@ def report():
                                                                       for r in files if r['format']==fmt))
                             for fmt in ['torch','raw'] if any(r['format']==fmt for r in files)})
     stats['model_file_errors']={}
+    stats['coverage_reductions']=[]
+    requested_lengths=[16,32,64,128,256,512,1024,2048,4096,8192,16384]
+    for run_id,run in sweeps.items():
+        spec=run['specification']
+        for model in spec['models']:
+            if model not in configs:continue
+            limit=configs[model]['config']['max_position_embeddings']
+            omitted=[length for length in requested_lengths if length+min(spec['turns'])<=limit
+                     and length not in spec['lengths']]
+            omitted_turns=[turn for turn in [32,256] if turn not in spec['turns']]
+            if omitted or omitted_turns:
+                stats['coverage_reductions'].append(dict(run_id=run_id,model=model,
+                    workload=spec['workloads'],omitted_supported_requested_prefixes=omitted,
+                    omitted_requested_turn_sizes=omitted_turns))
     stats['recompute_session_spread_by_turn']={}
     for turn in [32,256]:
         values=[r['relative_range'] for r in rows if r['kind']=='session_spread'
@@ -114,6 +128,19 @@ def report():
                   'the new turn, so the short-context MHA models do not silently run the long-context grid. '
                   'The extra near-limit prefix leaves room for the longest requested new turn. '
                   'Environment, revision, shapes, and actual source hashes accompany observations.','',
+                  '| Sweep session | Workload | Prefixes with complete measured cells | New-turn sizes in complete cells |',
+                  '| --- | --- | --- | --- |'])
+    for run_id,run in sweeps.items():
+        shapes=[r for r in rows if r['kind']=='shape_complete' and r['run_id']==run_id]
+        prefixes=', '.join(str(x) for x in sorted({r['prefix_tokens'] for r in shapes})) or 'None'
+        turns=', '.join(str(x) for x in sorted({r['turn_tokens'] for r in shapes})) or 'None'
+        lines.append(f"| {run_id} | {', '.join(run['specification']['workloads'])} | {prefixes} | {turns} |")
+    for r in stats['coverage_reductions']:
+        lines.extend(['',f"Budget coverage reduction in {r['run_id']}: supported requested prefixes omitted "
+                       f"{r['omitted_supported_requested_prefixes']}; requested new-turn sizes omitted "
+                       f"{r['omitted_requested_turn_sizes']}. This is separate from native-context exclusions."])
+    lines.extend(['','OPT also omits the extra near-limit boundary point to prioritize requested grid cells '
+                  'under the phase cap; its completed prefixes are listed above.','',
                   '## Measured runtime and provenance','',
                   '| Runtime field | Observed values in accepted measurements |',
                   '| --- | --- |'])
