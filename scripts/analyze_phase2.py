@@ -25,6 +25,8 @@ def crossover(points):
             brackets.append(dict(target_mb_s=[a['target_mb_s'], b['target_mb_s']],
                                  achieved_mb_s=[ba, bb],
                                  interpolated_mb_s=estimate,
+                                 paired_ci_resolved=(a.get('paired_delta',{}).get('ci95',[0,0])[0] > 0 and
+                                                     b.get('paired_delta',{}).get('ci95',[0,0])[1] < 0),
                                  interpretation='harmonic interpolation of median TTFT; not a directly sampled threshold'))
     if brackets:
         return dict(status='bracketed', brackets=brackets,
@@ -202,6 +204,48 @@ def analyze():
                     for k in ['clocks.sm','clocks.mem','temperature.gpu','power.draw','utilization.gpu']}
             emit('telemetry_summary', run_id=run_id, samples=len(values), gpu_index=0,
                  throttle_reason_values=sorted(set(r['throttle_reasons'] for r in values)), metrics=fields)
+    for key, samples in groups.items():
+        if purposes[key[0]] != 'sweep':
+            continue
+        values = telemetry_by_run.get(key[0],[])
+        if not values:
+            continue
+        matched, nearest = [], 0
+        stamps = np.array([r['timestamp_unix'] for r in values])
+        for sample in samples:
+            start, end = sample['wall_start_unix'], sample['wall_end_unix']
+            indices = np.where((stamps>=start)&(stamps<=end))[0]
+            if not len(indices):
+                index=int(np.argmin(abs(stamps-(start+end)/2)))
+                if abs(stamps[index]-(start+end)/2) <= 0.75:
+                    indices=[index]
+                    nearest += 1
+            matched.extend(values[int(i)] for i in indices)
+        if matched:
+            emit('timing_clock_summary', **dict(zip(FIELDS+['condition'],key)),
+                 telemetry_points=len(matched), nearest_sample_measurements=nearest,
+                 median_sm_mhz=statistics.median(r['clocks.sm'] for r in matched),
+                 minimum_sm_mhz=min(r['clocks.sm'] for r in matched),
+                 maximum_sm_mhz=max(r['clocks.sm'] for r in matched),
+                 median_temperature_c=statistics.median(r['temperature.gpu'] for r in matched),
+                 median_power_w=statistics.median(r['power.draw'] for r in matched),
+                 reason_masks=sorted(set(r['throttle_reasons'] for r in matched)),
+                 caveat='one-Hz telemetry; nearest samples used for subsecond timings; repeated matches are not independent')
+    for run in ledger['runs']:
+        path = ROOT/'outputs/raw/phase2'/run['name']/'phase2-output/anomaly-trace.json'
+        if not path.exists():
+            continue
+        events=json.loads(path.read_text())['traceEvents']
+        for scope in [e for e in events if e.get('cat')=='user_annotation' and e.get('name','').startswith('shape_')]:
+            inside=[e for e in events if e.get('cat')=='kernel' and e.get('ts',-1)>=scope['ts']
+                    and e.get('ts',0)+e.get('dur',0)<=scope['ts']+scope['dur']]
+            gemms=[e for e in inside if 'gemm' in e['name'] or 'gemvx' in e['name']]
+            emit('anomaly_shape_profile', run_id='phase2-'+run['name'],
+                 length=int(scope['name'].split('_')[-1]), wall_ms=scope['dur']/1000,
+                 gpu_kernel_ms=sum(e['dur'] for e in inside)/1000,
+                 gemm_ms=sum(e['dur'] for e in gemms)/1000,
+                 gemm_kernels=sorted(set(e['name'] for e in gemms)),
+                 excluded_from_benchmark_statistics=True)
     output = ROOT / 'outputs/phase2_results.jsonl'
     output.write_text(''.join(json.dumps(r,allow_nan=False)+'\n' for r in raw+derived))
     print(json.dumps(dict(raw_rows=len(raw), derived_rows=len(derived), groups=len(groups), output=str(output))))

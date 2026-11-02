@@ -28,8 +28,9 @@ The redesigned phase is authorized with a separate cap of 10 GPU-hours. The old 
 | calibration-t4 | calibration | NvidiaTeslaT4 | fetched | 1500 | 0.148170 |
 | calibration-p100 | calibration | NvidiaTeslaP100 | fetched | 900 | 0.010439 |
 | main-session-1 | sweep | NvidiaTeslaT4 | submitted | 2200 | 1.222222 |
-| calibration-mha-fixed | calibration | NvidiaTeslaT4 | submitted | 900 | 0.500000 |
+| calibration-mha-fixed | calibration | NvidiaTeslaT4 | fetched | 900 | 0.098875 |
+| main-session-2 | sweep | NvidiaTeslaT4 | submitted | 2200 | 1.222222 |
 
-Observed usage plus active reservations: 1.880831 GPU-hours. Unreserved phase-two allowance: 8.119169 GPU-hours.
+Observed usage plus active reservations: 2.701928 GPU-hours. Unreserved phase-two allowance: 7.298072 GPU-hours.
 
 All values and submission settings are recorded in `outputs/phase2_ledger.json`. A model must complete a short calibration before its full sweep is submitted. Across-session main-model runs remain separate statistical groups.

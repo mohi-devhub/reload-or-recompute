@@ -115,5 +115,59 @@
     "projected_two_device_hours": 0.4941855495056227,
     "suggested_timeout_s": 1501,
     "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
+  },
+  {
+    "model": "EleutherAI/pythia-1.4b",
+    "calibration_run": "calibration-mha-fixed",
+    "kv_bytes_per_token": 196608,
+    "attention_family": "MHA",
+    "native_context": 2048,
+    "planned_lengths": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024,
+      1792
+    ],
+    "repeats": 10,
+    "warmups": 1,
+    "turns": [
+      32,
+      256
+    ],
+    "projected_worker_s": 896.4323619217178,
+    "projected_two_device_hours": 0.4980179788453988,
+    "suggested_timeout_s": 1510,
+    "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
+  },
+  {
+    "model": "microsoft/phi-2",
+    "calibration_run": "calibration-mha-fixed",
+    "kv_bytes_per_token": 327680,
+    "attention_family": "MHA",
+    "native_context": 2048,
+    "planned_lengths": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024,
+      1792
+    ],
+    "repeats": 10,
+    "warmups": 1,
+    "turns": [
+      32,
+      256
+    ],
+    "projected_worker_s": 1527.8422431281604,
+    "projected_two_device_hours": 0.8488012461823113,
+    "suggested_timeout_s": 2299,
+    "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
   }
 ]

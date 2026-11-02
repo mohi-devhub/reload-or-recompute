@@ -1,0 +1,9 @@
+[
+  {"name":"qwen-3b-control","models":"Qwen/Qwen2.5-3B","workloads":"repeated_control","timeout":3000,"seed":7503},
+  {"name":"main-session-3","models":"Qwen/Qwen2.5-1.5B","workloads":"ultrachat","timeout":2200,"seed":7403},
+  {"name":"main-repeated-control","models":"Qwen/Qwen2.5-1.5B","workloads":"repeated_control","timeout":2200,"seed":7501},
+  {"name":"phi2-control","models":"microsoft/phi-2","workloads":"repeated_control","timeout":2400,"seed":7506},
+  {"name":"pythia-control","models":"EleutherAI/pythia-1.4b","workloads":"repeated_control","timeout":1700,"seed":7504},
+  {"name":"opt-control","models":"facebook/opt-1.3b","workloads":"repeated_control","timeout":1700,"seed":7505},
+  {"name":"qwen-half-control","models":"Qwen/Qwen2.5-0.5B","workloads":"repeated_control","timeout":1300,"seed":7500}
+]

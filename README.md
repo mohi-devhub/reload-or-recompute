@@ -1,5 +1,7 @@
 # Reload or Recompute
 
+The approved second phase replaces the old full grid with a **simulated transport bandwidth** sweep. See [the redesigned protocol](docs/PHASE2_PROTOCOL.md) and [the running budget](docs/BUDGET.md). The pilot and its report below remain historical records. Phase-two execution is limited to the approved queue and its budget gate.
+
 A small systems study of when a returning conversation's KV cache is faster to reload than to recompute on older GPUs. The pilot uses Qwen2.5-1.5B on a Kaggle T4 allocation. The full grid requires the user's approval after the pilot.
 
 The reference pilot passed with limitations. Reload won at every sampled length, so no crossover length was identified. The production install failed on the selected vLLM release's Python requirement. Read [the pilot report](docs/PILOT_REPORT.md), [the GPU ledger](docs/BUDGET.md), and [the timing figure](figures/pilot-ttft.png).
@@ -67,3 +69,40 @@ python3 scripts/finalize_pilot.py
 `outputs/results.jsonl` retains source observations and adds derived medians, percentile bootstrap intervals, independent microbenchmark fits, and prediction errors. Analysis refuses duplicate sample keys, malformed records, invalid timings, or pooled experimental run IDs. An incomplete grid is reported explicitly and receives no crossover analysis.
 
 Raw downloads are ignored by Git. Retain them locally for audit, including the kernel log and profiler trace. The public results include individual timing observations and derived diagnostics; they exclude credentials and raw downloaded artifacts.
+
+## Reproduce the redesigned study
+
+Derive the pilot bandwidth thresholds without using a GPU:
+
+```sh
+python3 scripts/pilot_bstar.py
+```
+
+The generic runner and controller are in `kernels/phase2/runner.py` and `scripts/phase2_control.py`. Submission builds a private standalone script from the runner, frozen inputs, and the explicit run specification. It writes the GPU reservation to BUDGET.md before calling the Kaggle CLI. It refuses full sweeps for uncalibrated models on the requested GPU.
+
+The initial T4 calibration used:
+
+```sh
+python3 scripts/phase2_control.py submit --name calibration-t4 --purpose calibration \
+  --lengths 32,512 --turns 32 --rates 50,200 --workloads repeated_control \
+  --repeats 3 --micro-repeats 3 --stabilize 3 --timeout 1500
+python3 scripts/phase2_control.py fetch --name calibration-t4
+python3 scripts/phase2_project.py
+```
+
+The accepted main-model sessions use different seeds and distinct kernel references. Their full specifications are in `outputs/phase2_ledger.json`. The remaining approved configurations are in `configs/phase2_queue.json`. The dispatcher submits at most two sessions at a time and stops if the controller rejects a submission:
+
+```sh
+python3 scripts/phase2_dispatch.py
+```
+
+Existing run names cannot be submitted again. Do not erase the ledger to bypass the budget or calibration gate. Consult NOTES.md for the corrected MHA validation, gated Llama access, and mismatched P100 allocation. The dispatcher is resumable from the ledger after an interruption.
+
+Analyze fetched artifacts and generate the report after the queue finishes:
+
+```sh
+python3 scripts/analyze_phase2.py
+python3 scripts/report_phase2.py
+```
+
+The phase-two JSONL keeps sessions separate. It includes individual timings, independently measured file legs, rate-limiter diagnostics, within-session confidence intervals, crossover brackets, session spread, and telemetry summaries. Every rate-limited path is simulated bandwidth. It must not be described as measured physical storage throughput.
