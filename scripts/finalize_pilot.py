@@ -20,6 +20,11 @@ def read(path):
 
 
 def main():
+    global RESULTS
+    existing=read(RESULTS) if RESULTS.exists() else []
+    saved_thresholds=[r for r in existing if r['kind']=='pilot_bstar']
+    if (ROOT/'outputs/phase2_ledger.json').exists():
+        RESULTS=ROOT/'outputs/pilot_results.jsonl'
     if not analyze(REFERENCE, RESULTS):
         raise RuntimeError('The reference grid is incomplete')
     rows = read(RESULTS)
@@ -102,6 +107,7 @@ def main():
            gpu_kernel_compatibility='not_reached', crossover_validation='not_identifiable_on_sampled_grid',
            full_grid_authorized=False,
            statement='Reference pilot passes with limitations; proceed only after user approval of full grid.')
+    rows.extend(saved_thresholds)
     RESULTS.write_text(''.join(json.dumps(r, allow_nan=False) + '\n' for r in rows))
     generate(RESULTS, ROOT / 'docs/PILOT_REPORT.md', ROOT / 'figures')
     lines = ['# GPU budget', '',
@@ -131,7 +137,9 @@ def main():
                   'Source: allocation_end, subprocess, production_status, and budget_ledger records '
                   'in `outputs/results.jsonl`. Quota snapshots and run logs are retained in `outputs/raw`.', '',
                   'The full grid has not started and requires explicit user approval.'])
-    (ROOT / 'docs/BUDGET.md').write_text('\n'.join(lines) + '\n')
+    budget_path=ROOT/'docs/BUDGET.md'
+    if '\n## Phase two' not in budget_path.read_text():
+        budget_path.write_text('\n'.join(lines) + '\n')
 
 
 if __name__ == '__main__':

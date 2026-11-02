@@ -31,7 +31,11 @@ for length in [512, 2048, 8192]:
 rows = [r for r in rows if r['kind'] != 'pilot_bstar'] + derived
 path.write_text(''.join(json.dumps(r, allow_nan=False) + '\n' for r in rows))
 notes = ROOT / 'docs/NOTES.md'
-text = notes.read_text().split('\n## Phase two: pilot break-even bandwidth')[0]
+existing = notes.read_text()
+marker='\n## Phase two: pilot break-even bandwidth'
+text,separator,following=existing.partition(marker)
+next_heading=following.find('\n## ')
+trailing=following[next_heading:] if separator and next_heading>=0 else ''
 lines = ['', '## Phase two: pilot break-even bandwidth', '',
          'Phase two replaces the original full grid. The user authorizes a separate ceiling of 10 GPU-hours. '
          'Every throttled path is simulated bandwidth; it is not a measurement of a physical storage device.', '',
@@ -50,5 +54,5 @@ lines += ['', 'MB and GB are decimal throughout the bandwidth sweep. The user\'s
           'is supported by the prefix-only pilot medians after rounding. It is not the same as an end-to-end TTFT threshold. '
           'Source: `pilot_bstar` records in `outputs/results.jsonl`, regenerated with `python3 scripts/pilot_bstar.py`. '
           'Small KV size is a plausible contributor, not an isolated causal conclusion from one model.']
-notes.write_text(text + '\n'.join(lines) + '\n')
+notes.write_text(text + '\n'.join(lines) + '\n' + trailing)
 print('\n'.join(lines[7:]))
