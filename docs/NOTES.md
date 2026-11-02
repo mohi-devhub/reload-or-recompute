@@ -85,3 +85,7 @@ Later submissions add a parent session deadline, subtract actual elapsed setup t
 The remaining queued control sweeps use the smaller setup allowance with correspondingly shorter session timeouts, preserving their original worker budgets. Their exact authorized specifications are in `configs/phase2_queue.json`; the primary replications and already-running Llama/Qwen-3B kernels are unchanged. The host queue watcher was restarted to load these settings, without restarting either remote kernel.
 
 Phase two retains per-file DONTNEED advice and physical-read counters for file conditions. It does not retry a privileged global cache flush, which was unavailable in the pilot. Advisory eviction is not proof of a cold physical device; the report names this limitation and labels the read leg as an API measurement including allocation.
+
+### File representation and residual comparisons
+
+Phase two packs KV tensors into one contiguous fp16 buffer, with tensor shapes retained as metadata. Both the torch-serialized and raw-byte formats use this packed representation; the pilot serialized its nested per-layer cache tensors. Phase-two old-versus-new file-rule residuals compare predictions against the same phase-two staged measurements, differing only in whether the independently measured deserialization leg is included. They are not a controlled attribution of pilot-to-phase-two changes to a single format or software change.

@@ -239,6 +239,8 @@ def report():
                   '## File-tier decomposition and predictive residuals','',
                   'Staged torch serialization and raw fp16 bytes use separate raw-read and CPU-deserialization timers, '
                   'followed by actual H2D copies. Direct torch.load remains an additional baseline. '
+                  'Both file formats store the same packed fp16 buffer with shapes held as metadata; '
+                  'the pilot used nested per-layer tensors, so this is not an isolated cross-phase format experiment. '
                   'The old estimate omits deserialization; the new estimate adds it. Each prediction uses independent '
                   'microbenchmark medians plus the GPU-hit new-turn baseline. '
                   'The raw-read API leg includes buffer allocation, and the BytesIO materialization belongs '
