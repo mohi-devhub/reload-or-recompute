@@ -91,7 +91,8 @@ def report():
            'bandwidth, sleep time, and bytes are stored separately. All full measurements are retained in the JSONL. '
            'Calibration timings have fewer repeats and are excluded from publication summaries. '
            'The cache already exists at return time: its initial CPU offload, packing, pinning, and file creation '
-           'are outside returning-turn TTFT. File-read buffer allocation remains inside the staged read leg.','',
+           'are outside returning-turn TTFT. Tokenization and GPU input-ID placement are also outside timing; '
+           'this is not serving-API latency. File-read buffer allocation remains inside the staged read leg.','',
            'The primary main-model workload is frozen public UltraChat generated dialogue. Long contexts stitch distinct '
            'conversations and are marked accordingly. Three distinct Kaggle kernel sessions use that same frozen input. '
            'A separate repeated-text main-model run with a 32-token new turn at the common short lengths and the anomaly length supplies the matched control used for the model-family comparison. '
