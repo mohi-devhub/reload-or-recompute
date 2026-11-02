@@ -17,7 +17,7 @@ Remaining pilot allowance under the conservative process accounting: 2.863350 GP
 
 Source: allocation_end, subprocess, production_status, and budget_ledger records in `outputs/results.jsonl`. Quota snapshots and run logs are retained in `outputs/raw`.
 
-The full grid has not started and requires explicit user approval.
+The pilot is complete. The user subsequently approved only the redesigned phase-two study below.
 
 ## Phase two
 
@@ -25,8 +25,11 @@ The redesigned phase is authorized with a separate cap of 10 GPU-hours. The old 
 
 | Run | Purpose | GPU | Status | Session timeout, s | Reserved or observed device-hours |
 | --- | --- | --- | --- | --- | --- |
-| calibration-t4 | calibration | NvidiaTeslaT4 | submitted | 1500 | 0.833333 |
+| calibration-t4 | calibration | NvidiaTeslaT4 | fetched | 1500 | 0.148170 |
+| calibration-p100 | calibration | NvidiaTeslaP100 | fetched | 900 | 0.010439 |
+| main-session-1 | sweep | NvidiaTeslaT4 | submitted | 2200 | 1.222222 |
+| calibration-mha-fixed | calibration | NvidiaTeslaT4 | submitted | 900 | 0.500000 |
 
-Observed usage plus active reservations: 0.833333 GPU-hours. Unreserved phase-two allowance: 9.166667 GPU-hours.
+Observed usage plus active reservations: 1.880831 GPU-hours. Unreserved phase-two allowance: 8.119169 GPU-hours.
 
 All values and submission settings are recorded in `outputs/phase2_ledger.json`. A model must complete a short calibration before its full sweep is submitted. Across-session main-model runs remain separate statistical groups.

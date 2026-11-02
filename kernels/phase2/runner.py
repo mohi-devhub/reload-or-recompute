@@ -317,7 +317,24 @@ def model_run(torch, model_id):
                     full = torch.cat([prefix, turn], dim=1)
                     baseline = forward(full)
                     target, target_token = baseline[0].float().cpu(), baseline[2]
+                    if SPEC['purpose'] == 'calibration' and length == min(SPEC['lengths']):
+                        full_cache = legacy(baseline[1])
+                        layer_errors = []
+                        for old_layer, new_layer in zip(gpu, full_cache):
+                            old = torch.cat([t.float().reshape(-1) for t in old_layer])
+                            new = torch.cat([t[..., :length, :].float().reshape(-1) for t in new_layer])
+                            layer_errors.append(float((old-new).norm()/new.norm()))
+                        emit('cache_shape_numerics', relative_l2_by_layer=layer_errors,
+                             interpretation='standalone prefix KV versus same prefix inside full fp16 prefill')
                     del baseline
+                    resident = forward(turn, gpu)
+                    resident_target, resident_token = resident[0].float().cpu(), resident[2]
+                    emit('reference_numerics', recompute_token=target_token, resident_token=resident_token,
+                         first_token_equal=resident_token == target_token,
+                         full_vs_resident_max_abs=float((resident_target-target).abs().max()),
+                         full_vs_resident_relative_l2=float((resident_target-target).norm()/target.norm()),
+                         policy='restores compared with independent resident continuation; full-prefill differences retained')
+                    del resident
                     rates = SPEC['rates_mb_s']
                     conditions = ['prefix_only', 'recompute', 'gpu_hit', 'cpu_pageable',
                                   'file_torch_direct', 'file_torch_staged', 'file_raw_staged']
@@ -386,8 +403,10 @@ def model_run(torch, model_id):
                                 max_abs = (logits - target).abs().max().item()
                                 rel_l2 = ((logits - target).norm() / target.norm()).item()
                                 token_equal = result[2] == target_token
+                                expected = target if condition == 'recompute' else resident_target
+                                restore_error = float((logits-expected).abs().max())
                                 valid = bool(torch.isfinite(logits).all() and token_equal and
-                                             torch.allclose(logits, target, rtol=0.02, atol=0.05)
+                                             torch.allclose(logits, expected, rtol=0.001, atol=0.001)
                                              and cache_length == length + turn_length)
                             assert all(t.shape[-2] == length for layer in gpu for t in layer)
                             if repeat >= 0 or not valid:
@@ -397,13 +416,14 @@ def model_run(torch, model_id):
                                      valid=valid, first_token=result[2], recompute_first_token=target_token,
                                      first_token_equal=token_equal, logits_max_abs=max_abs,
                                      logits_relative_l2=rel_l2, cache_length=cache_length,
+                                     restore_logits_max_abs=None if condition=='prefix_only' else restore_error,
                                      peak_vram_bytes=torch.cuda.max_memory_allocated(),
                                      **timing, **{k:v for k,v in details.items() if k != 'simulated_bandwidth'})
                             del result, logits
                             if not valid:
                                 raise RuntimeError('Cache correctness failure: ' + condition)
                     emit('shape_complete', repeats=SPEC['repeats'], conditions=conditions)
-                    del turn, full, target
+                    del turn, full, target, resident_target
                 del prefix, gpu, pageable, pinned
                 torch_path.unlink()
                 raw_path.unlink()

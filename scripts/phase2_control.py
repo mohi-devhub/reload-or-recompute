@@ -1,6 +1,7 @@
 """Submit, account for, and retrieve private redesigned Kaggle experiments."""
 import argparse
 import datetime
+import fcntl
 import json
 from pathlib import Path
 import subprocess
@@ -26,6 +27,8 @@ def write_ledger(data):
     LEDGER.write_text(json.dumps(data, indent=2) + '\n')
     doc = ROOT / 'docs/BUDGET.md'
     prefix = doc.read_text().split('\n## Phase two')[0]
+    prefix = prefix.replace('The full grid has not started and requires explicit user approval.',
+                            'The pilot is complete. The user subsequently approved only the redesigned phase-two study below.')
     lines = ['', '## Phase two', '',
              'The redesigned phase is authorized with a separate cap of 10 GPU-hours. '
              'The old grid is not authorized. Pending reservations charge every possible allocated GPU '
@@ -71,7 +74,7 @@ def submit(args):
     if args.purpose == 'sweep':
         calibrated = set()
         for r in data['runs']:
-            if r['purpose'] == 'calibration' and r['status'] == 'fetched':
+            if r['purpose'] == 'calibration' and r['status'] == 'fetched' and r['gpu'] == args.gpu:
                 calibrated.update(r.get('calibrated_models', []))
         missing = set(models) - calibrated
         if missing:
@@ -140,6 +143,22 @@ def fetch(args):
         if endings:
             run['actual_gpu_hours'] = endings[-1]['conservative_gpu_hours']
             run['process_duration_s'] = endings[-1]['duration_s']
+        else:
+            # A failed allocation check can precede the normal finalizer.
+            logs = list((RAW / args.name).glob('*.log'))
+            times = []
+            for log in logs:
+                try:
+                    events = json.loads(log.read_text())
+                    if isinstance(events, list):
+                        times.extend(float(e['time']) for e in events if isinstance(e,dict) and 'time' in e)
+                except (ValueError, TypeError):
+                    pass
+            count = rows[0]['environment']['gpu_count']
+            if times and count:
+                run['actual_gpu_hours'] = max(times) * count / 3600
+                run['process_duration_s'] = max(times)
+                run['accounting_basis'] = 'last Kaggle execution-log timestamp times observed device count; allocation check aborted'
         run['calibrated_models'] = [r['model'] for r in rows if r['kind'] == 'model_complete' and r['completed']]
         run['model_errors'] = [dict(model=r['model'], error=r['error']) for r in rows if r['kind'] == 'model_failed']
         run['complete'] = any(r['kind'] == 'run_complete' for r in rows)
@@ -172,4 +191,8 @@ if __name__ == '__main__':
     p = commands.add_parser('fetch')
     p.add_argument('--name', required=True)
     args = parser.parse_args()
-    submit(args) if args.command == 'submit' else fetch(args)
+    lock_path = RAW / 'control/controller.lock'
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open('w') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        submit(args) if args.command == 'submit' else fetch(args)

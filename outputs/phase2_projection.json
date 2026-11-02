@@ -1,0 +1,119 @@
+[
+  {
+    "model": "Qwen/Qwen2.5-0.5B",
+    "calibration_run": "calibration-t4",
+    "kv_bytes_per_token": 12288,
+    "attention_family": "GQA",
+    "native_context": 32768,
+    "planned_lengths": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096,
+      8192,
+      16384
+    ],
+    "repeats": 10,
+    "warmups": 1,
+    "turns": [
+      32,
+      256
+    ],
+    "projected_worker_s": 634.0984292983468,
+    "projected_two_device_hours": 0.3522769051657482,
+    "suggested_timeout_s": 1182,
+    "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
+  },
+  {
+    "model": "Qwen/Qwen2.5-1.5B",
+    "calibration_run": "calibration-t4",
+    "kv_bytes_per_token": 28672,
+    "attention_family": "GQA",
+    "native_context": 131072,
+    "planned_lengths": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096,
+      8192,
+      16384
+    ],
+    "repeats": 10,
+    "warmups": 1,
+    "turns": [
+      32,
+      256
+    ],
+    "projected_worker_s": 1384.918604259654,
+    "projected_two_device_hours": 0.7693992245886967,
+    "suggested_timeout_s": 2121,
+    "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
+  },
+  {
+    "model": "Qwen/Qwen2.5-3B",
+    "calibration_run": "calibration-t4",
+    "kv_bytes_per_token": 36864,
+    "attention_family": "GQA",
+    "native_context": 32768,
+    "planned_lengths": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096,
+      8192,
+      16384
+    ],
+    "repeats": 10,
+    "warmups": 1,
+    "turns": [
+      32,
+      256
+    ],
+    "projected_worker_s": 2007.403789733784,
+    "projected_two_device_hours": 1.1152243276298799,
+    "suggested_timeout_s": 2899,
+    "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
+  },
+  {
+    "model": "facebook/opt-1.3b",
+    "calibration_run": "calibration-t4",
+    "kv_bytes_per_token": 196608,
+    "attention_family": "MHA",
+    "native_context": 2048,
+    "planned_lengths": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024,
+      1792
+    ],
+    "repeats": 10,
+    "warmups": 1,
+    "turns": [
+      32,
+      256
+    ],
+    "projected_worker_s": 889.5339891101208,
+    "projected_two_device_hours": 0.4941855495056227,
+    "suggested_timeout_s": 1501,
+    "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
+  }
+]
