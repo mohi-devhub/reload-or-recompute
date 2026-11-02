@@ -20,9 +20,15 @@ def generate(results, report, figures):
                  for r in rows if r['kind'] == 'summary'}
     allocations = [r for r in rows if r['kind'] == 'allocation_end']
     prod = [r for r in rows if r['kind'] == 'production_status']
+    review = next((r for r in rows if r['kind'] == 'analysis_review'), None)
+    ledger = next((r for r in rows if r['kind'] == 'budget_ledger'), None)
+    verdict = next((r for r in rows if r['kind'] == 'pilot_verdict'), None)
     successful = validation['complete'] and any(r['kind'] == 'reference_complete' for r in rows)
     lines = ['# Pilot report: Reload or Recompute', '',
-             ('Reference measurements complete. Scientific interpretation and production logs still require review.'
+             ('Reference pilot passes with limitations. Reload wins throughout the sampled grid; '
+              'the crossover is not identified. The production installation failed on the Python version. '
+              'The full grid awaits approval.' if verdict else
+              'Reference measurements complete. Scientific interpretation and production logs still require review.'
               if successful else 'Pilot incomplete. No crossover or speedup conclusion is accepted.'), '',
              'This report is generated from `outputs/results.jsonl`. Configuration values describe the requested experiment; '
              'all observed values below come from its records. The full grid has not been started.', '',
@@ -32,7 +38,7 @@ def generate(results, report, figures):
              f"- Allocated devices: {env['gpu_count']}. Reference inference uses one device.",
              f"- Torch: `{env['torch']}`. CUDA runtime: `{env['cuda_runtime']}`. "
              f"Transformers: `{env['transformers']}`. vLLM in the reference environment: `{env['vllm']}`.",
-             f"- GPU and driver query: `{env['gpu_query']['output'].strip()}`.",
+             '- GPU and driver query: ' + '; '.join(env['gpu_query']['output'].strip().splitlines()) + '.',
              f"- CPU cores: {env['cpu_count']}. Load average at process startup: `{env['load_average']}`.",
              '- CPU memory and initial free disk bytes are preserved verbatim in each source environment record.', '',
              '## Raw timing summaries', '',
@@ -74,6 +80,10 @@ def generate(results, report, figures):
         lines.extend(['', f"KV bytes per token from configuration: {r['kv_bytes_per_token_config']}. "
                       'The script requires exact agreement with the observed tensor byte count.',
                       f"Model revision: `{r.get('model_revision')}`."])
+    memory_total = next(line.split()[1] for line in env['cpu_ram'].splitlines()
+                        if line.startswith('MemTotal:'))
+    lines.extend(['', f"CPU RAM: {int(memory_total) * 1024 / 2**30:.3f} GiB. "
+                  'Initial free disk, bytes: ' + ', '.join(f'`{k}` = {v}' for k, v in env['free_disk_bytes'].items()) + '.'])
     controls = [r for r in rows if r['kind'] == 'disk_cache_control']
     if controls:
         lines.extend(['', 'Page-cache control: `' + controls[-1]['global_drop_caches'] + '`. '
@@ -128,8 +138,11 @@ def generate(results, report, figures):
                       f"Allocated-device time for this attempt: {r.get('allocated_gpu_hours', 0):.6f} GPU-hours.", '',
                       'Exact install and runtime logs are retained under `outputs/raw`. '
                       'The reviewed error and implications belong in NOTES.md. '
-                      'A compatibility failure is evidence about this package and runtime combination, '
-                      'not proof that every LMCache release fails on T4.'])
+                      'The first setup failed in ensurepip. The supplemental install reached pip and rejected '
+                      '`vllm==0.9.0`: `Requires-Python >=3.9,<3.13`; Kaggle provided Python 3.13. '
+                      'LMCache native kernels, CPU reuse, and disk reuse were not reached. '
+                      'No sm_75 compatibility claim or production performance result is made. '
+                      'Both setup failures and the package choice are recorded in NOTES.md.'])
     else:
         lines.append('No completed production attempt is recorded.')
     lines.extend(['', '## GPU budget and full-grid projection', ''])
@@ -137,6 +150,10 @@ def generate(results, report, figures):
         lines.append(f"Kernel process lifetime: {r['duration_s']:.3f} seconds. "
                      f"Conservative allocated-device charge: {r['allocated_gpu_hours']:.6f} GPU-hours. "
                      'Kaggle provisioning and finalization may add time; reconcile against the quota ledger.')
+    if ledger:
+        lines.extend(['', f"Total conservative process device-hours: {ledger['conservative_allocated_gpu_hours']:.6f}. "
+                      f"Production troubleshooting: {ledger['production_troubleshooting_gpu_hours']:.6f} GPU-hours. "
+                      'See BUDGET.md for both kernel rows and the rounded Kaggle quota snapshot.'])
     if successful:
         full_lengths = np.array([256, 512, 1024, 2048, 4096, 8192, 16384])
         total_ms = 0.0
@@ -174,7 +191,43 @@ def generate(results, report, figures):
                       'before authorizing a large sweep. The present data do not certify that the entire grid fits the remaining quota.'])
     else:
         lines.append('A full-grid cost cannot be projected from an incomplete reference pilot.')
-    lines.extend(['', '## Limitations and review', '',
+    if review:
+        lines.extend(['', '## Findings and surprises', '',
+                      f"All {review['ordering_comparisons']} reload-versus-recompute median orderings agree with the simple rule. "
+                      'This is an easy classification regime: every tested prefix favours reload. '
+                      'A numerical crossover prediction error cannot be computed without a measured crossing.', '',
+                      '| Tier | Median absolute TTFT prediction error | Maximum absolute TTFT prediction error |',
+                      '| --- | --- | --- |'])
+        for tier, value in review['errors_by_tier'].items():
+            lines.append(f"| {tier} | {value['median_absolute_relative_error']:.1%} | "
+                         f"{value['max_absolute_relative_error']:.1%} |")
+        lines.extend(['', f"Every generated first token matches recomputation. Maximum relative logit L2 error is "
+                      f"{review['max_logits_relative_l2']:.6f}. Peak allocated VRAM is "
+                      f"{review['maximum_peak_vram_bytes']} bytes. The closest reload-minus-recompute paired "
+                      f"confidence-interval upper endpoint is {review['closest_reload_minus_recompute_ci95_upper_ms']:.3f} ms, "
+                      'so the reload advantage is resolved within this session.', '',
+                      'Pinned reload and a GPU-resident hit overlap in latency at the shorter contexts. '
+                      'Do not interpret the occasional lower pinned median as faster than the resident-cache bound. '
+                      'Host dispatch, asynchronous copies, and within-session variation make independently measured '
+                      'copy cost imperfectly additive with the GPU-hit baseline.', '',
+                      'Prefix-only prefill at the longest length is slower than recomputing the prefix plus the short turn. '
+                      'These are different matrix shapes and were measured at different times. '
+                      'Kernel selection and session drift are possible explanations; this pilot does not isolate the cause. '
+                      'The rule therefore uses actual measured prefill and reports its residuals without forcing monotonicity.', '',
+                      'The file-read fit needs a nonnegative constraint on its overhead, and the longest file-TTFT '
+                      'prediction overestimates observed latency. The raw read microbenchmark, torch.load read pattern, '
+                      'CPU allocation, and host dispatch differ. A single effective-bandwidth term does not explain '
+                      'all file latency in this pilot.', '',
+                      'The separate profile shows recompute dominated by GPU kernel execution, chiefly GEMMs. '
+                      'Reload profiles show substantial host dispatch and execution gaps beyond the copy itself. '
+                      'This establishes which operations dominate the instrumented path; it does not prove hardware '
+                      'FLOP or PCIe saturation. The profile file read was not evicted and is excluded from storage timing claims.'])
+    lines.extend(['', '## Provisional rule of thumb', '',
+                  'Reload when measured prefix prefill exceeds `fixed_overhead + L × kv_bytes_per_token / effective_bandwidth`, '
+                  'adding the disk-read leg for files. Recompute when that cost is larger; include the new-turn baseline '
+                  'for TTFT and recalibrate for each model, GPU, and storage path.', '',
+                  'This pilot favours reload at every sampled length, so it cannot locate the threshold or validate '
+                  'the rule on a different model or GPU.', '', '## Limitations and review', '',
                   '- The pilot measures within-session latency for a controlled repeated-text conversation.',
                   '- It cannot test cross-GPU transfer or a GQA-versus-MHA causal hypothesis.',
                   '- File-cache hints and process read counters do not identify the physical storage medium.',
@@ -187,6 +240,7 @@ def generate(results, report, figures):
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
+        from matplotlib.ticker import NullLocator, ScalarFormatter
         figures.mkdir(parents=True, exist_ok=True)
         fig, axes = plt.subplots(1, len(TURNS), figsize=(11, 4), constrained_layout=True)
         for ax, turn in zip(axes, TURNS):
@@ -198,10 +252,13 @@ def generate(results, report, figures):
                 ax.errorbar(LENGTHS, medians, yerr=errors, marker='o', label=tier, capsize=3)
             ax.set(xscale='log', yscale='log', xlabel='Prefix tokens', ylabel='TTFT (ms)',
                    title=f"{env['gpus'][0]['name']}, new turn {turn} tokens")
+            ax.set_xticks(LENGTHS)
+            ax.xaxis.set_major_formatter(ScalarFormatter())
+            ax.xaxis.set_minor_locator(NullLocator())
             ax.grid(alpha=0.2)
         axes[-1].legend(fontsize=8)
         fig.savefig(figures / 'pilot-ttft.png', dpi=180)
-        fig.savefig(figures / 'pilot-ttft.pdf')
+        fig.savefig(figures / 'pilot-ttft.pdf', metadata={'CreationDate': None, 'ModDate': None})
         plt.close(fig)
     print(f'Wrote {report}')
 

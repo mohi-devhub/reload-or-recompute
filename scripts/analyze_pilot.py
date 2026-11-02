@@ -4,6 +4,7 @@ from collections import defaultdict
 import hashlib
 import json
 from pathlib import Path
+import sys
 
 import numpy as np
 
@@ -98,6 +99,7 @@ def analyze(source, destination):
 
     append('analysis_validation', complete=not missing, missing=missing,
            measured_sample_count=len(samples), invalid_sample_count=0,
+           analysis_numpy_version=np.__version__, analysis_python=sys.version,
            bootstrap_resamples=10000, bootstrap_seed=SEED,
            bootstrap_method='percentile bootstrap of median, resample repeats')
     summaries = {}
