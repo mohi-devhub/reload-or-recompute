@@ -80,6 +80,8 @@ python3 scripts/pilot_bstar.py
 
 The generic runner and controller are in `kernels/phase2/runner.py` and `scripts/phase2_control.py`. Submission builds a private standalone script from the runner, frozen inputs, and the explicit run specification. It writes the GPU reservation to BUDGET.md before calling the Kaggle CLI. It refuses full sweeps for uncalibrated models on the requested GPU.
 
+Checkpoint revisions and the actual Kaggle image are pinned in `configs/model_revisions.json` and `configs/phase2_runtime.json`. These pins come from the observed runtime, rather than a guessed package environment. Set `KAGGLE_KERNEL_OWNER` to your Kaggle username for a separately budgeted replication; the historical owner is the default. Preserve this study's final ledger and obtain a new run budget before starting another study. The commands below document the study configuration, rather than resetting its allowance.
+
 The initial T4 calibration used:
 
 ```sh

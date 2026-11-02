@@ -191,8 +191,9 @@ def model_run(torch, model_id):
             token = UserSecretsClient().get_secret(SPEC.get('hf_secret_label', 'HF_TOKEN'))
         except Exception as e:
             emit('secret_unavailable', model=model_id, error_type=type(e).__name__)
-    tokenizer = AutoTokenizer.from_pretrained(model_id, token=token)
-    model = AutoModelForCausalLM.from_pretrained(model_id, token=token, torch_dtype=torch.float16,
+    revision=SPEC.get('model_revisions',{}).get(model_id)
+    tokenizer = AutoTokenizer.from_pretrained(model_id, token=token, revision=revision)
+    model = AutoModelForCausalLM.from_pretrained(model_id, token=token, revision=revision, torch_dtype=torch.float16,
                                                 attn_implementation='sdpa').to('cuda').eval()
     cfg = model.config
     heads, layers = cfg.num_attention_heads, cfg.num_hidden_layers

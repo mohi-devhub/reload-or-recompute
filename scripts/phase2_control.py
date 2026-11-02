@@ -4,6 +4,7 @@ import datetime
 import fcntl
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -13,7 +14,7 @@ LEDGER = ROOT / 'outputs/phase2_ledger.json'
 RAW = ROOT / 'outputs/raw/phase2'
 GENERATED = ROOT / 'kernels/phase2/generated'
 DEFAULT_MODELS = ['Qwen/Qwen2.5-0.5B', 'Qwen/Qwen2.5-1.5B', 'Qwen/Qwen2.5-3B',
-                  'meta-llama/Llama-3.2-3B', 'EleutherAI/pythia-1.4b',
+                  'unsloth/Llama-3.2-3B-Instruct', 'EleutherAI/pythia-1.4b',
                   'facebook/opt-1.3b', 'microsoft/phi-2']
 FULL_LENGTHS = [16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
 
@@ -105,6 +106,8 @@ def submit(args):
                 hf_secret_label=args.hf_secret_label, conversation_data=fixture,
                 anomaly_profile=args.anomaly_profile,
                 continue_on_model_error=args.purpose == 'calibration')
+    revisions=ROOT/'configs/model_revisions.json'
+    if revisions.exists():spec['model_revisions']=json.loads(revisions.read_text())
     folder = GENERATED / args.name
     folder.mkdir(parents=True, exist_ok=True)
     source = (ROOT / 'kernels/phase2/runner.py').read_text()
@@ -116,13 +119,17 @@ def submit(args):
     (folder / 'run.py').write_text(source)
     title = 'Reload Recompute P2 ' + args.name.replace('-', ' ')
     slug = title.lower().replace(' ', '-')
-    reference = 'mohiachu/' + slug
+    reference = args.owner + '/' + slug
     metadata = dict(id=reference, title=title, code_file='run.py', language='python',
                     kernel_type='script', is_private=True, enable_gpu=True, enable_internet=True,
                     machine_shape=args.gpu, dataset_sources=[], competition_sources=[],
                     kernel_sources=[], model_sources=[])
     baseline_metadata=RAW/'main-session-1/source/kernel-metadata.json'
-    if baseline_metadata.exists():
+    runtime=ROOT/'configs/phase2_runtime.json'
+    if runtime.exists():
+        image=json.loads(runtime.read_text())['docker_image']
+        metadata.update(docker_image=image,docker_image_pinning_type='original')
+    elif baseline_metadata.exists():
         image=json.loads(baseline_metadata.read_text()).get('docker_image')
         if image:
             metadata.update(docker_image=image,docker_image_pinning_type='original')
@@ -209,6 +216,7 @@ if __name__ == '__main__':
     commands = parser.add_subparsers(dest='command', required=True)
     p = commands.add_parser('submit')
     p.add_argument('--name', required=True)
+    p.add_argument('--owner',default=os.environ.get('KAGGLE_KERNEL_OWNER','mohiachu'))
     p.add_argument('--purpose', choices=['calibration', 'sweep', 'diagnostic'], required=True)
     p.add_argument('--gpu', default='NvidiaTeslaT4',choices=['NvidiaTeslaT4','NvidiaTeslaP100'])
     p.add_argument('--models')
