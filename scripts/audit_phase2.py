@@ -39,6 +39,7 @@ def audit():
         assert all(r['valid'] for r in samples), 'Invalid sweep measurement'
         keys=set()
         counts=Counter()
+        orders={}
         rate_checks=0
         for r in samples:
             key=tuple(r[k] for k in ['model','workload','prefix_tokens','turn_tokens','condition','repeat'])
@@ -58,7 +59,9 @@ def audit():
                 if target is not None:
                     assert achieved<=target*1.0001, 'Rate limiter exceeded the requested rate'
                     rate_checks+=1
-            if r['repeat']>=0:counts[key[:-1]]+=1
+            if r['repeat']>=0:
+                counts[key[:-1]]+=1
+                orders.setdefault(key[:4]+(r['repeat'],),[]).append((r['condition_position'],r['condition']))
         partial=[dict(key=key,measured_repeats=n) for key,n in counts.items() if n!=10]
         if partial:report['coverage_issues'].append(dict(run=run['name'],partial_conditions=partial))
         finished=[r for r in rows if r['kind']=='shape_complete']
@@ -79,10 +82,18 @@ def audit():
             prefix=tuple(shape[k] for k in ['model','workload','prefix_tokens','turn_tokens'])
             for condition in shape['conditions']:
                 assert counts[prefix+(condition,)]==10, 'Completed shape lacks ten measurements'
+            permutations=[]
+            for repeat in range(10):
+                observed=sorted(orders[prefix+(repeat,)])
+                assert [position for position,condition in observed]==list(range(len(shape['conditions'])))
+                assert {condition for position,condition in observed}==set(shape['conditions'])
+                permutations.append(tuple(condition for position,condition in observed))
+            assert len(set(permutations))>1,'Condition order was not randomized between rounds'
         complete=any(r['kind']=='run_complete' for r in rows)
         if not complete:report['coverage_issues'].append(run['name']+': no run_complete')
         report['runs'].append(dict(name=run['name'],measurements=len(samples),
                                   completed_shapes=len(finished),rate_limit_checks=rate_checks,
+                                  randomized_round_checks=len(finished)*10,
                                   missing_shapes=len(missing),
                                   run_complete=complete,invalid_measurements=0,
                                   reference_functions_sha256=function_hash))
