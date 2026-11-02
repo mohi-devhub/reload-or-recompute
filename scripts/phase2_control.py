@@ -37,13 +37,14 @@ def write_ledger(data):
              'The old grid is not authorized. Pending reservations charge every possible allocated GPU '
              'for the entire session timeout. Completed rows charge the larger of process lifetime and the final execution-log timestamp, multiplied by observed GPU count; '
              'quota snapshots retain the separate provisioning and billing evidence.', '',
-             '| Run | Purpose | GPU | Status | Session timeout, s | Reserved or observed device-hours |',
-             '| --- | --- | --- | --- | --- | --- |']
+             '| Run | Purpose | Requested GPU | Observed devices | Status | Session timeout, s | Reserved or observed device-hours |',
+             '| --- | --- | --- | --- | --- | --- | --- |']
     committed = 0
     for r in data['runs']:
         charge = r.get('actual_gpu_hours', r['reserved_gpu_hours'])
         committed += charge
-        lines.append(f"| {r['name']} | {r['purpose']} | {r['gpu']} | {r['status']} | "
+        observed=', '.join(r.get('observed_gpu_names',[])) or 'Pending'
+        lines.append(f"| {r['name']} | {r['purpose']} | {r['gpu']} | {observed} | {r['status']} | "
                      f"{r['timeout_s']} | {charge:.6f} |")
     lines.extend(['', f'Observed usage plus active reservations: {committed:.6f} GPU-hours. '
                   f'Unreserved phase-two allowance: {10-committed:.6f} GPU-hours.', '',
@@ -188,6 +189,8 @@ def fetch(args):
             except (ValueError, TypeError):
                 pass
         count = rows[0]['environment']['gpu_count']
+        run['observed_gpu_names']=rows[0]['environment']['gpu_names']
+        run['observed_gpu_count']=count
         if times and count:
             run['execution_log_duration_s'] = max(times)
             run['actual_gpu_hours'] = max(run.get('actual_gpu_hours',0),max(times)*count/3600)
