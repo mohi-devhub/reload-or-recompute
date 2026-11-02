@@ -67,11 +67,12 @@
     "name": "qwen-half-control",
     "models": "Qwen/Qwen2.5-0.5B",
     "workloads": "repeated_control",
-    "timeout": 1030,
+    "timeout": 620,
     "seed": 7500,
     "setup_reserve": 60,
     "after": [
       "opt-control"
-    ]
+    ],
+    "lengths": "16,32,64,128,256,512,1024,2048,4096,8192"
   }
 ]
