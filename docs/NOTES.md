@@ -105,3 +105,7 @@ OPT completed its configured native-supported grid. The final Qwen0.5B sweep omi
 ### Reproduction pins after the final upload
 
 After every experimental kernel had been uploaded, the local reproduction runner gained explicit model-revision arguments, and the controller gained public checkpoint/image manifests and an optional Kaggle owner setting. The observed manifests are generated from measurement and saved-source metadata, then refreshed after final collection. Uploaded scripts and all measured operations remain unchanged; their saved source hashes are authoritative. A fresh replication defaults to the authorized Llama mirror rather than the historical gated checkpoint. These preparation changes were not used to revise any observations.
+
+### Near-zero baseline differences
+
+Final plot review exposed a very large point threshold when recompute-minus-resident-hit time is nearly zero. The analysis now bootstraps the paired-round difference of medians with the independently calibrated transfer overhead held fixed. Finite point thresholds whose denominator interval includes zero are flagged; those predictions are omitted from dashed curves and the prediction scatter, while full point estimates and every measured bracket/bound are retained. This adds uncertainty diagnostics without changing measured timings or rule-decision counts. The interval does not include overhead-fit uncertainty or between-session variation.

@@ -27,6 +27,13 @@ def number(value):
     return f'{value:.1f}' if value is not None else 'No positive denominator'
 
 
+def threshold(row):
+    value=number(row['predicted_ttft_bstar_mb_s'])
+    if row['predicted_ttft_bstar_mb_s'] is not None and not row.get('predicted_ttft_bstar_identified',True):
+        value+=' (denominator uncertain)'
+    return value
+
+
 def report():
     path=ROOT/'outputs/phase2_results.jsonl'
     rows=[json.loads(x) for x in path.read_text().splitlines()]
@@ -182,6 +189,11 @@ def report():
                   'Unthrottled point predictions use the independently measured complete H2D leg, avoiding '
                   'double-counting its allocation overhead. Prefix-only values in the repeated-text table come '
                   'from the short-turn rounds; separately timed long-turn-round estimates remain in the JSONL.','',
+                  'A paired-round bootstrap evaluates the recompute-minus-hit denominator with the calibrated '
+                  'transfer overhead held fixed. A positive point threshold is flagged when that interval includes zero. '
+                  'Its full point value remains in the table and JSONL; unstable predictions are omitted from dashed '
+                  'curves and the prediction scatter, while all observed brackets and bounds remain visible. '
+                  'This interval excludes uncertainty in the overhead fit and variation across sessions.','',
                   'Intervals use adjacent tested nominal simulated rates whose median TTFT ordering changes. '
                   'The label "median only" means endpoint paired confidence intervals do not both resolve the sign. '
                   'Achieved-rate endpoints and harmonic interpolation estimates are retained separately in JSONL. '
@@ -201,9 +213,9 @@ def report():
             a,b=values.get(32),values.get(256)
             first=a or b
             lines.append(f"| {length} | {first['predicted_prefix_bstar_mb_s']:.1f} | "
-                         f"{number(a['predicted_ttft_bstar_mb_s']) if a else 'Missing'} | "
+                         f"{threshold(a) if a else 'Missing'} | "
                          f"{label(a['measured']) if a else 'Missing'} | "
-                         f"{number(b['predicted_ttft_bstar_mb_s']) if b else 'Not scheduled / unavailable'} | "
+                         f"{threshold(b) if b else 'Not scheduled / unavailable'} | "
                          f"{label(b['measured']) if b else 'Not scheduled / unavailable'} |")
         lines.append('')
     lines.extend(['## Main model on varied multi-turn text','',
@@ -211,7 +223,7 @@ def report():
                   '| --- | --- | --- | --- | --- |'])
     for r in sorted([r for r in crossings if r['workload']=='ultrachat'],key=lambda r:(r['prefix_tokens'],r['turn_tokens'],r['run_id'])):
         lines.append(f"| {r['prefix_tokens']} | {r['run_id']} | {r['turn_tokens']} | "
-                     f"{number(r['predicted_ttft_bstar_mb_s'])} | {label(r['measured'])} |")
+                     f"{threshold(r)} | {label(r['measured'])} |")
     lines.extend(['','### Rule decisions at resolved simulated-rate cells','',
                   '| Model | Workload | Resolved rate cells | Prefix-only rule agrees | TTFT-adjusted rule agrees |',
                   '| --- | --- | --- | --- | --- |'])
@@ -375,11 +387,12 @@ def report():
                   'all conditions and both new-turn lengths are in the results.','',
                   '| Prefix | Condition | Sessions | Separate session medians, ms | Range / median | Within-session 95% CIs, ms |',
                   '| --- | --- | --- | --- | --- | --- |'])
-    for r in rows:
-        if r['kind']=='session_spread' and r['turn_tokens']==32 and r['condition'] in ['recompute','simulated_200_MBps','file_raw_staged']:
-            lines.append(f"| {r['prefix_tokens']} | {r['condition']} | {r['sessions']} | "
-                         f"{', '.join(f'{x:.3f}' for x in r['session_medians_ms'])} | {r['relative_range']:.1%} | "
-                         f"{'; '.join(f'[{a:.3f}, {b:.3f}]' for a,b in r['within_session_ci95_ms'])} |")
+    selected_spread=[r for r in rows if r['kind']=='session_spread' and r['turn_tokens']==32
+                     and r['condition'] in ['recompute','simulated_200_MBps','file_raw_staged']]
+    for r in sorted(selected_spread,key=lambda r:(r['prefix_tokens'],r['condition'])):
+        lines.append(f"| {r['prefix_tokens']} | {r['condition']} | {r['sessions']} | "
+                     f"{', '.join(f'{x:.3f}' for x in r['session_medians_ms'])} | {r['relative_range']:.1%} | "
+                     f"{'; '.join(f'[{a:.3f}, {b:.3f}]' for a,b in r['within_session_ci95_ms'])} |")
     lines.extend(['','### Fixed-calibration check in later sessions','',
                   'This check fixes the first main session\'s recompute, GPU-hit, and transfer calibration. '
                   'It predicts later-session decisions without refitting their TTFT baselines. '
@@ -424,22 +437,34 @@ def report():
             short.append(length)
     if short:
         findings.extend([f"At prefixes {', '.join(map(str,short))} with a 32-token new turn, "
-                         'recompute beats the unthrottled chunked-copy control in every completed main-model session '
+                         'recompute beats the unthrottled chunked-copy control in each varied-dialogue main-model session '
                          'with resolved paired intervals. The prefix-only bandwidth threshold is insufficient in this regime.',''])
     for turn,v in stats['recompute_session_spread_by_turn'].items():
         findings.extend([f"For a {turn}-token new turn, the median across lengths of the recompute "
                          f"session-range/median ratio is {v['median_relative_range']:.1%}, reaching "
                          f"{v['maximum_relative_range']:.1%}. This is observed session spread, not a population confidence interval.",''])
-    for mha in ['EleutherAI/pythia-1.4b','facebook/opt-1.3b']:
-        gqa='Qwen/Qwen2.5-1.5B'
+    for mha,gqa in [('EleutherAI/pythia-1.4b','Qwen/Qwen2.5-1.5B'),
+                    ('microsoft/phi-2','Qwen/Qwen2.5-3B')]:
         if mha in comparison and gqa in comparison:
             findings.extend([f"At prefix 512 and new turn 32 on matched repeated text, {mha} has simulated crossover "
                              f"{label(comparison[mha]['measured'])} MB/s, versus "
                              f"{label(comparison[gqa]['measured'])} MB/s for {gqa}. "
                              'This model comparison includes prefill-kernel and model-size differences as well as KV layout.',''])
-    findings.extend(['The pilot anomaly is assessed with interleaved measurements and a separate excluded profile. '
-                     'A failure to reproduce it does not establish its historical cause. P100 transfer remains untested '
-                     'because the requested allocation returned T4 hardware.',''])
+    small=comparison.get('Qwen/Qwen2.5-0.5B')
+    if small:
+        findings.extend([f"Small KV footprint alone does not determine the returning-turn decision: Qwen0.5B "
+                         f"at prefix 512 and new turn 32 has prefix-only B* {small['predicted_prefix_bstar_mb_s']:.1f} MB/s, "
+                         f"but TTFT-adjusted B* {number(small['predicted_ttft_bstar_mb_s'])} MB/s and observed simulated "
+                         f"crossover {label(small['measured'])} MB/s. Cache continuation and fixed costs matter in this short-context regime.",''])
+    anomaly_pairs=[r for r in rows if r['kind']=='prefill_anomaly_pair']
+    reversal_absent=(anomaly_pairs and all(r['prefix_minus_prefix_plus_turn_ms']['median']<0 for r in anomaly_pairs)
+                     and {'ultrachat','repeated_control'}<={r['workload'] for r in anomaly_pairs})
+    findings.extend([('The pilot\'s median timing reversal did not reproduce on either text source. '
+                      'Paired intervals distinguish resolved ordering from uncertainty; the historical cause remains unproved. '
+                      if reversal_absent else
+                      'The pilot anomaly is assessed with interleaved measurements and a separate excluded profile; '
+                      'its historical cause is not established by a failure to reproduce it. ')
+                     +'P100 transfer remains untested because the requested allocation returned T4 hardware.',''])
     findings.extend(['Figures: [main-model TTFT](../figures/phase2-ttft-qwen2.5-1.5b.png), '
                      '[crossover bandwidth versus length](../figures/phase2-crossover-bandwidth-by-length.png), '
                      '[predicted versus interpolated crossover](../figures/phase2-predicted-simulated-crossover.png), '
@@ -475,7 +500,8 @@ def plots(summaries,crossings,files):
     for family in ['GQA','MHA']:
         values=[r for r in crossings if r['workload']=='repeated_control' and r['turn_tokens']==32
                 and r['attention_family']==family and r['predicted_ttft_bstar_mb_s'] is not None
-                and r['measured']['status']=='bracketed' and not r['measured'].get('nonmonotone')]
+                and r['measured']['status']=='bracketed' and not r['measured'].get('nonmonotone')
+                and r.get('predicted_ttft_bstar_identified',True)]
         for resolved,marker in [(True,'o'),(False,'x')]:
             selected=[r for r in values if r['measured']['brackets'][0]['paired_ci_resolved']==resolved]
             xs=[r['predicted_ttft_bstar_mb_s'] for r in selected]
@@ -496,7 +522,8 @@ def plots(summaries,crossings,files):
                 and r['attention_family']==family]
         for model in sorted({r['model'] for r in values}):
             points=sorted([r for r in values if r['model']==model],key=lambda r:r['prefix_tokens'])
-            predicted=[r for r in points if r['predicted_ttft_bstar_mb_s'] is not None]
+            predicted=[r for r in points if r['predicted_ttft_bstar_mb_s'] is not None
+                       and r.get('predicted_ttft_bstar_identified',True)]
             line,=ax.plot([r['prefix_tokens'] for r in predicted],
                           [r['predicted_ttft_bstar_mb_s'] for r in predicted],
                           ls='--',lw=1,label=model.split('/')[-1])
@@ -518,7 +545,7 @@ def plots(summaries,crossings,files):
         if ax.get_legend_handles_labels()[0]:ax.legend(fontsize=8)
     axes[0].set_ylabel('Simulated break-even transport bandwidth (MB/s)')
     fig.suptitle('T4: observed brackets and harmonic estimates; dashed: TTFT prediction\n'
-                 'Faint bars: unresolved endpoint CIs; triangles: bounds only',fontsize=10)
+                 'Faint bars: unresolved endpoint CIs; triangles: bounds; uncertain-denominator predictions omitted',fontsize=9)
     fig.savefig(folder/'phase2-crossover-bandwidth-by-length.png',dpi=180)
     fig.savefig(folder/'phase2-crossover-bandwidth-by-length.pdf',metadata={'CreationDate':None,'ModDate':None})
     plt.close(fig)

@@ -29,5 +29,15 @@ class BandwidthCrossovers(unittest.TestCase):
         self.assertNotIn('brackets',result)
 
 
+class PairedDenominator(unittest.TestCase):
+    def test_shared_drift_stays_paired(self):
+        from analyze_phase2 import paired_difference_ci
+        self.assertEqual(paired_difference_ci([100,110,120,130],[90,100,110,120],0),[10,10])
+
+    def test_zero_saving_has_no_positive_interval(self):
+        from analyze_phase2 import paired_difference_ci
+        self.assertEqual(paired_difference_ci([100,110,120,130],[100,110,120,130],0),[0,0])
+
+
 if __name__=='__main__':
     unittest.main()

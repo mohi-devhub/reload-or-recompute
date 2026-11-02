@@ -16,6 +16,13 @@ ROOT = Path(__file__).resolve().parents[1]
 FIELDS = ['run_id', 'model', 'workload', 'prefix_tokens', 'turn_tokens']
 
 
+def paired_difference_ci(first,second,overhead):
+    rng=np.random.default_rng(7321)
+    indices=rng.integers(0,len(first),size=(10000,len(first)))
+    values=np.median(np.asarray(first)[indices],axis=1)-np.median(np.asarray(second)[indices],axis=1)-overhead
+    return [float(x) for x in np.percentile(values,[2.5,97.5])]
+
+
 def crossover(points):
     """Crossover brackets are observations; harmonic interpolation is model-assisted."""
     points = sorted(points, key=lambda p: p['target_mb_s'] if p['target_mb_s'] is not None else float('inf'))
@@ -187,6 +194,9 @@ def analyze(source_results=None):
         prefix_threshold = payload * 1000 / prefill / 1e6
         rec_values = {r['repeat']:r['wall_ms'] for r in groups[shape+('recompute',)]}
         hit_values = {r['repeat']:r['wall_ms'] for r in groups[shape+('gpu_hit',)]}
+        rounds=sorted(rec_values.keys()&hit_values.keys())
+        denominator_ci=paired_difference_ci([rec_values[i] for i in rounds],[hit_values[i] for i in rounds],h)
+        identified=denominator>0 and denominator_ci[0]>0
         for condition in ['gpu_hit','cpu_pageable','simulated_unthrottled',
                           'file_torch_direct','file_torch_staged','file_raw_staged']:
             values=groups[shape+(condition,)]
@@ -235,6 +245,9 @@ def analyze(source_results=None):
                  predicted_prefix_bstar_mb_s=prefix_threshold,
                  predicted_prefix_overhead_bstar_mb_s=payload*1000/(prefill-h)/1e6 if prefill>h else None,
                  predicted_ttft_bstar_mb_s=predicted, overhead_ms=h,
+                 ttft_denominator_ms=denominator,ttft_denominator_ci95_h_fixed_ms=denominator_ci,
+                 predicted_ttft_bstar_identified=identified,
+                 predicted_ttft_bstar_ci95_h_fixed_mb_s=[payload*1000/t/1e6 for t in reversed(denominator_ci)] if identified else None,
                  measured=cross, points=points, repeats_met=all(p['repeats']>=10 for p in points))
         for fmt in ['torch','raw']:
             key = shape + ('file_' + fmt + '_staged',)
