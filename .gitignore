@@ -3,6 +3,7 @@
 kaggle.json
 **/kaggle.json
 outputs/raw/
+outputs/phase2_results.jsonl
 .venv/
 __pycache__/
 *.pyc

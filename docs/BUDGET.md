@@ -13,7 +13,7 @@ Production troubleshooting, including the first bootstrap failure: **0.000919 GP
 
 Kaggle's final rounded quota snapshot reports 0.07h used and 29.93h remaining. It appears to count session hours, unlike our two-device charge. Provisioning and finalization are outside the process timestamps. Both sources are retained in the canonical budget_ledger record.
 
-Remaining pilot allowance under the conservative process accounting: 2.863350 GPU-hours. Remaining weekly allowance on that basis: 29.863350 GPU-hours.
+At the pilot stop, remaining pilot allowance under conservative process accounting: 2.863350 GPU-hours. At the pilot stop, remaining weekly allowance on that basis: 29.863350 GPU-hours.
 
 Source: allocation_end, subprocess, production_status, and budget_ledger records in `outputs/results.jsonl`. Quota snapshots and run logs are retained in `outputs/raw`.
 
@@ -23,17 +23,27 @@ The pilot is complete. The user subsequently approved only the redesigned phase-
 
 The redesigned phase is authorized with a separate cap of 10 GPU-hours. The old grid is not authorized. Pending reservations charge every possible allocated GPU for the entire session timeout. Completed rows charge the larger of process lifetime and the final execution-log timestamp, multiplied by observed GPU count; quota snapshots retain the separate provisioning and billing evidence.
 
-| Run | Purpose | GPU | Status | Session timeout, s | Reserved or observed device-hours |
-| --- | --- | --- | --- | --- | --- |
-| calibration-t4 | calibration | NvidiaTeslaT4 | fetched | 1500 | 0.151705 |
-| calibration-p100 | calibration | NvidiaTeslaP100 | fetched | 900 | 0.010439 |
-| main-session-1 | sweep | NvidiaTeslaT4 | fetched | 2200 | 0.959992 |
-| calibration-mha-fixed | calibration | NvidiaTeslaT4 | fetched | 900 | 0.101959 |
-| main-session-2 | sweep | NvidiaTeslaT4 | fetched | 2200 | 0.918704 |
-| calibration-llama-mirror | calibration | NvidiaTeslaT4 | fetched | 900 | 0.073515 |
-| llama-mirror-control | sweep | NvidiaTeslaT4 | submitted | 6000 | 3.333333 |
-| qwen-3b-control | sweep | NvidiaTeslaT4 | submitted | 3000 | 1.666667 |
+| Run | Purpose | Requested GPU | Observed devices | Status | Session timeout, s | Reserved or observed device-hours |
+| --- | --- | --- | --- | --- | --- | --- |
+| calibration-t4 | calibration | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 1500 | 0.151705 |
+| calibration-p100 | calibration | NvidiaTeslaP100 | Tesla T4, Tesla T4 | fetched | 900 | 0.010439 |
+| main-session-1 | sweep | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 2200 | 0.959992 |
+| calibration-mha-fixed | calibration | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 900 | 0.101959 |
+| main-session-2 | sweep | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 2200 | 0.918704 |
+| calibration-llama-mirror | calibration | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 900 | 0.073515 |
+| llama-mirror-control | sweep | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 6000 | 2.929955 |
+| qwen-3b-control | sweep | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 3000 | 1.465243 |
+| main-session-3 | sweep | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 2200 | 0.963603 |
+| main-repeated-control | sweep | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 730 | 0.255995 |
+| phi2-control | sweep | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 2130 | 0.929553 |
+| pythia-control | sweep | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 1430 | 0.555226 |
+| opt-control | sweep | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 900 | 0.330194 |
+| qwen-half-control | sweep | NvidiaTeslaT4 | Tesla T4, Tesla T4 | fetched | 620 | 0.254834 |
 
-Observed usage plus active reservations: 7.216314 GPU-hours. Unreserved phase-two allowance: 2.783686 GPU-hours.
+Observed usage plus active reservations: 9.900916 GPU-hours. Unreserved phase-two allowance: 0.099084 GPU-hours.
 
 All values and submission settings are recorded in `outputs/phase2_ledger.json`. A model must complete a short calibration before its full sweep is submitted. Across-session main-model runs remain separate statistical groups.
+
+## Combined study total
+
+Pilot plus redesigned phase: **10.037566 conservative GPU-hours**. Remaining weekly allowance on this accounting basis: **19.962434 GPU-hours**. Source: `study_budget_summary` in `outputs/results.jsonl`; the completed phase is stopped.
