@@ -1,5 +1,4 @@
 """Private Kaggle pilot. No credentials are required inside this kernel."""
-import contextlib
 import gc
 import hashlib
 import importlib.metadata
@@ -26,6 +25,7 @@ WARMUPS = 2
 SEED = 7321
 START = time.time()
 RUN_ID = os.environ.get('ROR_RUN_ID', 'pilot-t4-v1')
+PRODUCTION_ONLY = False
 ENV = {}
 
 
@@ -350,13 +350,16 @@ def production():
     # One isolated, bounded attempt. Do not disturb reference dependencies.
     begin = time.monotonic()
     max_seconds = min(1200, int(2700 / ENV['gpu_count']) - 30)
-    py = ROOT / 'production-venv' / 'bin' / 'python'
-    code, _ = bounded([sys.executable, '-m', 'venv', str(py.parent.parent)],
+    py = Path('/tmp/ror-production-venv') / 'bin' / 'python'
+    code, _ = bounded([sys.executable, '-m', 'venv', '--without-pip', str(py.parent.parent)],
                       'production-venv', 45)
     if code:
-        emit('production_status', status='failed_venv', valid=False)
+        elapsed = time.monotonic() - begin
+        emit('production_status', status='failed_venv', valid=False, returncode=code,
+             duration_s=elapsed, allocated_gpu_hours=elapsed * ENV['gpu_count'] / 3600)
         return
-    code, _ = bounded([str(py), '-m', 'pip', 'install', '--disable-pip-version-check',
+    code, _ = bounded([sys.executable, '-m', 'pip', '--python', str(py),
+                       'install', '--disable-pip-version-check',
                        'vllm==0.9.0', 'lmcache==0.3.0'],
                       'production-install', max_seconds - 180,
                       dict(os.environ, TORCH_CUDA_ARCH_LIST='7.5', MAX_JOBS='2'))
@@ -396,6 +399,13 @@ def production_child():
 
 def main():
     torch = environment()
+    if PRODUCTION_ONLY:
+        production()
+        elapsed = time.time() - START
+        emit('allocation_end', duration_s=elapsed, gpu_count=ENV['gpu_count'],
+             allocated_gpu_hours=elapsed * ENV['gpu_count'] / 3600,
+             reference_success=None, phase='production_only')
+        return
     if '--reference-child' in sys.argv:
         reference(torch)
         return

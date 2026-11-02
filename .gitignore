@@ -7,3 +7,4 @@ outputs/raw/
 __pycache__/
 *.pyc
 .DS_Store
+kernels/production/production.py
