@@ -83,7 +83,9 @@ def report():
            'and ten interleaved measured rounds after warmup. Prefix-only prefill is randomized in those rounds. '
            'Reload transfers a packed cache in chunks with cumulative rate deadlines. Target and achieved transport '
            'bandwidth, sleep time, and bytes are stored separately. All full measurements are retained in the JSONL. '
-           'Calibration timings have fewer repeats and are excluded from publication summaries.','',
+           'Calibration timings have fewer repeats and are excluded from publication summaries. '
+           'The cache already exists at return time: its initial CPU offload, packing, pinning, and file creation '
+           'are outside returning-turn TTFT. File-read buffer allocation remains inside the staged read leg.','',
            'The primary main-model workload is frozen public UltraChat generated dialogue. Long contexts stitch distinct '
            'conversations and are marked accordingly. Three independent sessions use that same frozen input. '
            'A separate repeated-text main-model run with a 32-token new turn at the common short lengths and the anomaly length supplies the matched control used for the model-family comparison. '
@@ -98,7 +100,9 @@ def report():
                      f"{cfg['config'].get('max_position_embeddings')} | {completed} |")
     if any('meta-llama' in r['model'] for r in errors):
         lines.append('| meta-llama/Llama-3.2-3B | GQA, requested | Unverified: gated access failed | Unmeasured | Unmeasured |')
-    lines.extend(['','KV configuration arithmetic must equal the sum of observed tensor bytes. Native context includes '
+    lines.extend(['','For fp16, `KV bytes/token = 2 × layers × KV heads × head dimension × 2 bytes`; '
+                  'the first factor counts keys and values. This configuration arithmetic must equal the sum '
+                  'of observed tensor bytes. Native context includes '
                   'the new turn, so the short-context MHA models do not silently run the long-context grid. '
                   'The extra near-limit prefix leaves room for the longest requested new turn. '
                   'Environment, revision, shapes, and actual source hashes accompany observations.','',
