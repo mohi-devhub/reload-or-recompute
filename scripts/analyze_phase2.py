@@ -111,6 +111,11 @@ def analyze(source_results=None):
     emit('phase2_analysis_metadata',python=sys.version,numpy=np.__version__,
          bootstrap_resamples=10000,bootstrap_seed=7321,
          source_run_ids=sorted(purposes),session_pooling=False)
+    for run_id in purposes:
+        environments=[r for r in raw if r['kind']=='environment' and r['run_id']==run_id]
+        if len(environments)>=2:
+            emit('phase2_setup_duration',run_id=run_id,
+                 parent_to_worker_environment_s=environments[1]['timestamp_unix']-environments[0]['timestamp_unix'])
 
     groups, micros, seen = defaultdict(list), defaultdict(list), set()
     for r in raw:

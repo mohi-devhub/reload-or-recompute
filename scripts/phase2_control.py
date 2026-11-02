@@ -67,7 +67,8 @@ def cli(arguments, log=None):
 
 def submit(args):
     data = ledger()
-    if args.timeout <= 330:
+    setup_reserve=getattr(args,'setup_reserve',330)
+    if setup_reserve<60 or args.timeout <= setup_reserve:
         raise ValueError('Session timeout must leave time for setup and worker finalization')
     if args.purpose == 'sweep' and args.repeats < 10:
         raise ValueError('Full sweeps require at least ten measured repeats')
@@ -97,7 +98,8 @@ def submit(args):
                 rates_mb_s=[int(x) for x in args.rates.split(',')],
                 workloads=args.workloads.split(','), repeats=args.repeats, warmups=args.warmups,
                 micro_repeats=args.micro_repeats, seed=args.seed, stabilize_s=args.stabilize,
-                chunk_bytes=4 * 1024 * 1024, worker_limit_s=args.timeout - 330,
+                chunk_bytes=4 * 1024 * 1024, worker_limit_s=args.timeout - setup_reserve,
+                session_limit_s=args.timeout-30,setup_reserve_s=setup_reserve,
                 max_allocated_gpus=2 if args.gpu == 'NvidiaTeslaT4' else 1,
                 hf_secret_label=args.hf_secret_label, conversation_data=fixture,
                 anomaly_profile=args.anomaly_profile,
@@ -217,6 +219,8 @@ if __name__ == '__main__':
     p.add_argument('--seed', type=int, default=7321)
     p.add_argument('--stabilize', type=int, default=10)
     p.add_argument('--timeout', type=int, required=True)
+    p.add_argument('--setup-reserve',type=int,default=330,
+                   help='Setup allowance, at least 60 seconds; parent also enforces the remaining session deadline')
     p.add_argument('--hf-secret-label', default='HF_TOKEN')
     p.add_argument('--anomaly-profile', action='store_true')
     p = commands.add_parser('fetch')

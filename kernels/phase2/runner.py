@@ -477,6 +477,8 @@ def worker(torch):
 
 
 def main():
+    if '--worker-limit-s' in sys.argv:
+        SPEC['worker_limit_s']=int(sys.argv[sys.argv.index('--worker-limit-s')+1])
     torch = environment()
     if '--worker' in sys.argv:
         worker(torch)
@@ -489,11 +491,19 @@ def main():
                                     stdout=log, stderr=subprocess.STDOUT, timeout=300)
         if result.returncode:
             raise RuntimeError('Reference installation failed')
+        deadline=SPEC.get('session_limit_s')
+        remaining=int(deadline-(time.time()-START)) if deadline is not None else SPEC['worker_limit_s']
+        worker_limit=min(SPEC['worker_limit_s'],remaining)
+        if worker_limit<=30:
+            raise RuntimeError('Setup exhausted the session deadline; no benchmark worker started')
+        emit('worker_budget',worker_limit_s=worker_limit,setup_elapsed_s=time.time()-START,
+             session_limit_s=SPEC.get('session_limit_s'))
         with (OUT / 'worker.log').open('w') as log:
-            child = subprocess.Popen([sys.executable, str(Path(__file__).resolve()), '--worker'],
+            child = subprocess.Popen([sys.executable, str(Path(__file__).resolve()), '--worker',
+                                      '--worker-limit-s',str(worker_limit)],
                                      stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
             try:
-                code = child.wait(timeout=SPEC['worker_limit_s'])
+                code = child.wait(timeout=worker_limit)
             except subprocess.TimeoutExpired:
                 os.killpg(child.pid, signal.SIGTERM)
                 try:

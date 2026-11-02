@@ -53,7 +53,7 @@ MB and GB are decimal throughout the bandwidth sweep. The user's approximate 125
 
 ## Phase-two calibration findings and deviations
 
-- The initial T4 calibration completed the Qwen variants and OPT. Llama access failed with a gated-repository HTTP error. The runner checked for the existing `HF_TOKEN` Kaggle secret without logging its value; no usable access was available. Llama is blocked unless the user supplies an existing authorized secret label.
+- The initial T4 calibration completed the Qwen variants and OPT. Llama access failed with a gated-repository HTTP error. The runner checked for the existing `HF_TOKEN` Kaggle secret without logging its value; no usable access was available. The user subsequently authorized the ungated mirror described below.
 - The P100 request was accepted by the API, but Kaggle actually allocated two Tesla T4 devices. The GPU check aborted before reference measurements. This supplies no P100 data. The failed allocation is charged using the last Kaggle execution-log timestamp and observed device count, including the conversion stage, because the normal allocation finalizer was not reached.
 - The initial MHA calibration stopped on the pilot's elementwise full-versus-cached logit tolerance. Both failed cases had the same greedy token and correct cache length. The revised check compares restored-cache logits with an independently computed resident-cache continuation at the same shape, while retaining full-versus-cached logit differences and requiring first-token agreement. A new calibration is required before those models' full sweeps. This checks restoration fidelity without disguising fp16 differences between different prefill matrix shapes.
 - The first calibration's unthrottled file/H2D microbenchmark records inherit a `simulated_bandwidth` flag from the shared copy helper. Their condition names identify their actual purpose. That metadata bug is corrected for all full sweeps; calibration data remain unchanged and are not used as publication TTFT confidence intervals.
@@ -62,7 +62,7 @@ MB and GB are decimal throughout the bandwidth sweep. The user's approximate 125
 - The optional production path is omitted in this phase to prioritize the redesigned reference grid and session replication. No claim is made about a Python-3.12 LMCache runtime.
 
 - The corrected MHA calibration passed. Layerwise diagnostics show full-versus-standalone prefix KV differences already exist before any reload; resident-cache continuations likewise differ from full prefill. Exact H2D tensor comparisons and the same-shape continuation check test transfer correctness separately. Full-versus-cached logit differences and first-token agreement remain recorded rather than being discarded by a widened elementwise tolerance.
-- All three primary main-model replications use the varied-dialogue fixture. A separate complete repeated-text main-model session supplies the control. Other full model sweeps use that same repeated-text control for the GQA/MHA comparison. This is an allocation of corpus coverage, not a claim that every model received a natural dialogue sweep.
+- All three primary main-model replications use the varied-dialogue fixture. A separate repeated-text main-model session supplies the control, with coverage reduced as documented below. Other full model sweeps use that same repeated-text control for the GQA/MHA comparison. This is an allocation of corpus coverage, not a claim that every model received a natural dialogue sweep.
 
 ## Authorized Llama substitution
 
@@ -77,3 +77,7 @@ The auxiliary main-model repeated-text control uses the short new turn only. The
 ### Quota-snapshot refresh correction
 
 Repeated output fetches for main-session-1, main-session-2, calibration-t4, and calibration-mha-fixed refreshed their `quota-after.json` during later source-provenance checks. Those files therefore describe the refresh time rather than the nearest post-run quota state; they cannot support per-run billing deltas. The controller now preserves an existing post-run snapshot and writes any later quota observation to a timestamped refresh file. Conservative device-hour accounting is unaffected: it uses executed process and kernel-log durations, rather than quota differences. The original phase-start quota snapshot and each submission's pre-run snapshot remain available.
+
+### Parent deadline guard for later submissions
+
+Later submissions add a parent session deadline, subtract actual elapsed setup time before starting the worker, and retain a finalization margin. The controller keeps its original setup allowance by default and permits a smaller explicit allowance after observing setup durations; the timeout-based GPU reservation is unchanged. Startup-duration records are derived from the parent and worker environment timestamps. This changes process budgeting only: timed forwards, copy pacing, file legs, randomized order, and correctness checks are unchanged. The three primary main-model sessions were already submitted with the same original runner; each later run retains its actual source hash and specification.

@@ -53,6 +53,8 @@ def main():
                 for field in ['lengths','turns','rates']:
                     if field in item:
                         arguments += ['--'+field,item[field]]
+            if 'setup_reserve' in item:
+                arguments += ['--setup-reserve',str(item['setup_reserve'])]
             control(arguments)
             ledger=json.loads((ROOT/'outputs/phase2_ledger.json').read_text())
             active=[r for r in ledger['runs'] if r['status']=='submitted']
