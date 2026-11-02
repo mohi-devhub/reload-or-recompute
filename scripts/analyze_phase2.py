@@ -188,6 +188,16 @@ def analyze():
                  new_signed_relative_error=(new-observed)/observed,
                  physical_read_ratio_median=statistics.median(r['physical_read_bytes']/r['bytes'] for r in micro))
     across = defaultdict(list)
+    scored=defaultdict(list)
+    for r in derived:
+        if r['kind']=='simulated_rule_prediction' and r['measured_reload_faster'] is not None:
+            scored[(r['model'],r['workload'])].append(r)
+    for (model,workload),values in scored.items():
+        emit('phase2_rule_classification',model=model,workload=workload,
+             resolved_comparisons=len(values),
+             prefix_rule_agreements=sum(r['prefix_rule_predicts_reload']==r['measured_reload_faster'] for r in values),
+             ttft_rule_agreements=sum(r['ttft_rule_predicts_reload']==r['measured_reload_faster'] for r in values),
+             interpretation='descriptive counts over resolved simulated-rate cells; not independent generalization trials')
     for r in derived:
         if r['kind']=='phase2_summary' and r['purpose']=='sweep' and r['model']=='Qwen/Qwen2.5-1.5B' and r['workload']=='ultrachat':
             key=(r['environment']['requested_gpu'],r['prefix_tokens'],r['turn_tokens'],r['condition'])
@@ -201,6 +211,17 @@ def analyze():
                  session_medians_ms=medians, minimum_ms=min(medians), maximum_ms=max(medians),
                  sample_sd_ms=statistics.stdev(medians), relative_range=(max(medians)-min(medians))/statistics.median(medians),
                  within_session_ci95_ms=[r['ci95'] for r in values])
+    for shape in shapes:
+        if shape[1]!='Qwen/Qwen2.5-1.5B' or shape[3:]!=(8192,32) or purposes[shape[0]]!='sweep':
+            continue
+        a=groups.get(shape+('prefix_only',),[])
+        b=groups.get(shape+('recompute',),[])
+        by_repeat={r['repeat']:r for r in b}
+        paired=[r['wall_ms']-by_repeat[r['repeat']]['wall_ms'] for r in a if r['repeat'] in by_repeat]
+        if paired:
+            emit('prefill_anomaly_pair',**dict(zip(FIELDS,shape)),
+                 prefix_minus_prefix_plus_turn_ms=interval(paired),
+                 interpretation='positive value reproduces prefix-only slower than prefix-plus-turn in interleaved rounds')
     for run_id, values in telemetry_by_run.items():
         if values:
             fields={k:dict(minimum=min(r[k] for r in values),maximum=max(r[k] for r in values),

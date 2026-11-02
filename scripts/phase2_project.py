@@ -13,8 +13,21 @@ def project():
     pilot = [json.loads(x) for x in (ROOT / 'outputs/results.jsonl').read_text().splitlines()]
     pilot_summary = {(r['measurement_kind'], r['prefix_tokens'], r.get('turn_tokens'), r['condition']): r['median']
                      for r in pilot if r['kind'] == 'summary'}
+    full_path=ROOT/'outputs/phase2_results.jsonl'
+    phase2_summaries=[]
+    if full_path.exists():
+        phase2_summaries=[r for r in map(json.loads,full_path.read_text().splitlines())
+                          if r['kind']=='phase2_summary' and r['run_id']=='phase2-main-session-1']
+    full_times={(r['prefix_tokens'],r['turn_tokens'],r['condition']):r['median'] for r in phase2_summaries}
+    timebase='first complete phase-two main-model session' if full_times else 'pilot'
 
     def pilot_time(kind, length, turn, condition):
+        if full_times:
+            key_condition='prefix_only' if kind=='prefill' else condition
+            key_turn=32 if turn is None else turn
+            xs=np.array(sorted(k[0] for k in full_times if k[1:]==(key_turn,key_condition)),dtype=float)
+            ys=np.array([full_times[(int(x),key_turn,key_condition)] for x in xs])
+            return float(np.interp(length,xs,ys))
         xs = np.array([512, 2048, 8192], dtype=float)
         ys = np.array([pilot_summary[(kind, int(x), turn, condition)] for x in xs])
         if length < xs[0]:
@@ -35,8 +48,8 @@ def project():
                             and r['prefix_tokens'] == 512 and r['valid']]
             rec = statistics.median(r['wall_ms'] for r in measurements if r['condition'] == 'recompute')
             hit = statistics.median(r['wall_ms'] for r in measurements if r['condition'] == 'gpu_hit')
-            scale = rec / pilot_summary[('ttft', 512, 32, 'recompute')]
-            tail_scale = hit / pilot_summary[('ttft', 512, 32, 'gpu_hit')]
+            scale = rec / pilot_time('ttft',512,32,'recompute')
+            tail_scale = hit / pilot_time('ttft',512,32,'gpu_hit')
             bpt = config['kv_bytes_per_token']
             limit = config['config'].get('max_position_embeddings', 32768)
             lengths = [16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
@@ -68,6 +81,7 @@ def project():
                                projected_worker_s=seconds,
                                projected_two_device_hours=seconds * 2 / 3600,
                                suggested_timeout_s=max(900, int(seconds * 1.25 + 390)),
+                               timing_base=timebase,
                                assumptions='pilot interpolation and proportional endpoint extrapolation; '
                                'calibration model/pilot recompute and tail ratios; exact requested pacing time; '
                                'linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; '

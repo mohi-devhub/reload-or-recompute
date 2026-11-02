@@ -24,9 +24,10 @@
       32,
       256
     ],
-    "projected_worker_s": 634.0984292983468,
-    "projected_two_device_hours": 0.3522769051657482,
-    "suggested_timeout_s": 1182,
+    "projected_worker_s": 657.6655388432856,
+    "projected_two_device_hours": 0.36536974380182535,
+    "suggested_timeout_s": 1212,
+    "timing_base": "first complete phase-two main-model session",
     "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
   },
   {
@@ -54,9 +55,10 @@
       32,
       256
     ],
-    "projected_worker_s": 1384.918604259654,
-    "projected_two_device_hours": 0.7693992245886967,
-    "suggested_timeout_s": 2121,
+    "projected_worker_s": 1430.4695943214347,
+    "projected_two_device_hours": 0.7947053301785748,
+    "suggested_timeout_s": 2178,
+    "timing_base": "first complete phase-two main-model session",
     "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
   },
   {
@@ -84,9 +86,10 @@
       32,
       256
     ],
-    "projected_worker_s": 2007.403789733784,
-    "projected_two_device_hours": 1.1152243276298799,
-    "suggested_timeout_s": 2899,
+    "projected_worker_s": 2088.1234735158546,
+    "projected_two_device_hours": 1.1600685963976969,
+    "suggested_timeout_s": 3000,
+    "timing_base": "first complete phase-two main-model session",
     "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
   },
   {
@@ -111,9 +114,10 @@
       32,
       256
     ],
-    "projected_worker_s": 889.5339891101208,
-    "projected_two_device_hours": 0.4941855495056227,
-    "suggested_timeout_s": 1501,
+    "projected_worker_s": 890.4219140840958,
+    "projected_two_device_hours": 0.49467884115783095,
+    "suggested_timeout_s": 1503,
+    "timing_base": "first complete phase-two main-model session",
     "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
   },
   {
@@ -138,9 +142,10 @@
       32,
       256
     ],
-    "projected_worker_s": 896.4323619217178,
-    "projected_two_device_hours": 0.4980179788453988,
-    "suggested_timeout_s": 1510,
+    "projected_worker_s": 895.9052874524484,
+    "projected_two_device_hours": 0.49772515969580466,
+    "suggested_timeout_s": 1509,
+    "timing_base": "first complete phase-two main-model session",
     "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
   },
   {
@@ -165,9 +170,41 @@
       32,
       256
     ],
-    "projected_worker_s": 1527.8422431281604,
-    "projected_two_device_hours": 0.8488012461823113,
-    "suggested_timeout_s": 2299,
+    "projected_worker_s": 1517.8947748441938,
+    "projected_two_device_hours": 0.843274874913441,
+    "suggested_timeout_s": 2287,
+    "timing_base": "first complete phase-two main-model session",
+    "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
+  },
+  {
+    "model": "unsloth/Llama-3.2-3B-Instruct",
+    "calibration_run": "calibration-llama-mirror",
+    "kv_bytes_per_token": 114688,
+    "attention_family": "GQA",
+    "native_context": 131072,
+    "planned_lengths": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096,
+      8192,
+      16384
+    ],
+    "repeats": 10,
+    "warmups": 1,
+    "turns": [
+      32,
+      256
+    ],
+    "projected_worker_s": 4964.087457199712,
+    "projected_two_device_hours": 2.757826365110951,
+    "suggested_timeout_s": 6595,
+    "timing_base": "first complete phase-two main-model session",
     "assumptions": "pilot interpolation and proportional endpoint extrapolation; calibration model/pilot recompute and tail ratios; exact requested pacing time; linear byte-cost extrapolation for file/copy legs; no memory-fit guarantee; 25 percent worker margin plus setup reservation"
   }
 ]

@@ -13,6 +13,7 @@ def label(measured):
     if measured['status']=='bracketed':
         return '; '.join('['+str(b['target_mb_s'][0])+', '+
                          (str(b['target_mb_s'][1]) if b['target_mb_s'][1] else 'unthrottled')+']'
+                         +f" target / [{b['achieved_mb_s'][0]:.1f}, {b['achieved_mb_s'][1]:.1f}] achieved"
                          +('' if b['paired_ci_resolved'] else ' (median only)')
                          for b in measured['brackets'])
     if measured['status']=='reload_faster_at_all_tested_simulated_rates':
@@ -69,10 +70,10 @@ def report():
            'Calibration timings have fewer repeats and are excluded from publication summaries.','',
            'The primary main-model workload is frozen public UltraChat generated dialogue. Long contexts stitch distinct '
            'conversations and are marked accordingly. Three independent sessions use that same frozen input. '
-           'A separate repeated-text main-model run supplies the matched control used for the model-family comparison. '
+           'A separate repeated-text main-model run with a 32-token new turn at the common short lengths and the anomaly length supplies the matched control used for the model-family comparison. '
            'The remaining models use that repeated-text control. This is not a human-conversation trace or a quality evaluation.','',
            '## Model coverage and KV size','',
-           '| Model | Family | Verified KV bytes/token | Native total context | Full repeated-control sessions |',
+           '| Model | Family | Verified KV bytes/token | Native total context | Completed full sessions |',
            '| --- | --- | --- | --- | --- |']
     for model,cfg in configs.items():
         completed=sum(r['model']==model and r.get('completed',False) and r['run_id'] in sweeps
@@ -109,8 +110,8 @@ def report():
             lines.append(f"| {length} | {first['predicted_prefix_bstar_mb_s']:.1f} | "
                          f"{number(a['predicted_ttft_bstar_mb_s']) if a else 'Missing'} | "
                          f"{label(a['measured']) if a else 'Missing'} | "
-                         f"{number(b['predicted_ttft_bstar_mb_s']) if b else 'Missing'} | "
-                         f"{label(b['measured']) if b else 'Missing'} |")
+                         f"{number(b['predicted_ttft_bstar_mb_s']) if b else 'Not scheduled / unavailable'} | "
+                         f"{label(b['measured']) if b else 'Not scheduled / unavailable'} |")
         lines.append('')
     lines.extend(['## Main model on varied multi-turn text','',
                   '| Prefix | Session | New-turn tokens | Predicted TTFT B*, MB/s | Observed simulated bandwidth bracket, MB/s |',
@@ -118,6 +119,25 @@ def report():
     for r in sorted([r for r in crossings if r['workload']=='ultrachat'],key=lambda r:(r['prefix_tokens'],r['turn_tokens'],r['run_id'])):
         lines.append(f"| {r['prefix_tokens']} | {r['run_id']} | {r['turn_tokens']} | "
                      f"{number(r['predicted_ttft_bstar_mb_s'])} | {label(r['measured'])} |")
+    lines.extend(['','### Rule decisions at resolved simulated-rate cells','',
+                  '| Model | Workload | Resolved rate cells | Prefix-only rule agrees | TTFT-adjusted rule agrees |',
+                  '| --- | --- | --- | --- | --- |'])
+    for r in rows:
+        if r['kind']=='phase2_rule_classification':
+            lines.append(f"| {r['model']} | {r['workload']} | {r['resolved_comparisons']} | "
+                         f"{r['prefix_rule_agreements']} | {r['ttft_rule_agreements']} |")
+    lines.append('These are descriptive counts over correlated model/length/session cells with resolved paired confidence intervals, not independent generalization trials.')
+    comparison={r['model']:r for r in controls if r['prefix_tokens']==512 and r['turn_tokens']==32}
+    lines.extend(['','### Matched-size repeated-text comparison at prefix 512, new turn 32','',
+                  '| MHA model | GQA comparison | KV-byte ratio, MHA/GQA | MHA simulated crossover | GQA simulated crossover |',
+                  '| --- | --- | --- | --- | --- |'])
+    for mha,gqa in [('EleutherAI/pythia-1.4b','Qwen/Qwen2.5-1.5B'),
+                    ('facebook/opt-1.3b','Qwen/Qwen2.5-1.5B'),
+                    ('microsoft/phi-2','Qwen/Qwen2.5-3B')]:
+        if mha in comparison and gqa in comparison:
+            a,b=comparison[mha],comparison[gqa]
+            lines.append(f"| {mha} | {gqa} | {a['kv_bytes_per_token']/b['kv_bytes_per_token']:.3f} | "
+                         f"{label(a['measured'])} | {label(b['measured'])} |")
     lines.extend(['','## GQA versus MHA and short lengths','',
                   'Compare the matched repeated-text runs at the common native lengths. The table reports both measured '
                   'cache size and bandwidth crossovers. Differences across models combine attention architecture, '
@@ -188,8 +208,12 @@ def report():
                   'Full-versus-cached fp16 logit differences are reported separately. The first MHA calibration '
                   'failed the pilot elementwise check; recalibration tests restoration against an independently '
                   'computed resident continuation and retains layerwise KV and logit differences.','',
-                  'Llama access was gated in the attempted environment. The P100 request returned T4s and aborted '
-                  'at the allocation check. Those attempts do not provide Llama or P100 measurements. '
+                  ('The original Meta Llama base-model access was gated. The user-authorized ungated Llama-Instruct '
+                   'mirror is a distinct weight checkpoint; its observed config and KV layout are verified above. '
+                   if 'unsloth/Llama-3.2-3B-Instruct' in configs else
+                   'The original Llama base-model access was gated. Any attempted substitute is identified by its actual model ID above. ')
+                  + 'The P100 request returned T4s and aborted '
+                  'at the allocation check. That attempt provides no P100 measurements. '
                   'Production work was optional and was omitted to prioritize this reference study. '
                   'NOTES.md records the exact deviations, and BUDGET.md records every submitted kernel.','',
                   '## Updated rule of thumb','',
@@ -216,6 +240,7 @@ def plots(summaries,crossings,files):
         points=sorted(r['points'],key=lambda p:p['achieved_mb_s'])
         ax.plot([p['achieved_mb_s'] for p in points],[p['delta_ms'] for p in points],marker='o',label=model.split('/')[-1])
     ax.axhline(0,color='black',lw=1)
+    ax.set_yscale('symlog',linthresh=5)
     ax.set(xscale='log',xlabel='Achieved simulated transport bandwidth (MB/s)',
            ylabel='Reload TTFT minus recompute TTFT (ms)',title='Simulated-bandwidth sweep: prefix 512, new turn 32')
     ax.legend(fontsize=8);ax.grid(alpha=.2)

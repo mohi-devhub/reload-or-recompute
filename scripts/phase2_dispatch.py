@@ -35,9 +35,11 @@ def main():
                         and run['gpu']=='NvidiaTeslaT4' for model in run.get('calibrated_models',[])}
             eligible=[item for item in pending if item.get('purpose','sweep')=='calibration'
                       or set(item['models'].split(','))<=calibrated]
+            available=10-sum(run.get('actual_gpu_hours',run['reserved_gpu_hours']) for run in ledger['runs'])
+            eligible=[item for item in eligible if item['timeout']*2/3600<=available]
             if not eligible:
                 if not active:
-                    raise RuntimeError('Queue blocked by a failed model calibration; inspect results before choosing a fallback')
+                    raise RuntimeError('Queue blocked by calibration or the remaining budget; inspect data before any further submission')
                 break
             item=eligible[0]
             pending.remove(item)
@@ -47,6 +49,10 @@ def main():
             if purpose=='calibration':
                 arguments += ['--lengths','32,512','--turns','32','--rates','50,200',
                               '--repeats','3','--micro-repeats','3','--stabilize','3']
+            else:
+                for field in ['lengths','turns','rates']:
+                    if field in item:
+                        arguments += ['--'+field,item[field]]
             control(arguments)
             ledger=json.loads((ROOT/'outputs/phase2_ledger.json').read_text())
             active=[r for r in ledger['runs'] if r['status']=='submitted']

@@ -34,7 +34,7 @@ def write_ledger(data):
     lines = ['', '## Phase two', '',
              'The redesigned phase is authorized with a separate cap of 10 GPU-hours. '
              'The old grid is not authorized. Pending reservations charge every possible allocated GPU '
-             'for the entire session timeout. Completed rows charge process device-hours; '
+             'for the entire session timeout. Completed rows charge the larger of process lifetime and the final execution-log timestamp, multiplied by observed GPU count; '
              'quota snapshots retain the separate provisioning and billing evidence.', '',
              '| Run | Purpose | GPU | Status | Session timeout, s | Reserved or observed device-hours |',
              '| --- | --- | --- | --- | --- | --- |']
@@ -154,22 +154,21 @@ def fetch(args):
         if endings:
             run['actual_gpu_hours'] = endings[-1]['conservative_gpu_hours']
             run['process_duration_s'] = endings[-1]['duration_s']
-        else:
-            # A failed allocation check can precede the normal finalizer.
-            logs = list((RAW / args.name).glob('*.log'))
-            times = []
-            for log in logs:
-                try:
-                    events = json.loads(log.read_text())
-                    if isinstance(events, list):
-                        times.extend(float(e['time']) for e in events if isinstance(e,dict) and 'time' in e)
-                except (ValueError, TypeError):
-                    pass
-            count = rows[0]['environment']['gpu_count']
-            if times and count:
-                run['actual_gpu_hours'] = max(times) * count / 3600
-                run['process_duration_s'] = max(times)
-                run['accounting_basis'] = 'last Kaggle execution-log timestamp times observed device count; allocation check aborted'
+        # Include startup/conversion evidence even when the normal finalizer ran.
+        logs = list((RAW / args.name).glob('*.log'))
+        times = []
+        for log in logs:
+            try:
+                events = json.loads(log.read_text())
+                if isinstance(events, list):
+                    times.extend(float(e['time']) for e in events if isinstance(e,dict) and 'time' in e)
+            except (ValueError, TypeError):
+                pass
+        count = rows[0]['environment']['gpu_count']
+        if times and count:
+            run['execution_log_duration_s'] = max(times)
+            run['actual_gpu_hours'] = max(run.get('actual_gpu_hours',0),max(times)*count/3600)
+            run['accounting_basis'] = 'max(process lifetime, final Kaggle execution-log timestamp) times observed device count'
         run['calibrated_models'] = [r['model'] for r in rows if r['kind'] == 'model_complete' and r['completed']]
         run['model_errors'] = [dict(model=r['model'], error=r['error']) for r in rows if r['kind'] == 'model_failed']
         run['complete'] = any(r['kind'] == 'run_complete' for r in rows)
