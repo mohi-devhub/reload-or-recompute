@@ -89,3 +89,7 @@ Phase two retains per-file DONTNEED advice and physical-read counters for file c
 ### File representation and residual comparisons
 
 Phase two packs KV tensors into one contiguous fp16 buffer, with tensor shapes retained as metadata. Both the torch-serialized and raw-byte formats use this packed representation; the pilot serialized its nested per-layer cache tensors. Phase-two old-versus-new file-rule residuals compare predictions against the same phase-two staged measurements, differing only in whether the independently measured deserialization leg is included. They are not a controlled attribution of pilot-to-phase-two changes to a single format or software change.
+
+### Unthrottled prediction accounting
+
+Unthrottled achieved bandwidth already includes allocation time in its transfer interval. The pointwise unthrottled prediction now uses the independent pinned-H2D microbenchmark duration directly, instead of adding a fitted overhead to an observed TTFT-transfer duration that already contains it. This also avoids using the tested TTFT transfer as its own calibration. Measured samples, crossover brackets, and the existing held-out-session method are unchanged. Paced predictions retain their declared additive approximation, including the known allocation/deadline overlap described in the protocol.

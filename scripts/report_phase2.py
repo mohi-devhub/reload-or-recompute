@@ -92,7 +92,8 @@ def report():
            'Calibration timings have fewer repeats and are excluded from publication summaries. '
            'The cache already exists at return time: its initial CPU offload, packing, pinning, and file creation '
            'are outside returning-turn TTFT. Tokenization and GPU input-ID placement are also outside timing; '
-           'this is not serving-API latency. File-read buffer allocation remains inside the staged read leg.','',
+           'this is not serving-API latency. File-read buffer allocation remains inside the staged read leg. '
+           'CUDA-event intervals include device idle time during host pacing; they are not isolated GPU kernel time.','',
            'The primary main-model workload is frozen public UltraChat generated dialogue. Long contexts stitch distinct '
            'conversations and are marked accordingly. Three distinct Kaggle kernel sessions use that same frozen input. '
            'A separate repeated-text main-model run with a 32-token new turn at the common short lengths and the anomaly length supplies the matched control used for the model-family comparison. '
@@ -123,6 +124,9 @@ def report():
     lines.extend(['','The runtime table uses the environment inside the timed worker after dependency installation. '
                   'The startup log also records the pre-install environment. Kaggle allocates two T4 devices per '
                   'session here; inference uses one, while the conservative ledger charges both.','',
+                  'The [physical-work audit](../outputs/phase2_audit.json) checks byte arithmetic, rate limits, '
+                  'sample uniqueness, actual randomized rounds, fixed model revisions, and matching reference-function '
+                  'source across sweeps; the parent process-budget entry point is excluded from that function hash.','',
                   '| Fetched run | Saved source matches executed source | Private kernel verified | Saved container image |',
                   '| --- | --- | --- | --- |'])
     for run in ledger['runs']:
@@ -147,7 +151,10 @@ def report():
                   '`B*_prefix = KV bytes / prefix-prefill seconds`. The overhead-adjusted TTFT prediction is '
                   '`B*_TTFT = KV bytes / (full-recompute TTFT - GPU-hit new-turn TTFT - fixed overhead)`. '
                   'The fixed overhead is calibrated from independent unthrottled H2D microbenchmarks. '
-                  'A nonpositive denominator predicts no beneficial finite reload bandwidth under this additive model.','',
+                  'A nonpositive denominator predicts no beneficial finite reload bandwidth under this additive model. '
+                  'Unthrottled point predictions use the independently measured complete H2D leg, avoiding '
+                  'double-counting its allocation overhead. Prefix-only values in the repeated-text table come '
+                  'from the short-turn rounds; separately timed long-turn-round estimates remain in the JSONL.','',
                   'Intervals use adjacent tested nominal simulated rates whose median TTFT ordering changes. '
                   'The label "median only" means endpoint paired confidence intervals do not both resolve the sign. '
                   'Achieved-rate endpoints and harmonic interpolation estimates are retained separately in JSONL. '

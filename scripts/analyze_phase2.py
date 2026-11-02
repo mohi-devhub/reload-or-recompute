@@ -199,7 +199,8 @@ def analyze(source_results=None):
                                achieved_mb_s=achieved,
                                delta_ms=summaries[key]['median']-rec,
                                paired_delta=delta, repeats=len(values)))
-            expected_load = payload/(target or achieved*1e6)*1000 + h
+            expected_load = (payload/target*1000+h if target else
+                             statistics.median(r['transfer_ms'] for r in micros[shape[:3]+(length,'h2d_pinned')]))
             post_transfer=interval([r['wall_ms']-r['transfer_ms']-hit_values[r['repeat']]
                                     for r in values if r['repeat'] in hit_values])
             emit('post_transfer_baseline_residual',**dict(zip(FIELDS,shape)),condition=key[-1],
