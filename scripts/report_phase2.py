@@ -31,7 +31,11 @@ def report():
     path=ROOT/'outputs/phase2_results.jsonl'
     rows=[json.loads(x) for x in path.read_text().splitlines()]
     ledger=json.loads((ROOT/'outputs/phase2_ledger.json').read_text())
-    complete=all(r['status']=='fetched' for r in ledger['runs'])
+    plan_path=ROOT/'configs/phase2_queue.json'
+    planned=json.loads(plan_path.read_text()) if plan_path.exists() else []
+    recorded={r['name'] for r in ledger['runs']}
+    unscheduled=[r['name'] for r in planned if r['name'] not in recorded]
+    complete=not unscheduled and all(r['status']=='fetched' for r in ledger['runs'])
     totals=sum(r.get('actual_gpu_hours',r['reserved_gpu_hours']) for r in ledger['runs'])
     summaries=[r for r in rows if r['kind']=='phase2_summary' and r['purpose']=='sweep' and r['publication_repeat_count_met']]
     crossings=[r for r in rows if r['kind']=='bandwidth_crossover']
@@ -48,6 +52,7 @@ def report():
                phase2_conservative_gpu_hours=totals,phase2_limit_gpu_hours=10,
                accepted_measurements=len(accepted),invalid_measurements=len(invalid),
                full_sessions=len(sweeps),incomplete_sweep_run_ids=incomplete,
+               unscheduled_run_names=unscheduled,
                file_errors={fmt:dict(old_median_ape=statistics.median(abs(r['old_signed_relative_error'])
                                                                       for r in files if r['format']==fmt),
                                     new_median_ape=statistics.median(abs(r['new_signed_relative_error'])
@@ -61,7 +66,7 @@ def report():
            'They do not measure a physical storage device at those rates.','',
            f"Accepted full-sweep timing samples: {len(accepted)}. Invalid full-sweep samples: {len(invalid)}. "
            f"Conservative phase usage: {totals:.6f} GPU-hours against the authorized cap of 10. "
-           f"Incomplete sweep sessions: {len(incomplete)}.",'',
+           f"Incomplete sweep sessions: {len(incomplete)}. Unsubmitted queued runs: {len(unscheduled)}.",'',
            '## What was measured','',
            'The reference path uses fp16, one inference request, synchronized wall-clock TTFT through first-token selection, '
            'and ten interleaved measured rounds after warmup. Prefix-only prefill is randomized in those rounds. '
@@ -86,6 +91,23 @@ def report():
                   'the new turn, so the short-context MHA models do not silently run the long-context grid. '
                   'The extra near-limit prefix leaves room for the longest requested new turn. '
                   'Environment, revision, shapes, and actual source hashes accompany observations.','',
+                  '## Measured runtime and provenance','',
+                  '| Runtime field | Observed values in accepted measurements |',
+                  '| --- | --- |'])
+    for field in ['gpu_names','gpu_count','python','torch','cuda_runtime','transformers','vllm']:
+        values=sorted({json.dumps(r['environment'][field]) for r in accepted})
+        lines.append(f"| {field} | {'; '.join(values)} |")
+    lines.extend(['','The runtime table uses the environment inside the timed worker after dependency installation. '
+                  'The startup log also records the pre-install environment. Kaggle allocates two T4 devices per '
+                  'session here; inference uses one, while the conservative ledger charges both.','',
+                  '| Fetched run | Saved source matches executed source | Private kernel verified | Saved container image |',
+                  '| --- | --- | --- | --- |'])
+    for run in ledger['runs']:
+        if run['status']!='fetched':continue
+        saved=run.get('saved_kernel_metadata',{})
+        lines.append(f"| {run['name']} | {run.get('saved_source_matches_execution','Unavailable')} | "
+                     f"{saved.get('is_private','Unavailable')} | {saved.get('docker_image','Unavailable')} |")
+    lines.extend(['',
                   '## Crossover bandwidths by model and length','',
                   '`B*_prefix = KV bytes / prefix-prefill seconds`. The overhead-adjusted TTFT prediction is '
                   '`B*_TTFT = KV bytes / (full-recompute TTFT - GPU-hit new-turn TTFT - fixed overhead)`. '
@@ -148,7 +170,9 @@ def report():
                   'Staged torch serialization and raw fp16 bytes use separate raw-read and CPU-deserialization timers, '
                   'followed by actual H2D copies. Direct torch.load remains an additional baseline. '
                   'The old estimate omits deserialization; the new estimate adds it. Each prediction uses independent '
-                  'microbenchmark medians plus the GPU-hit new-turn baseline.','',
+                  'microbenchmark medians plus the GPU-hit new-turn baseline. '
+                  'The raw-read API leg includes buffer allocation, and the BytesIO materialization belongs '
+                  'to the torch deserialization leg; neither is advertised as pure physical-media bandwidth.','',
                   '| Format | Median absolute relative TTFT error, old rule | Median absolute relative TTFT error, with deserialization |',
                   '| --- | --- | --- |'])
     for fmt,v in stats['file_errors'].items():
@@ -183,14 +207,17 @@ def report():
     lines.extend(['','Some power-draw samples exceed the cap shown by the startup display. These readings are '
                   'retained without correction and are not used to calculate energy or establish instantaneous '
                   'physical power. No independent power instrument was available.','',
-                  '| Main-model session and workload | Prefix-only median at 8192, ms | Prefix + 32 recompute median, ms |',
-                  '| --- | --- | --- |'])
+                  '| Main-model session and workload | Prefix-only median at 8192, ms | Prefix + 32 recompute median, ms | Prefix-only matched SM MHz | Prefix + 32 matched SM MHz |',
+                  '| --- | --- | --- | --- | --- |'])
     anomaly=defaultdict(dict)
     for r in summaries:
         if r['model']=='Qwen/Qwen2.5-1.5B' and r['prefix_tokens']==8192 and r['turn_tokens']==32 and r['condition'] in ['prefix_only','recompute']:
             anomaly[(r['run_id'],r['workload'])][r['condition']]=r['median']
     for key,v in sorted(anomaly.items()):
-        lines.append(f"| {key[0]}, {key[1]} | {number(v.get('prefix_only'))} | {number(v.get('recompute'))} |")
+        clocks={r['condition']:r['median_sm_mhz'] for r in rows if r['kind']=='timing_clock_summary'
+                and r['run_id']==key[0] and r['workload']==key[1] and r['prefix_tokens']==8192 and r['turn_tokens']==32}
+        lines.append(f"| {key[0]}, {key[1]} | {number(v.get('prefix_only'))} | {number(v.get('recompute'))} | "
+                     f"{clocks.get('prefix_only','Unavailable')} | {clocks.get('recompute','Unavailable')} |")
     profiles=[r for r in rows if r['kind']=='anomaly_shape_profile']
     if profiles:
         lines.extend(['','| Excluded profile input tokens | Wall, ms | GPU kernels, ms | GEMM kernels, ms |',

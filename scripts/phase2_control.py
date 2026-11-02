@@ -2,6 +2,7 @@
 import argparse
 import datetime
 import fcntl
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -117,11 +118,17 @@ def submit(args):
                     kernel_type='script', is_private=True, enable_gpu=True, enable_internet=True,
                     machine_shape=args.gpu, dataset_sources=[], competition_sources=[],
                     kernel_sources=[], model_sources=[])
+    baseline_metadata=RAW/'main-session-1/source/kernel-metadata.json'
+    if baseline_metadata.exists():
+        image=json.loads(baseline_metadata.read_text()).get('docker_image')
+        if image:
+            metadata.update(docker_image=image,docker_image_pinning_type='original')
     (folder / 'kernel-metadata.json').write_text(json.dumps(metadata, indent=2))
     record = dict(name=args.name, purpose=args.purpose, gpu=args.gpu, reference=reference,
                   timeout_s=args.timeout, reserved_gpu_hours=reserved, status='reserved',
                   specification=spec, submitted_at=datetime.datetime.now(datetime.timezone.utc).isoformat())
     record['calibration_projections']=[r for r in projections if r['model'] in models]
+    record['requested_container_image']=metadata.get('docker_image')
     data['runs'].append(record)
     write_ledger(data)  # Concrete budget and model plan exist before any GPU submission.
     cli(['quota', '--format', 'json'], RAW / args.name / 'quota-before.json')
@@ -147,9 +154,19 @@ def fetch(args):
          '--file-pattern', r'(^|/)phase2-output/[^/]+\.(jsonl|log|csv|txt|json)$'],
         RAW / args.name / 'fetch.log')
     cli(['quota', '--format', 'json'], RAW / args.name / 'quota-after.json')
+    cli(['kernels','pull',run['reference'],'-p',str(RAW/args.name/'source'),'-m'],
+        RAW/args.name/'source-pull.log')
+    server=json.loads((RAW/args.name/'source/kernel-metadata.json').read_text())
+    run['saved_kernel_metadata']={k:server.get(k) for k in
+                                  ['is_private','enable_gpu','enable_internet','kernel_type','machine_shape','docker_image']}
+    if server.get('is_private') is not True:
+        raise RuntimeError('Saved kernel privacy does not match the required private setting')
     result_path = RAW / args.name / 'phase2-output/results.jsonl'
     if result_path.exists():
         rows = [json.loads(line) for line in result_path.read_text().splitlines()]
+        source_path=RAW/args.name/'source'/server['code_file']
+        run['saved_source_sha256']=hashlib.sha256(source_path.read_bytes()).hexdigest()
+        run['saved_source_matches_execution']=run['saved_source_sha256']==rows[0]['environment']['source_sha256']
         endings = [r for r in rows if r['kind'] == 'allocation_end']
         if endings:
             run['actual_gpu_hours'] = endings[-1]['conservative_gpu_hours']
