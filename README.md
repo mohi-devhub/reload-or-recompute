@@ -102,8 +102,18 @@ Analyze fetched artifacts and generate the report after the queue finishes:
 
 ```sh
 python3 scripts/analyze_phase2.py
+python3 scripts/audit_phase2.py
 python3 scripts/report_phase2.py
 python3 scripts/consolidate_phase2.py
 ```
 
 The phase-two JSONL keeps sessions separate. It includes individual timings, independently measured file legs, rate-limiter diagnostics, within-session confidence intervals, crossover brackets, session spread, and telemetry summaries. Every rate-limited path is simulated bandwidth. It must not be described as measured physical storage throughput.
+
+After consolidation, a public checkout can rebuild the statistics and figures without the private Kaggle downloads:
+
+```sh
+python3 scripts/analyze_phase2.py --from-results outputs/results.jsonl
+python3 scripts/report_phase2.py
+```
+
+The public archive includes individual GPU telemetry samples used in clock summaries. Instrumented profile summaries are retained; the larger profiler trace remains in ignored raw artifacts. The physical-work audit additionally requires the original fetched artifacts and saved source metadata.

@@ -153,7 +153,11 @@ def fetch(args):
     cli(['kernels', 'output', run['reference'], '-p', str(RAW / args.name),
          '--file-pattern', r'(^|/)phase2-output/[^/]+\.(jsonl|log|csv|txt|json)$'],
         RAW / args.name / 'fetch.log')
-    cli(['quota', '--format', 'json'], RAW / args.name / 'quota-after.json')
+    quota_path=RAW/args.name/'quota-after.json'
+    if quota_path.exists():
+        stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+        quota_path=RAW/args.name/f'quota-refresh-{stamp}.json'
+    cli(['quota', '--format', 'json'], quota_path)
     cli(['kernels','pull',run['reference'],'-p',str(RAW/args.name/'source'),'-m'],
         RAW/args.name/'source-pull.log')
     server=json.loads((RAW/args.name/'source/kernel-metadata.json').read_text())

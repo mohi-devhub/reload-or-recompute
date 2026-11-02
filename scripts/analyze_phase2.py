@@ -1,5 +1,6 @@
 """Analyze simulated-bandwidth crossovers without pooling independent sessions."""
 from collections import defaultdict
+import argparse
 import csv
 import datetime
 import json
@@ -76,21 +77,36 @@ def telemetry(path):
     return data
 
 
-def analyze():
+def analyze(source_results=None):
     ledger = json.loads((ROOT / 'outputs/phase2_ledger.json').read_text())
     raw, telemetry_by_run, purposes = [], {}, {}
+    archived=[]
+    if source_results:
+        archived=[json.loads(x) for x in Path(source_results).read_text().splitlines()]
     for run in ledger['runs']:
         path = ROOT / 'outputs/raw/phase2' / run['name'] / 'phase2-output/results.jsonl'
-        if run['status'] != 'fetched' or not path.exists():
+        if run['status'] != 'fetched':
             continue
-        rows = [json.loads(x) for x in path.read_text().splitlines()]
+        if source_results:
+            rows=[r for r in archived if r.get('record_origin')=='kernel'
+                  and r.get('run_id')==run['specification']['run_id']]
+        elif path.exists():
+            rows = [json.loads(x) for x in path.read_text().splitlines()]
+        else:
+            continue
+        if not rows:continue
+        for row in rows:row['record_origin']='kernel'
         raw.extend(rows)
         purposes[rows[0]['run_id']] = run['purpose']
-        telemetry_by_run[rows[0]['run_id']] = telemetry(path.parent / 'telemetry.csv')
+        telemetry_by_run[rows[0]['run_id']] = (
+            [r['sample'] for r in archived if r.get('kind')=='telemetry_sample' and r['run_id']==rows[0]['run_id']]
+            if source_results else telemetry(path.parent / 'telemetry.csv'))
+    if not raw:
+        raise ValueError('No source observations found; use --from-results outputs/results.jsonl for the public archive')
     derived = []
 
     def emit(kind, **fields):
-        derived.append(dict(schema_version=2, phase='phase2', kind=kind, **fields))
+        derived.append(dict(schema_version=2, phase='phase2', record_origin='analysis', kind=kind, **fields))
 
     emit('phase2_analysis_metadata',python=sys.version,numpy=np.__version__,
          bootstrap_resamples=10000,bootstrap_seed=7321,
@@ -275,6 +291,7 @@ def analyze():
                  prefix_minus_prefix_plus_turn_ms=interval(paired),
                  interpretation='positive value reproduces prefix-only slower than prefix-plus-turn in interleaved rounds')
     for run_id, values in telemetry_by_run.items():
+        for sample in values:emit('telemetry_sample',run_id=run_id,sample=sample)
         if values:
             fields={k:dict(minimum=min(r[k] for r in values),maximum=max(r[k] for r in values),
                            median=statistics.median(r[k] for r in values))
@@ -319,7 +336,9 @@ def analyze():
                  caveat='one-Hz telemetry; nearest samples used for subsecond timings; repeated matches are not independent')
     for run in ledger['runs']:
         path = ROOT/'outputs/raw/phase2'/run['name']/'phase2-output/anomaly-trace.json'
-        if not path.exists():
+        if source_results or not path.exists():
+            derived.extend(r for r in archived if r.get('kind')=='anomaly_shape_profile'
+                           and r['run_id']==run['specification']['run_id'])
             continue
         events=json.loads(path.read_text())['traceEvents']
         for scope in [e for e in events if e.get('cat')=='user_annotation' and e.get('name','').startswith('shape_')]:
@@ -339,4 +358,7 @@ def analyze():
 
 
 if __name__=='__main__':
-    analyze()
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--from-results',type=Path,help='Recompute from public kernel observations and telemetry samples')
+    args=parser.parse_args()
+    analyze(args.from_results)
