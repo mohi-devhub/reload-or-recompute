@@ -93,7 +93,7 @@ def report():
            'The cache already exists at return time: its initial CPU offload, packing, pinning, and file creation '
            'are outside returning-turn TTFT. File-read buffer allocation remains inside the staged read leg.','',
            'The primary main-model workload is frozen public UltraChat generated dialogue. Long contexts stitch distinct '
-           'conversations and are marked accordingly. Three independent sessions use that same frozen input. '
+           'conversations and are marked accordingly. Three distinct Kaggle kernel sessions use that same frozen input. '
            'A separate repeated-text main-model run with a 32-token new turn at the common short lengths and the anomaly length supplies the matched control used for the model-family comparison. '
            'The remaining models use that repeated-text control. This is not a human-conversation trace or a quality evaluation.','',
            '## Model coverage and KV size','',
@@ -115,7 +115,8 @@ def report():
                   '## Measured runtime and provenance','',
                   '| Runtime field | Observed values in accepted measurements |',
                   '| --- | --- |'])
-    for field in ['gpu_names','gpu_count','python','torch','cuda_runtime','transformers','vllm']:
+    for field in ['gpu_names','gpu_count','gpu_query','python','torch','cuda_runtime','transformers','vllm',
+                  'cpu_count','cpu_ram_kb','free_working_bytes','free_tmp_bytes']:
         values=sorted({json.dumps(r['environment'][field]) for r in accepted})
         lines.append(f"| {field} | {'; '.join(values)} |")
     lines.extend(['','The runtime table uses the environment inside the timed worker after dependency installation. '
@@ -149,7 +150,9 @@ def report():
                   'Intervals use adjacent tested nominal simulated rates whose median TTFT ordering changes. '
                   'The label "median only" means endpoint paired confidence intervals do not both resolve the sign. '
                   'Achieved-rate endpoints and harmonic interpolation estimates are retained separately in JSONL. '
-                  'Interpolation is not an additional measured bandwidth point.',''])
+                  'Interpolation is not an additional measured bandwidth point and assumes local linearity in inverse '
+                  'bandwidth. Its agreement with a bandwidth model is not independent validation of that assumption; '
+                  'the sampled-rate decisions and held-out session checks provide the direct tests.',''])
     controls=[r for r in crossings if r['workload']=='repeated_control']
     for model in sorted(set(r['model'] for r in controls)):
         lines.extend(['### '+model,'',
@@ -493,7 +496,7 @@ def plots(summaries,crossings,files):
                 if not points:continue
                 lengths=sorted(points)
                 medians=np.array([statistics.median(r['median'] for r in points[length]) for length in lengths])
-                # Main-model band is the range of independent session medians; other models show bootstrap CIs.
+                # Main-model band is the range of separate session medians; other models show bootstrap CIs.
                 low=np.array([min(r['median'] for r in points[length]) if len(points[length])>1
                               else points[length][0]['ci95'][0] for length in lengths])
                 high=np.array([max(r['median'] for r in points[length]) if len(points[length])>1
