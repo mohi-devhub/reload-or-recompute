@@ -1,5 +1,7 @@
 import importlib.util
+import json
 from pathlib import Path
+import tempfile
 import unittest
 
 MODULE = Path(__file__).resolve().parents[1] / 'scripts' / 'analyze_pilot.py'
@@ -34,6 +36,36 @@ class AnalysisTests(unittest.TestCase):
         self.assertTrue(value['constrained'])
         self.assertGreaterEqual(value['overhead_ms'], 0)
         self.assertGreaterEqual(value['ms_per_byte'], 0)
+
+    def test_incomplete_run_remains_incomplete(self):
+        # Synthetic fixture for validation behavior; never exported as study data.
+        rows = [{'run_id': 'fixture', 'kind': 'environment', 'environment': {}}]
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'input.jsonl'
+            output = Path(directory) / 'output.jsonl'
+            source.write_text('\n'.join(json.dumps(r) for r in rows))
+            self.assertFalse(analysis.analyze(source, output))
+            data = [json.loads(line) for line in output.read_text().splitlines()]
+            self.assertFalse(next(r for r in data if r['kind'] == 'analysis_validation')['complete'])
+            self.assertFalse(any(r['kind'] == 'crossover' for r in data))
+
+    def test_duplicate_repeats_are_rejected(self):
+        sample = {'run_id': 'fixture', 'kind': 'ttft', 'environment': {},
+                  'prefix_tokens': 512, 'turn_tokens': 32, 'condition': 'recompute',
+                  'repeat': 0, 'wall_ms': 1, 'valid': True}
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'input.jsonl'
+            source.write_text(json.dumps(sample) + '\n' + json.dumps(sample))
+            with self.assertRaisesRegex(ValueError, 'Duplicate sample keys'):
+                analysis.analyze(source, Path(directory) / 'output.jsonl')
+
+    def test_invalid_timing_is_rejected(self):
+        sample = {'run_id': 'fixture', 'kind': 'ttft', 'valid': False}
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'input.jsonl'
+            source.write_text(json.dumps(sample))
+            with self.assertRaisesRegex(ValueError, 'Invalid timing samples'):
+                analysis.analyze(source, Path(directory) / 'output.jsonl')
 
 
 if __name__ == '__main__':
