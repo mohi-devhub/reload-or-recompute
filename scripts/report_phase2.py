@@ -33,7 +33,7 @@ def report():
     ledger=json.loads((ROOT/'outputs/phase2_ledger.json').read_text())
     complete=all(r['status']=='fetched' for r in ledger['runs'])
     totals=sum(r.get('actual_gpu_hours',r['reserved_gpu_hours']) for r in ledger['runs'])
-    summaries=[r for r in rows if r['kind']=='phase2_summary' and r['purpose']=='sweep']
+    summaries=[r for r in rows if r['kind']=='phase2_summary' and r['purpose']=='sweep' and r['publication_repeat_count_met']]
     crossings=[r for r in rows if r['kind']=='bandwidth_crossover']
     files=[r for r in rows if r['kind']=='file_rule_residual']
     configs={r['model']:r for r in rows if r['kind']=='model_config'}
@@ -73,7 +73,7 @@ def report():
            'A separate repeated-text main-model run with a 32-token new turn at the common short lengths and the anomaly length supplies the matched control used for the model-family comparison. '
            'The remaining models use that repeated-text control. This is not a human-conversation trace or a quality evaluation.','',
            '## Model coverage and KV size','',
-           '| Model | Family | Verified KV bytes/token | Native total context | Completed full sessions |',
+           '| Model | Family | Verified KV bytes/token | Native total context | Completed sweep sessions |',
            '| --- | --- | --- | --- | --- |']
     for model,cfg in configs.items():
         completed=sum(r['model']==model and r.get('completed',False) and r['run_id'] in sweeps
@@ -161,17 +161,28 @@ def report():
                   'Telemetry samples SM and memory clocks, temperature, power, utilization, and active throttle reasons '
                   'at approximately one Hz. Subsecond timing joins use nearby samples where needed; they cannot '
                   'identify exact clocks for each individual GPU kernel. Timing-specific joined summaries are retained.','',
-                  '| Session | GPU-0 telemetry samples | SM clock range, MHz | Temperature range, C | Power range, W | Throttle masks observed |',
-                  '| --- | --- | --- | --- | --- | --- |'])
+                  '| Session | GPU-0 telemetry samples | Effective Hz | SM clock range, MHz | Temperature range, C | Power range, W | Throttle masks observed |',
+                  '| --- | --- | --- | --- | --- | --- | --- |'])
     for r in rows:
         if r['kind']=='telemetry_summary':
             m=r['metrics']
-            lines.append(f"| {r['run_id']} | {r['samples']} | {m['clocks.sm']['minimum']}–{m['clocks.sm']['maximum']} | "
+            lines.append(f"| {r['run_id']} | {r['samples']} | {r['effective_sample_hz']:.3f} | {m['clocks.sm']['minimum']}–{m['clocks.sm']['maximum']} | "
                          f"{m['temperature.gpu']['minimum']}–{m['temperature.gpu']['maximum']} | "
                          f"{m['power.draw']['minimum']}–{m['power.draw']['maximum']} | {', '.join(r['throttle_reason_values'])} |")
     lines.extend(['','These whole-session ranges include loading and idle intervals. They are not proof of thermal '
                   'throttling during a particular measurement. The phase-two Torch CUDA build differs from the pilot; '
-                  'cross-phase timing changes are not attributed solely to drift.','',
+                  'cross-phase timing changes are not attributed solely to drift. '
+                  'The observed 0x4 event bit denotes software power capping in '
+                  '[NVIDIA\'s NVML definitions](https://nvidia.github.io/cuda-python/cuda-bindings/13.4.4/module/generated/cuda.bindings.nvml.ClocksEventReasons.html). '
+                  'Joined long-prefill clock samples accompany the timings; these associations are not a controlled causal clock experiment.','',
+                  '| Session | Startup-reported power cap, W | Samples above that cap | Maximum raw reported draw, W |',
+                  '| --- | --- | --- | --- |'])
+    for r in rows:
+        if r['kind']=='telemetry_power_quality':
+            lines.append(f"| {r['run_id']} | {r['startup_reported_power_cap_w']:.1f} | {r['samples_above_cap']} | {r['maximum_reported_power_w']:.2f} |")
+    lines.extend(['','Some power-draw samples exceed the cap shown by the startup display. These readings are '
+                  'retained without correction and are not used to calculate energy or establish instantaneous '
+                  'physical power. No independent power instrument was available.','',
                   '| Main-model session and workload | Prefix-only median at 8192, ms | Prefix + 32 recompute median, ms |',
                   '| --- | --- | --- |'])
     anomaly=defaultdict(dict)
@@ -202,6 +213,15 @@ def report():
             lines.append(f"| {r['prefix_tokens']} | {r['condition']} | {r['sessions']} | "
                          f"{', '.join(f'{x:.3f}' for x in r['session_medians_ms'])} | {r['relative_range']:.1%} | "
                          f"{'; '.join(f'[{a:.3f}, {b:.3f}]' for a,b in r['within_session_ci95_ms'])} |")
+    lines.extend(['','### Fixed-calibration check in later sessions','',
+                  'This check fixes the first main session\'s recompute, GPU-hit, and transfer calibration. '
+                  'It predicts later-session decisions without refitting their TTFT baselines. '
+                  'It tests session transfer on the same GPU type and input, not transfer to another GPU type.','',
+                  '| Later session | Resolved simulated-rate cells | Correct decisions using first-session calibration | Median absolute TTFT prediction error |',
+                  '| --- | --- | --- | --- |'])
+    for r in rows:
+        if r['kind']=='heldout_session_score':
+            lines.append(f"| {r['run_id']} | {r['resolved_cells']} | {r['agreements']} | {r['median_absolute_relative_ttft_error']:.1%} |")
     lines.extend(['','## Correctness, unavailable coverage, and budget','',
                   'Every accepted restore must preserve the resident-cache continuation under a stricter same-shape '
                   'comparison, agree on the full-recompute first token, and produce the expected cache length. '
@@ -217,9 +237,8 @@ def report():
                   'Production work was optional and was omitted to prioritize this reference study. '
                   'NOTES.md records the exact deviations, and BUDGET.md records every submitted kernel.','',
                   '## Updated rule of thumb','',
-                  'Reload when `KV_bytes / effective_bandwidth + fixed_overhead + read_and_deserialize_cost` '
-                  'is smaller than `recompute_TTFT - GPU_hit_new_turn_TTFT`, calibrating the terms for the actual '
-                  'model, context length, storage path, and GPU state.','',
+                  'Reload when effective bandwidth exceeds `B* = transfer_bytes / (recompute_TTFT - GPU_hit_new_turn_TTFT - overhead - deserialization - other_transfer_legs)` '
+                  'with a positive denominator, and recompute otherwise.','',
                   'This report ends the redesigned phase. Further experiments require a new user instruction.'])
     (ROOT/'docs/PHASE2_REPORT.md').write_text('\n'.join(lines)+'\n')
     plots(summaries,crossings,files)
@@ -270,6 +289,46 @@ def plots(summaries,crossings,files):
     ax.set_xticks(x,formats);ax.set(ylabel='Median absolute TTFT prediction error (%)',title='Measured file paths: predictive residuals')
     ax.legend(fontsize=8)
     fig.savefig(folder/'phase2-file-residuals.png',dpi=180);plt.close(fig)
+    selected=['recompute','gpu_hit','simulated_50_MBps','simulated_200_MBps',
+              'simulated_1600_MBps','simulated_unthrottled','file_torch_direct','file_raw_staged']
+    pretty={'recompute':'Recompute','gpu_hit':'Resident GPU control',
+            'simulated_50_MBps':'Simulated 50 MB/s','simulated_200_MBps':'Simulated 200 MB/s',
+            'simulated_1600_MBps':'Simulated 1600 MB/s','simulated_unthrottled':'Unthrottled chunked-copy control',
+            'file_torch_direct':'Local file: torch.load','file_raw_staged':'Local file: raw bytes'}
+    from matplotlib.ticker import NullLocator,ScalarFormatter
+    for model in sorted(set(r['model'] for r in summaries)):
+        workload='ultrachat' if model=='Qwen/Qwen2.5-1.5B' else 'repeated_control'
+        values=[r for r in summaries if r['model']==model and r['workload']==workload]
+        if not values:continue
+        fig,axes=plt.subplots(1,2,figsize=(12,4.5),constrained_layout=True)
+        for ax,turn in zip(axes,[32,256]):
+            for condition in selected:
+                points=defaultdict(list)
+                for r in values:
+                    if r['turn_tokens']==turn and r['condition']==condition:points[r['prefix_tokens']].append(r)
+                if not points:continue
+                lengths=sorted(points)
+                medians=np.array([statistics.median(r['median'] for r in points[length]) for length in lengths])
+                # Main-model band is the range of independent session medians; other models show bootstrap CIs.
+                low=np.array([min(r['median'] for r in points[length]) if len(points[length])>1
+                              else points[length][0]['ci95'][0] for length in lengths])
+                high=np.array([max(r['median'] for r in points[length]) if len(points[length])>1
+                               else points[length][0]['ci95'][1] for length in lengths])
+                line,=ax.plot(lengths,medians,marker='o',ms=3,label=pretty[condition])
+                ax.fill_between(lengths,low,high,color=line.get_color(),alpha=.12)
+            ax.set(xscale='log',yscale='log',xlabel='Prefix tokens',ylabel='TTFT (ms)',
+                   title=model.split('/')[-1]+f', new turn {turn}')
+            available=[r['prefix_tokens'] for r in values if r['turn_tokens']==turn]
+            ax.set_xticks([x for x in [16,64,256,1024,4096,16384] if available and x<=max(available)])
+            ax.xaxis.set_major_formatter(ScalarFormatter());ax.xaxis.set_minor_locator(NullLocator())
+            ax.grid(alpha=.2)
+        axes[-1].legend(fontsize=7,loc='upper left')
+        fig.suptitle('Simulated transport and measured file paths; '+
+                     ('bands: range of session medians' if workload=='ultrachat' else 'bands: within-session bootstrap 95% CIs'),fontsize=10)
+        stem='phase2-ttft-'+model.split('/')[-1].lower()
+        fig.savefig(folder/(stem+'.png'),dpi=180)
+        fig.savefig(folder/(stem+'.pdf'),metadata={'CreationDate':None,'ModDate':None})
+        plt.close(fig)
 
 
 if __name__=='__main__':

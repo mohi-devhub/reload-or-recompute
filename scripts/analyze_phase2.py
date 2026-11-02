@@ -4,7 +4,9 @@ import csv
 import datetime
 import json
 from pathlib import Path
+import re
 import statistics
+import sys
 
 import numpy as np
 from analyze_pilot import interval
@@ -90,6 +92,10 @@ def analyze():
     def emit(kind, **fields):
         derived.append(dict(schema_version=2, phase='phase2', kind=kind, **fields))
 
+    emit('phase2_analysis_metadata',python=sys.version,numpy=np.__version__,
+         bootstrap_resamples=10000,bootstrap_seed=7321,
+         source_run_ids=sorted(purposes),session_pooling=False)
+
     groups, micros, seen = defaultdict(list), defaultdict(list), set()
     for r in raw:
         if r['kind'] == 'measurement':
@@ -126,6 +132,15 @@ def analyze():
     for shape in shapes:
         run_id, model, workload, length, turn = shape
         if purposes[run_id] != 'sweep':
+            continue
+        required=['prefix_only','recompute','gpu_hit','cpu_pageable','file_torch_direct',
+                  'file_torch_staged','file_raw_staged','simulated_unthrottled']
+        required += ['simulated_'+str(rate)+'_MBps' for rate in [50,100,200,400,800,1600]]
+        incomplete={name:len(groups.get(shape+(name,),[])) for name in required
+                    if len(groups.get(shape+(name,),[]))<10}
+        emit('shape_publication_coverage',**dict(zip(FIELDS,shape)),complete=not incomplete,
+             missing_or_short_conditions=incomplete,required_repeats=10)
+        if incomplete:
             continue
         if any(shape + (name,) not in summaries for name in ['prefix_only','recompute','gpu_hit']):
             continue
@@ -199,7 +214,7 @@ def analyze():
              ttft_rule_agreements=sum(r['ttft_rule_predicts_reload']==r['measured_reload_faster'] for r in values),
              interpretation='descriptive counts over resolved simulated-rate cells; not independent generalization trials')
     for r in derived:
-        if r['kind']=='phase2_summary' and r['purpose']=='sweep' and r['model']=='Qwen/Qwen2.5-1.5B' and r['workload']=='ultrachat':
+        if r['kind']=='phase2_summary' and r['purpose']=='sweep' and r['publication_repeat_count_met'] and r['model']=='Qwen/Qwen2.5-1.5B' and r['workload']=='ultrachat':
             key=(r['environment']['requested_gpu'],r['prefix_tokens'],r['turn_tokens'],r['condition'])
             across[key].append(r)
     for key, values in across.items():
@@ -211,6 +226,43 @@ def analyze():
                  session_medians_ms=medians, minimum_ms=min(medians), maximum_ms=max(medians),
                  sample_sd_ms=statistics.stdev(medians), relative_range=(max(medians)-min(medians))/statistics.median(medians),
                  within_session_ci95_ms=[r['ci95'] for r in values])
+    source_run='phase2-main-session-1'
+    heldout=defaultdict(list)
+    for shape in shapes:
+        run_id,model,workload,length,turn=shape
+        if run_id==source_run or model!='Qwen/Qwen2.5-1.5B' or workload!='ultrachat' or purposes[run_id]!='sweep':
+            continue
+        source_shape=(source_run,model,workload,length,turn)
+        if source_shape+('recompute',) not in summaries or source_shape+('gpu_hit',) not in summaries:
+            continue
+        source_rec=summaries[source_shape+('recompute',)]['median']
+        source_hit=summaries[source_shape+('gpu_hit',)]['median']
+        source_h=overhead[source_shape[:3]]
+        source_copy=micros.get(source_shape[:3]+(length,'h2d_pinned'),[])
+        actual_rec={r['repeat']:r['wall_ms'] for r in groups.get(shape+('recompute',),[])}
+        for key,values in groups.items():
+            if key[:5]!=shape or not key[-1].startswith('simulated_') or not actual_rec:
+                continue
+            if len(values)<10 or len(actual_rec)<10:
+                continue
+            target=values[0]['target_bandwidth_bytes_s']
+            payload=values[0]['kv_bytes']
+            load=payload/target*1000+source_h if target else statistics.median(r['transfer_ms'] for r in source_copy)
+            delta=interval([r['wall_ms']-actual_rec[r['repeat']] for r in values if r['repeat'] in actual_rec])
+            observed=True if delta['ci95'][1]<0 else False if delta['ci95'][0]>0 else None
+            expected=source_hit+load
+            value=dict(**dict(zip(FIELDS,shape)),condition=key[-1],calibration_run=source_run,
+                       predicted_reload_faster=expected<source_rec,measured_reload_faster=observed,
+                       predicted_ttft_ms=expected,measured_ttft_ms=summaries[key]['median'],
+                       relative_error=(expected-summaries[key]['median'])/summaries[key]['median'])
+            emit('heldout_session_prediction',**value)
+            heldout[run_id].append(value)
+    for run_id,values in heldout.items():
+        resolved=[r for r in values if r['measured_reload_faster'] is not None]
+        emit('heldout_session_score',run_id=run_id,calibration_run=source_run,
+             resolved_cells=len(resolved),agreements=sum(r['predicted_reload_faster']==r['measured_reload_faster'] for r in resolved),
+             median_absolute_relative_ttft_error=statistics.median(abs(r['relative_error']) for r in values),
+             interpretation='same model/input/lengths, first-session calibration fixed; separate GPU kernel session, not a different GPU type')
     for shape in shapes:
         if shape[1]!='Qwen/Qwen2.5-1.5B' or shape[3:]!=(8192,32) or purposes[shape[0]]!='sweep':
             continue
@@ -228,7 +280,16 @@ def analyze():
                            median=statistics.median(r[k] for r in values))
                     for k in ['clocks.sm','clocks.mem','temperature.gpu','power.draw','utilization.gpu']}
             emit('telemetry_summary', run_id=run_id, samples=len(values), gpu_index=0,
+                 effective_sample_hz=(len(values)-1)/(values[-1]['timestamp_unix']-values[0]['timestamp_unix']) if len(values)>1 else None,
                  throttle_reason_values=sorted(set(r['throttle_reasons'] for r in values)), metrics=fields)
+            environment_row=next((r for r in raw if r['run_id']==run_id and r['kind']=='environment'),None)
+            limits=re.findall(r'(\d+)W\s*/\s*(\d+)W',environment_row.get('nvidia_smi','')) if environment_row else []
+            if limits:
+                cap=float(limits[0][1])
+                emit('telemetry_power_quality',run_id=run_id,startup_reported_power_cap_w=cap,
+                     samples_above_cap=sum(r['power.draw']>cap for r in values),
+                     maximum_reported_power_w=max(r['power.draw'] for r in values),
+                     interpretation='raw sensor samples retained; not used to infer energy or instantaneous physical power accuracy')
     for key, samples in groups.items():
         if purposes[key[0]] != 'sweep':
             continue
