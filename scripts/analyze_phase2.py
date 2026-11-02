@@ -186,6 +186,7 @@ def analyze(source_results=None):
         predicted = payload * 1000 / denominator / 1e6 if denominator > 0 else None
         prefix_threshold = payload * 1000 / prefill / 1e6
         rec_values = {r['repeat']:r['wall_ms'] for r in groups[shape+('recompute',)]}
+        hit_values = {r['repeat']:r['wall_ms'] for r in groups[shape+('gpu_hit',)]}
         points = []
         for key, values in groups.items():
             if key[:5] != shape or not key[-1].startswith('simulated_'):
@@ -199,6 +200,11 @@ def analyze(source_results=None):
                                delta_ms=summaries[key]['median']-rec,
                                paired_delta=delta, repeats=len(values)))
             expected_load = payload/(target or achieved*1e6)*1000 + h
+            post_transfer=interval([r['wall_ms']-r['transfer_ms']-hit_values[r['repeat']]
+                                    for r in values if r['repeat'] in hit_values])
+            emit('post_transfer_baseline_residual',**dict(zip(FIELDS,shape)),condition=key[-1],
+                 simulated_bandwidth=True,post_transfer_minus_gpu_hit_ms=post_transfer,
+                 interpretation='paired TTFT minus measured transfer minus separate resident hit; includes view construction and host dispatch, not isolated GPU kernel time')
             emit('simulated_rule_prediction', **dict(zip(FIELDS,shape)), condition=key[-1],
                  simulated_bandwidth=True, target_mb_s=target/1e6 if target else None,
                  achieved_mb_s=achieved, predicted_ttft_ms=hit+expected_load,

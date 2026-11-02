@@ -189,6 +189,8 @@ def report():
                   'parameter count, prefill throughput, and kernels; this is an association, not an isolated GQA treatment. '
                   'The short-length rows expose fixed-overhead regimes where prefix-only and resumed-TTFT thresholds '
                   'can disagree. A censored threshold is not assigned an exact crossover value.','',
+                  'These short-context cutoffs belong to this Transformers reference path, including cache construction '
+                  'and continuation kernels. They are not established cutoffs for an unmeasured serving engine.','',
                   'The following short-context table gives the paired unthrottled-copy TTFT minus recompute TTFT. '
                   'A positive interval favors recompute; an interval containing zero is unresolved. '
                   'It includes tensor-view construction and cache reconstruction inside TTFT. '
@@ -204,6 +206,22 @@ def report():
             lines.append(f"| {r['model']} | {r['workload']}/{r['run_id']} | {r['prefix_tokens']} | "
                          f"{r['turn_tokens']} | {delta['median']:.3f} [{delta['ci95'][0]:.3f}, {delta['ci95'][1]:.3f}] |")
     lines.extend(['',
+                  '### Additivity diagnostic','',
+                  'The next table subtracts the measured transfer leg and a same-round resident-hit TTFT from '
+                  'the simulated 50 MB/s reload TTFT at prefix 64 with a 256-token new turn. A negative resolved '
+                  'residual contradicts a constant resident-hit baseline for that condition; it does not mean '
+                  'a negative copy cost. This post-transfer remainder also includes view construction and host '
+                  'dispatch, so it is not isolated GPU kernel time.','',
+                  '| Model/session | Workload | Post-transfer minus resident hit, ms (paired 95% CI) |',
+                  '| --- | --- | --- |'])
+    for r in rows:
+        if r['kind']=='post_transfer_baseline_residual' and r['prefix_tokens']==64 and r['turn_tokens']==256 and r['condition']=='simulated_50_MBps':
+            v=r['post_transfer_minus_gpu_hit_ms']
+            lines.append(f"| {r['model']}/{r['run_id']} | {r['workload']} | "
+                         f"{v['median']:.3f} [{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}] |")
+    lines.extend(['','A paced copy changes the device activity preceding the new turn. Clock or power-state changes '
+                  'are possible explanations for a changing remainder, but the one-Hz samples cannot resolve '
+                  'the subsecond mechanism. These residuals remain evidence against exact additivity, not a fitted-away correction.','',
                   '## File-tier decomposition and predictive residuals','',
                   'Staged torch serialization and raw fp16 bytes use separate raw-read and CPU-deserialization timers, '
                   'followed by actual H2D copies. Direct torch.load remains an additional baseline. '
@@ -312,7 +330,7 @@ def report():
                   'Production work was optional and was omitted to prioritize this reference study. '
                   'NOTES.md records the exact deviations, and BUDGET.md records every submitted kernel.','',
                   '## Updated rule of thumb','',
-                  'Reload when effective bandwidth exceeds `B* = transfer_bytes / (recompute_TTFT - GPU_hit_new_turn_TTFT - overhead - deserialization - other_transfer_legs)` '
+                  'For a calibrated additive estimate, reload when effective bandwidth exceeds `B* = transfer_bytes / (recompute_TTFT - GPU_hit_new_turn_TTFT - overhead - deserialization - other_transfer_legs)` '
                   'with a positive denominator, and recompute otherwise.','',
                   'This report ends the redesigned phase. Further experiments require a new user instruction.'])
     counts=stats['rule_counts']
