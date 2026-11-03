@@ -40,11 +40,20 @@ def report():
            f"Conservative main cost including reservations: ${audit['main_cost_estimate_and_reservation_usd']:.4f}; "
            f"optional H100: ${audit['h100_cost_estimate_and_reservation_usd']:.4f}. "
            'These are list-price estimates including CPU, capped memory, initialization and infrastructure, not an invoice.','',
+           'The optional H100 input received a cancellation signal before its sweep finished. Complete cells remain '
+           'scored against the frozen registration; partial and unstarted cells remain archived and unscored. '
+           'Every unfinished cell is listed in [phase3_dropped_cells.json](../outputs/phase3_dropped_cells.json). '
+           'The initiating actor and root cause of the cancellation are unknown. No second allocation was requested, '
+           'and the full H100 reservation is retained.','',
            '## Frozen prediction scorecard','',
            '| Requested tier / allocated name | Region or session | Correct / resolved decisions | Unresolved | Complete timing cells | Median absolute TTFT error, ms | Median absolute relative error |',
            '| --- | --- | --- | --- | --- | --- | --- |']
     for r in scorecards:
         lines.append(f"| {r['gpu']} / {', '.join(r['allocated_gpu_names'])} | {r['scope']} | {r['correct_decisions']} / {r['resolved_decisions']} | {r['unresolved_decisions']} | {r['complete_cells']} | {r['median_absolute_ttft_error_ms']:.3f} | {100*r['median_absolute_relative_ttft_error']:.1f}% |")
+    lines.extend(['','The calibrated rule transfers imperfectly: most resolved decisions are correct, but '
+                  'median errors conceal large native-context extrapolation failures. The throughput-ratio '
+                  'hypothesis has counterexamples among resolved brackets; broad compatibility below is '
+                  'evidence of approximate transfer, not a universal scaling law.'])
     lines.extend(['','Resolved decisions require the paired-round bootstrap interval for path-minus-recompute TTFT to exclude zero. '
                   'Errors include prefix-only, recompute and resident-hit baselines; decisions include resident hit and reload paths. '
                   'The unthrottled pinned path is counted once. Cell counts are descriptive and are not independent trials. '
@@ -60,13 +69,24 @@ def report():
                   '| --- | --- | --- | --- | --- |'])
     for r in ledger['runs']:
         if r.get('environment'):
-            e=r['environment'];lines.append(f"| {r['name']} | {', '.join(e['gpu_names'])} / {e['compute_capability']} | {e['gpu_query']} | {e['torch']} / {e['transformers']} / {e['python']} | {r['duration_s']:.1f} |")
+            e=r['environment'];duration=f"{r['duration_s']:.1f}" if 'duration_s' in r else 'Unavailable after cancellation'
+            lines.append(f"| {r['name']} | {', '.join(e['gpu_names'])} / {e['compute_capability']} | {e['gpu_query']} | {e['torch']} / {e['transformers']} / {e['python']} | {duration} |")
     lines.extend(['','Modal names its Ampere request `A10`; the actual GPU name above is authoritative. '
                   'A10 and A10G names within that service tier are retained separately in the session scorecards. '
                   'GPU UUIDs, exact driver/runtime versions, clocks, CPU/RAM and disk capacity are retained per run. '
                   'All measurements use fp16 and efficient/math SDPA, with FlashAttention disabled. '
                   'The full scheduling difference and protected function hashes are in `outputs/phase3_provenance.json`; '
                   'each executed source and adapter hash is also in the canonical records.','',
+                  '| Source | SHA-256 |',
+                  '| --- | --- |'])
+    provenance=json.loads((ROOT/'outputs/phase3_provenance.json').read_text())
+    for name,key in [('Historical T4 submission','historical_t4_source_sha256'),
+                     ('Current phase-two reference','reference_source_sha256'),
+                     ('Platform scheduling template, before run-specific configuration','adapted_source_sha256')]:
+        lines.append(f"| {name} | `{provenance[key]}` |")
+    lines.extend(['','Whole-file hashes differ because of scheduling and run configuration; all six protected timing, '
+                  'transfer, forward, request, read and eviction functions match the historical T4 source byte for byte. '
+                  'The canonical source-provenance records retain each executed configured-source hash and adapter hash.','',
                   '| Model | Attention family | KV bytes/token, fp16 |',
                   '| --- | --- | --- |'])
     reference=json.loads((ROOT/'configs/phase3_t4_reference.json').read_text())
@@ -88,23 +108,31 @@ def report():
         selected=[r for r in micros if r['run_id']==run and r['model']==model and r['prefix_tokens']==L and r['condition']==c]
         return selected[0]['bandwidth_mb_s']['median'] if selected else None
     for r in crosses:
-        if r['prefix_tokens']!=1024 or r['turn_tokens']!=32:continue
-        pin=bandwidth(r['run_id'],r['model'],1024,'h2d_pinned');page=bandwidth(r['run_id'],r['model'],1024,'h2d_pageable')
-        lines.append(f"| {r['gpu']} / {r['run_id']} | {short(r['model'])} | 1024 / 32 | {fmt(r['predicted_bstar_mb_s'])} | {label(r['measured'])} | {r['measured_prefill_tokens_s']:.1f} | {fmt(pin)} / {fmt(page)} |")
+        if r['turn_tokens']!=32 or not (r['prefix_tokens']==1024 or r['model']==MAIN and r['prefix_tokens']==16384):continue
+        L=r['prefix_tokens'];pin=bandwidth(r['run_id'],r['model'],L,'h2d_pinned');page=bandwidth(r['run_id'],r['model'],L,'h2d_pageable')
+        lines.append(f"| {r['gpu']} / {r['run_id']} | {short(r['model'])} | {L} / 32 | {fmt(r['predicted_bstar_mb_s'])} | {label(r['measured'])} | {r['measured_prefill_tokens_s']:.1f} | {fmt(pin)} / {fmt(page)} |")
     # The historical T4 observations are descriptive, not preregistered new-GPU predictions.
     for r in t4:
-        if r['kind']!='bandwidth_crossover' or r['prefix_tokens']!=1024 or r['turn_tokens']!=32:continue
+        if r['kind']!='bandwidth_crossover' or r['turn_tokens']!=32 or not (r['prefix_tokens']==1024 or r['model']==MAIN and r['prefix_tokens']==16384):continue
         if r['model']==MAIN and r['workload']!='ultrachat':continue
-        pref=[s for s in t4 if s['kind']=='phase2_summary' and s['run_id']==r['run_id'] and s['model']==r['model'] and s['prefix_tokens']==1024 and s['turn_tokens']==32 and s['condition']=='prefix_only']
+        L=r['prefix_tokens'];pref=[s for s in t4 if s['kind']=='phase2_summary' and s['run_id']==r['run_id'] and s['model']==r['model'] and s['prefix_tokens']==L and s['turn_tokens']==32 and s['condition']=='prefix_only']
         if not pref:continue
-        h2d={s['condition']:s['bandwidth_mb_s']['median'] for s in t4 if s['kind']=='phase2_micro_summary' and s['run_id']==r['run_id'] and s['model']==r['model'] and s['prefix_tokens']==1024}
-        lines.append(f"| T4 / {r['run_id']} | {short(r['model'])} | 1024 / 32 | {fmt(r['predicted_ttft_bstar_mb_s'])} (descriptive) | {label(r['measured'])} | {pref[0]['prefill_tokens_s']:.1f} | {fmt(h2d.get('h2d_pinned'))} / {fmt(h2d.get('h2d_pageable'))} |")
-    lines.extend(['','| GPU | Compatible with at least one / all matched T4 sessions | Not ratio-resolved |',
+        h2d={s['condition']:s['bandwidth_mb_s']['median'] for s in t4 if s['kind']=='phase2_micro_summary' and s['run_id']==r['run_id'] and s['model']==r['model'] and s['prefix_tokens']==L}
+        lines.append(f"| T4 / {r['run_id']} | {short(r['model'])} | {L} / 32 | {fmt(r['predicted_ttft_bstar_mb_s'])} (descriptive) | {label(r['measured'])} | {pref[0]['prefill_tokens_s']:.1f} | {fmt(h2d.get('h2d_pinned'))} / {fmt(h2d.get('h2d_pageable'))} |")
+    lines.extend(['','“Unidentified” means the frozen adjusted denominator is nonpositive, so it predicts no finite bandwidth threshold.','',
+                  '| GPU | Compatible with at least one / all matched T4 sessions | Not ratio-resolved |',
                   '| --- | --- | --- |'])
     for gpu in sorted({r['gpu'] for r in crosses}):
         hs=[r for r in rows if r['kind']=='phase3_hypothesis_score' and r['gpu']==gpu]
         resolved=[r for r in hs if r['compatible'] is not None]
         lines.append(f"| {gpu} | {sum(r['compatible'] for r in resolved)} / {len(resolved)} at least one; {sum(r['compatible_all'] for r in resolved)} / {len(resolved)} all | {sum(r['compatible'] is None for r in hs)} |")
+    h100=next((r for r in crosses if r['gpu']=='H100!' and r['prefix_tokens']==16384),None)
+    if h100:
+        lines.extend(['',f"At the complete H100 main-model prefix {h100['prefix_tokens']}, measured prefill is "
+                      f"{h100['measured_prefill_ratio_to_t4']:.2f} times the matched T4 median; the frozen calibration expected "
+                      f"{h100['hypothesis_prefill_ratio_to_t4']:.2f} times. Its predicted B* is {h100['predicted_bstar_mb_s']:.2f} MB/s, "
+                      f"versus {label(h100['measured'])}. "
+                      'The large gap to the unthrottled endpoint and incomplete second-model sweep make this a limited fast-GPU point.'])
     lines.extend(['','The frozen hypothesis ratio is calibration-predicted new-GPU prefill throughput divided by matched T4 throughput. '
                   'Compatibility compares it against resolved achieved-bandwidth crossover-ratio brackets, rather than dividing '
                   'two formula outputs. Broad brackets and censored thresholds limit this test; compatibility does not establish equality. '
@@ -120,6 +148,9 @@ def report():
                 if not values:continue
                 resolved=[s for s in values if s['observed_reload'] is not None]
                 lines.append(f"| {gpu} | {short(model)} | {condition} | {sum(s['observed_reload'] for s in resolved)} / {len(resolved)} | {len(values)-len(resolved)} | {median([s['signed_error_ms'] for s in values]):.3f} / {median([s['absolute_error_ms'] for s in values]):.3f} |")
+    lines.extend(['','Both measured MHA models lose on both L4 file paths. On the A10 tier, Phi-2 has file-reload wins '
+                  'and Pythia has direct-torch wins, so the T4 outcome does not transfer uniformly. A file-path win here concerns the full measured API '
+                  'TTFT, including CPU work and H2D transfer.'])
     lines.extend(['','File predictions include independent read/deserialization/H2D legs, or the direct torch-load CPU leg plus H2D. '
                   'These are **local-file API results; cold physical-disk access is unverified**. Files are on local container scratch. '
                   +physical_statement+
@@ -144,6 +175,10 @@ def report():
         if r['kind']=='phase3_short_regime':
             lines.append(f"| {r['gpu']} / {r['run_id']} | {r['turn_tokens']} | {r['recompute_wins']} | {r['reload_wins']} | {r['unresolved']} |")
     lines.extend(['','The regime table compares the main model at common prefixes through 256 tokens, using the real unthrottled pinned path. '
+                  'On L4, recomputation wins throughout those sampled short prefixes for both new-turn sizes; '
+                  'the T4 reference already favors reload at 256 tokens for a 32-token turn and across these prefixes '
+                  'for a 256-token turn. Thus L4 extends the observed recompute-favored regime. The A10 tier has '
+                  'session- and turn-dependent boundaries rather than the same uniform shift. '
                   'Short-prefix decisions can be dominated by host dispatch, allocation and the resident-hit baseline. '
                   'The full score records retain every short-length decision and its paired interval; the sparse length grid '
                   'cannot establish a continuous crossover length.','',
@@ -178,21 +213,26 @@ def report():
                   'Bitmask `0x4` denotes software power-cap limiting, per the '
                   '[NVIDIA NVML definitions](https://docs.nvidia.com/deploy/archive/R535/nvml-api/group__nvmlClocksEventReasons.html). '
                   'Per-condition clock sample counts and medians are archived separately, since pooled timed intervals include rate-limiter sleeps.','',
+                  'The Ampere main sessions use distinct A10/A10G allocations and different active PCIe widths. '
+                  'The slower session does not show lower sampled SM clocks, so clock frequency alone does not explain '
+                  'its recompute spread; host and allocation differences remain confounded.','',
                   '## Rule of thumb and limits','',
                   'Reload when `KV_bytes / effective_bandwidth + CPU_read_and_deserialization + fixed_overhead + resident_new_turn_TTFT < full_recompute_TTFT`; '
                   'otherwise recompute, using locally calibrated baselines and treating near-zero savings as unresolved.','',
                   'This is a single-request fp16 reference experiment, not a serving-throughput benchmark. It excludes cache creation, '
                   'tokenization, network transfer and queueing; CPU caches and files already exist. The paced copy path simulates '
                   'bandwidth and does not emulate network/storage latency distributions. Calibration extrapolation, '
-                  'host CPU differences, CUDA/driver differences, per-file eviction limits, two-session sampling and '
-                  'unpropagated calibration-fit uncertainty, '
+                  'host CPU differences, CUDA/driver differences, per-file eviction limits, two-session sampling, '
+                  'unpropagated calibration-fit uncertainty and '
                   'model-specific context limits restrict transfer claims. Full configuration drops are in `configs/phase3_plan.json` '
-                  'and deviations are in `docs/NOTES.md`. No production-path claim is made.',''])
+                  'and the optional H100 subset in `configs/phase3_h100_plan.json`; deviations are in `docs/NOTES.md`. '
+                  'The H100 calibration and sweeps share one allocation, so they provide no H100 across-session estimate. '
+                  'The optional Kaggle P100 retry was not requested in this phase. No production-path claim is made.',''])
     (ROOT/'docs/PHASE3_REPORT.md').write_text('\n'.join(lines))
     csvpath=ROOT/'outputs/phase3_crossovers.csv'
     fields=['gpu','allocated_gpu_name','prediction_kind']+['run_id','model','workload','prefix_tokens','turn_tokens','kv_bytes_per_token','predicted_bstar_mb_s','measured_prefill_tokens_s','t4_prefill_tokens_s','measured_prefill_ratio_to_t4','hypothesis_prefill_ratio_to_t4','pinned_h2d_mb_s','pageable_h2d_mb_s','observed_bracket','observed_harmonic_estimate_mb_s']
     with csvpath.open('w') as f:
-        writer=csv.DictWriter(f,fieldnames=fields);writer.writeheader()
+        writer=csv.DictWriter(f,fieldnames=fields,lineterminator='\n');writer.writeheader()
         for r in crosses:writer.writerow({**{k:r[k] for k in fields if k not in ['prediction_kind','pinned_h2d_mb_s','pageable_h2d_mb_s','observed_bracket','observed_harmonic_estimate_mb_s']},
                                          'prediction_kind':'frozen calibration only',
                                          'pinned_h2d_mb_s':bandwidth(r['run_id'],r['model'],r['prefix_tokens'],'h2d_pinned'),
@@ -216,6 +256,7 @@ def figure(crosses,t4):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
+    from matplotlib.ticker import LogLocator,NullFormatter,ScalarFormatter
     colors={'T4':'#707070','L4':'#0072b2','A10':'#d55e00','H100!':'#009e73'}
     fig,axes=plt.subplots(2,3,figsize=(15,9),layout='constrained',sharey=True)
     for ax,model in zip(axes.flat,MODELS):
@@ -253,6 +294,9 @@ def figure(crosses,t4):
         family=json.loads((ROOT/'configs/phase3_t4_reference.json').read_text())['configs'][model]['attention_family']
         ax.set_title(short(model)+' ('+family+')');ax.set_xlabel('Prefix-only prefill tokens/s');ax.set_ylabel('Break-even bandwidth, MB/s')
         ax.set_xscale('log');ax.set_yscale('log');ax.grid(alpha=.2)
+        ax.xaxis.set_major_locator(LogLocator(base=10,subs=(1,2,5),numticks=6))
+        ax.xaxis.set_major_formatter(ScalarFormatter())
+        ax.xaxis.set_minor_formatter(NullFormatter())
     axes.flat[-1].axis('off')
     from matplotlib.lines import Line2D
     handles=[Line2D([0],[0],marker='o',color=c,label=gpu.rstrip('!')) for gpu,c in colors.items() if any(r.get('gpu')==gpu for r in crosses) or gpu=='T4']

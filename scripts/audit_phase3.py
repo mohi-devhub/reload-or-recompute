@@ -19,7 +19,10 @@ def audit():
     rows=[r for r in rows if r.get('phase')=='phase3']
     ledger=json.loads((ROOT/'outputs/phase3_ledger.json').read_text())
     expected=json.loads((ROOT/'outputs/phase3_provenance.json').read_text())['protected_function_hashes']
-    failures=[];registrations=[]
+    failures=[];registrations=[];incomplete_optional=[]
+    declared_optional={tuple(c[k] for k in ['run_id','model','workload','prefix_tokens','turn_tokens','condition']):c
+                       for run in ledger['runs'] if run.get('gpu')=='H100!' and run['status']=='cancelled_input_reservation_retained'
+                       for c in run.get('incomplete_registered_cells',[])}
     for gpu in ['L4','A10','H100!']:
         label=artifact_gpu(gpu)
         path=ROOT/'configs'/('predictions_'+label+'.json')
@@ -60,7 +63,10 @@ def audit():
         for p in reg['predictions']:
             key=tuple(p[k] for k in ['run_id','model','workload','prefix_tokens','turn_tokens','condition'])
             values=by[key]
-            if sorted(r['repeat'] for r in values)!=list(range(10)):failures.append('Incomplete registered cell: '+str(key))
+            if sorted(r['repeat'] for r in values)!=list(range(10)):
+                declaration=declared_optional.get(key)
+                if reg['gpu']=='H100!' and declaration and declaration['observed_repeats']==len(values):incomplete_optional.append(declaration)
+                else:failures.append('Incomplete registered cell: '+str(key))
     sweep_ids={r['specification']['run_id'] for r in measurement_runs(ledger) if r['purpose']=='sweep'}
     for key,rounds in orders.items():
         if key[0] in sweep_ids and len({tuple(sorted(v)) for v in rounds.values()})<2:failures.append('Condition order did not vary: '+str(key))
@@ -74,8 +80,13 @@ def audit():
         if run.get('outcome'):
             identities={stage['outcome']['container_id'] for stage in run.get('logical_runs',[])}
             if identities!={run['outcome']['container_id']}:failures.append('H100 logical stages did not share one allocation')
+        names={stage['environment']['gpu_query'].split(',')[3].strip() for stage in run.get('logical_runs',[])}
+        if len(names)!=1:failures.append('H100 logical stages did not share one GPU UUID')
+    if set(declared_optional)!={tuple(c[k] for k in ['run_id','model','workload','prefix_tokens','turn_tokens','condition']) for c in incomplete_optional}:
+        failures.append('Declared optional omissions differ from observed incomplete cells')
     result=dict(kind='phase3_final_audit',phase='phase3',record_origin='audit',passed=not failures,failures=failures,
                 measurement_count=len(samples),registered_cells=sum(len(r['predictions']) for r in registrations),
+                optional_incomplete_cells=len(incomplete_optional),all_registered_cells_complete=not incomplete_optional,
                 main_conservative_usd=main,h100_conservative_usd=h100)
     (ROOT/'outputs/phase3_final_audit.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result));assert not failures,'Phase-three audit failed'

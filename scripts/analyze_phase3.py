@@ -244,6 +244,9 @@ def analyze(source=None):
     if packages.exists():records.append(json.loads(packages.read_text()))
     h100_plan=ROOT/'configs/phase3_h100_plan.json'
     if h100_plan.exists():records.append(dict(record_origin='control',**json.loads(h100_plan.read_text())))
+    for name in ['phase3_dropped_cells.json','phase3_cleanup.json','phase3_final_audit.json']:
+        artifact=ROOT/'outputs'/name
+        if artifact.exists():records.append({'record_origin':'control',**json.loads(artifact.read_text())})
     (ROOT/'outputs/phase3_audit.json').write_text(json.dumps(audit,indent=2)+'\n')
     (ROOT/'outputs/phase3_analysis.jsonl').write_text(''.join(json.dumps(r,allow_nan=False,separators=(',',':'))+'\n' for r in derived))
     return records,derived,registrations
