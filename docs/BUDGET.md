@@ -57,15 +57,16 @@ Main targets share a hard cap of $6. Optional H100 has a separate $4 cap and at 
 | preload | CPU | prepare | failed_reservation_retained | Pending | 0.046420 |
 | preload-retry | CPU | prepare | failed_reservation_retained | Pending | 0.046420 |
 | preload-fixed | CPU | prepare | collected | 175.49629664421082 | 0.010392 |
-| calibration-l4-main | L4 | calibration | submitted | Pending | 0.186780 |
+| calibration-l4-main | L4 | calibration | collected | 63.39398431777954 | 0.063434 |
 | calibration-a10-main | A10 | calibration | collected | 42.53546738624573 | 0.069836 |
 | calibration-a10-controls | A10 | calibration | collected | 132.464763879776 | 0.108476 |
 | calibration-l4-controls | L4 | calibration | submitted | Pending | 0.249040 |
-| a10-main-1 | A10 | sweep | submitted | Pending | 0.696060 |
+| a10-main-1 | A10 | sweep | collected | 1097.433132648468 | 0.523090 |
 | a10-controls | A10 | sweep | submitted | Pending | 1.276110 |
-| a10-main-2 | A10 | sweep | submitted | Pending | 0.696060 |
+| a10-main-2 | A10 | sweep | collected | 1097.770673274994 | 0.523235 |
 | calibration-l4-main-smallhost | L4 | calibration | cancelled_queued_reservation_retained | Pending | 0.153390 |
+| l4-sandbox-probe | L4 | allocation_probe | cancelled_queued_reservation_retained | Pending | 0.048296 |
 
-Main usage plus reservations: $3.738983 / $6. H100: $0.000000 / $4. Infrastructure reservation: $0.200000.
+Main usage plus reservations: $3.318139 / $6. H100: $0.000000 / $4. Infrastructure reservation: $0.200000.
 
 Measured wall time excludes provider initialization; the estimate adds a conservative initialization/teardown allowance. Provider billing snapshots are retained separately. No unmeasured invoice amount is claimed.

@@ -152,7 +152,7 @@
       "name": "calibration-l4-main",
       "gpu": "L4",
       "purpose": "calibration",
-      "status": "submitted",
+      "status": "collected",
       "timeout_s": 420,
       "overhead_allowance_s": 120,
       "prices": {
@@ -749,7 +749,50 @@
         "continue_on_model_error": true,
         "anomaly_profile": false
       },
-      "host_pid": 32210
+      "host_pid": 32210,
+      "duration_s": 63.39398431777954,
+      "estimated_cost_usd": 0.06343394146458309,
+      "outcome": {
+        "kind": "phase3_modal_run",
+        "phase": "phase3",
+        "run_id": "phase3-calibration-l4-main",
+        "returncode": 0,
+        "duration_s": 63.39398431777954,
+        "requested_gpu": "L4",
+        "container_id": "ta-01M6FXNVC4M8S4YSWY0WHV9SVR"
+      },
+      "complete": true,
+      "model_errors": [],
+      "environment": {
+        "gpu_names": [
+          "NVIDIA L4"
+        ],
+        "gpu_count": 1,
+        "gpu_query": "NVIDIA L4, 610.57.04, 23034 MiB, GPU-e81b9614-e326-e966-2de2-bd2eea65bf53, 1, 3, 16, 16",
+        "gpu_query_error": "",
+        "compute_capability": [
+          8,
+          9
+        ],
+        "torch": "2.11.0+cu130",
+        "torch_git_version": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+        "cuda_runtime": "13.0",
+        "cudnn_version": 91900,
+        "transformers": "4.51.3",
+        "vllm": "not installed",
+        "lmcache": "not installed",
+        "python": "3.13.3",
+        "cpu_count": 4,
+        "cpu_ram_kb": 33554432,
+        "cgroup_memory_max": null,
+        "cpu_requested_physical": 4,
+        "memory_requested_gib": 32,
+        "free_working_bytes": 9223372036848394240,
+        "free_tmp_bytes": 9223372036848394240,
+        "source_sha256": "bac388c6f4b26808ec2ef28d0a4c1f1638a339804c0594bb5733c09f6bd12eca",
+        "requested_gpu": "L4",
+        "platform": "Modal"
+      }
     },
     {
       "name": "calibration-a10-main",
@@ -2704,7 +2747,7 @@
       "name": "a10-main-1",
       "gpu": "A10",
       "purpose": "sweep",
-      "status": "submitted",
+      "status": "collected",
       "timeout_s": 1500,
       "overhead_allowance_s": 120,
       "prices": {
@@ -3340,7 +3383,50 @@
           "prediction_commit": "615f9ddaba7e45d76c72dce85812e36502ecf05a"
         }
       },
-      "host_pid": 32566
+      "host_pid": 32566,
+      "duration_s": 1097.433132648468,
+      "estimated_cost_usd": 0.5230904359946251,
+      "outcome": {
+        "kind": "phase3_modal_run",
+        "phase": "phase3",
+        "run_id": "phase3-a10-main-1",
+        "returncode": 0,
+        "duration_s": 1097.433132648468,
+        "requested_gpu": "A10",
+        "container_id": "ta-01M6FW6ZYAN1JAMDBVWKD27F2R"
+      },
+      "complete": true,
+      "model_errors": [],
+      "environment": {
+        "gpu_names": [
+          "NVIDIA A10"
+        ],
+        "gpu_count": 1,
+        "gpu_query": "NVIDIA A10, 610.57.04, 23028 MiB, GPU-ab307190-207f-879a-97c1-ca395e78d4bb, 1, 4, 16, 16",
+        "gpu_query_error": "",
+        "compute_capability": [
+          8,
+          6
+        ],
+        "torch": "2.11.0+cu130",
+        "torch_git_version": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+        "cuda_runtime": "13.0",
+        "cudnn_version": 91900,
+        "transformers": "4.51.3",
+        "vllm": "not installed",
+        "lmcache": "not installed",
+        "python": "3.13.3",
+        "cpu_count": 4,
+        "cpu_ram_kb": 33554432,
+        "cgroup_memory_max": null,
+        "cpu_requested_physical": 4,
+        "memory_requested_gib": 32,
+        "free_working_bytes": 9223372036848394240,
+        "free_tmp_bytes": 9223372036848394240,
+        "source_sha256": "51d7e254958849cd1fd672e4d07733a7f76250c9df1bf7cda648c438e231d3f5",
+        "requested_gpu": "A10",
+        "platform": "Modal"
+      }
     },
     {
       "name": "a10-controls",
@@ -4009,7 +4095,7 @@
       "name": "a10-main-2",
       "gpu": "A10",
       "purpose": "sweep",
-      "status": "submitted",
+      "status": "collected",
       "timeout_s": 1500,
       "overhead_allowance_s": 120,
       "prices": {
@@ -4645,7 +4731,50 @@
           "prediction_commit": "615f9ddaba7e45d76c72dce85812e36502ecf05a"
         }
       },
-      "host_pid": 32625
+      "host_pid": 32625,
+      "duration_s": 1097.770673274994,
+      "estimated_cost_usd": 0.5232354659504891,
+      "outcome": {
+        "kind": "phase3_modal_run",
+        "phase": "phase3",
+        "run_id": "phase3-a10-main-2",
+        "returncode": 0,
+        "duration_s": 1097.770673274994,
+        "requested_gpu": "A10",
+        "container_id": "ta-01M6FW85PZFQT88KADNX6VME6R"
+      },
+      "complete": true,
+      "model_errors": [],
+      "environment": {
+        "gpu_names": [
+          "NVIDIA A10G"
+        ],
+        "gpu_count": 1,
+        "gpu_query": "NVIDIA A10G, 610.57.04, 23028 MiB, GPU-968b001b-c728-1ed6-a6b6-ca4a2e884ac2, 1, 4, 8, 16",
+        "gpu_query_error": "",
+        "compute_capability": [
+          8,
+          6
+        ],
+        "torch": "2.11.0+cu130",
+        "torch_git_version": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+        "cuda_runtime": "13.0",
+        "cudnn_version": 91900,
+        "transformers": "4.51.3",
+        "vllm": "not installed",
+        "lmcache": "not installed",
+        "python": "3.13.3",
+        "cpu_count": 4,
+        "cpu_ram_kb": 33554432,
+        "cgroup_memory_max": null,
+        "cpu_requested_physical": 4,
+        "memory_requested_gib": 32,
+        "free_working_bytes": 9223372036848394240,
+        "free_tmp_bytes": 9223372036848394240,
+        "source_sha256": "b69aad97e3746839845f9ad981960218566218be646a039ad18e94aecdbf7937",
+        "requested_gpu": "A10",
+        "platform": "Modal"
+      }
     },
     {
       "name": "calibration-l4-main-smallhost",
@@ -5257,6 +5386,54 @@
       "host_pid": 32724,
       "use_for_prediction": false,
       "allocation_diagnosis": "No running container in repeated provider snapshots; smaller host did not resolve allocation wait."
+    },
+    {
+      "name": "l4-sandbox-probe",
+      "gpu": "L4",
+      "purpose": "allocation_probe",
+      "status": "cancelled_queued_reservation_retained",
+      "timeout_s": 60,
+      "overhead_allowance_s": 120,
+      "prices": {
+        "schema_version": 3,
+        "phase": "phase3",
+        "kind": "pricing_snapshot",
+        "captured_at": "2026-11-03T05:10:26.418163+00:00",
+        "source_url": "https://modal.com/pricing",
+        "page_sha256": "5216d91dfad0f4186f931c22e97c93db99f4ca373ee980378f78bb505fd6fc92",
+        "gpu_usd_per_second": {
+          "L4": 0.00022222222222222223,
+          "A10": 0.000306,
+          "H100!": 0.0010972222222222223
+        },
+        "cpu_usd_per_physical_core_second": 3.942e-05,
+        "memory_usd_per_gib_second": 6.67e-06,
+        "volume_usd_per_gib_month": 0.09,
+        "egress_usd_per_gib": 0.04,
+        "billing_api_hourly_rates": {
+          "gpu_hour_cost_l4": "0.80000",
+          "gpu_hour_cost_a10g": "1.10000",
+          "gpu_hour_cost_h100": "3.95000",
+          "cpu_hour_cost": "0.04730",
+          "mem_gib_hour_cost": "0.00800"
+        },
+        "rounding_policy": "maximum of displayed per-second tariff and current billing-API hourly tariff divided by 3600",
+        "sandbox_cpu_memory_multiplier": 3
+      },
+      "resources": {
+        "cpu_physical": 1,
+        "memory_gib": 1
+      },
+      "reserved_cost_usd": 0.04829620000000001,
+      "submitted_at": "2026-11-03T05:10:29.161432+00:00",
+      "specification": {
+        "run_id": "phase3-l4-sandbox-probe",
+        "purpose": "allocation_probe",
+        "gpu": "L4"
+      },
+      "probe_host_wall_s": 740.2012529160129,
+      "use_for_prediction": false,
+      "allocation_diagnosis": "Cancelled after original L4 calibration allocated; SDK cancellation terminates unscheduled Sandbox."
     }
   ]
 }

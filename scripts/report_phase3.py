@@ -181,7 +181,7 @@ def figure(crosses,t4):
         for r in crosses:
             if r['model']!=model or r['turn_tokens']!=32:continue
             plotted.append(dict(gpu=r['gpu'],session=r['run_id'],x=r['measured_prefill_tokens_s'],
-                                px=r['predicted_prefill_tokens_s'],pred=r['predicted_bstar_mb_s'],measured=r['measured']))
+                                length=r['prefix_tokens'],px=r['predicted_prefill_tokens_s'],pred=r['predicted_bstar_mb_s'],measured=r['measured']))
         for r in t4:
             if r['kind']!='bandwidth_crossover' or r['model']!=model or r['turn_tokens']!=32:continue
             if model==MAIN and r['workload']!='ultrachat':continue
@@ -196,14 +196,20 @@ def figure(crosses,t4):
                 ax.errorbar(r['x'],y,yerr=[[y-lo],[hi-y]],fmt='o' if b['paired_ci_resolved'] else 'x',
                             color=colors[r['gpu']],alpha=.65,markersize=4,linewidth=.7)
         for (gpu,session),values in sessions.items():
-            values=sorted(values,key=lambda r:r['px'])
+            values=sorted(values,key=lambda r:r['length'])
             ax.plot([r['px'] for r in values],[r['pred'] for r in values],color=colors[gpu],linestyle='--',alpha=.6)
+        if plotted:
+            config=json.loads((ROOT/'configs/phase3_t4_reference.json').read_text())['configs'][model]
+            xs=[min(r['x'] for r in plotted),max(r['x'] for r in plotted)]
+            ax.plot(xs,[config['kv_bytes_per_token']*x/1e6 for x in xs],color='#777777',linestyle=':',linewidth=1)
         ax.set_title(short(model));ax.set_xlabel('Prefix-only prefill tokens/s');ax.set_ylabel('Break-even bandwidth, MB/s')
         ax.set_xscale('log');ax.set_yscale('log');ax.grid(alpha=.2)
     axes.flat[-1].axis('off')
     from matplotlib.lines import Line2D
     handles=[Line2D([0],[0],marker='o',color=c,label=gpu) for gpu,c in colors.items() if any(r.get('gpu')==gpu for r in crosses) or gpu=='T4']
-    handles.extend([Line2D([0],[0],color='black',linestyle='--',label='Frozen adjusted-rule prediction'),Line2D([0],[0],color='black',marker='x',linestyle='',label='Median-only bracket')])
+    handles.extend([Line2D([0],[0],color='black',linestyle='--',label='Frozen adjusted-rule prediction'),
+                    Line2D([0],[0],color='#777777',linestyle=':',label='Prefix-only KV bytes/token × tokens/s'),
+                    Line2D([0],[0],color='black',marker='x',linestyle='',label='Median-only bracket')])
     axes.flat[-1].legend(handles=handles,loc='center',frameon=False)
     axes.flat[-1].text(.05,.1,'Points: harmonic interpolation within observed\nachieved-rate brackets; bars: bracket endpoints.\nDashed: calibration-only predictions, no refit.\nOnly bracketed thresholds shown; censoring retained\nin the CSV and canonical records.',transform=axes.flat[-1].transAxes,fontsize=10)
     fig.suptitle('Simulated-bandwidth crossovers versus prefill throughput (new turn 32)')
