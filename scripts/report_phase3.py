@@ -27,6 +27,10 @@ def report():
     summaries=[r for r in rows if r['kind']=='phase3_summary' and r['purpose']=='sweep' and r['complete']]
     micros=[r for r in rows if r['kind']=='phase3_micro_summary']
     audit=next(r for r in rows if r['kind']=='phase3_audit')
+    file_observations=[r for r in rows if r['kind']=='phase3_file_observability']
+    physical_statement=('The virtualized filesystem reports zero physical-read bytes in all summarized observations. '
+                        if file_observations and all(r['nonzero_physical_read_samples']==0 for r in file_observations)
+                        else 'Physical-read counters and their limitations are retained per allocation below. ')
     lines=['# Phase three: preregistered transfer across GPUs','',
            'Predictions were frozen from short, independent calibration before each GPU sweep. '
            'No coefficient was refitted from sweep results. All paced rates below are **simulated bandwidth**, '
@@ -118,7 +122,7 @@ def report():
                 lines.append(f"| {gpu} | {short(model)} | {condition} | {sum(s['observed_reload'] for s in resolved)} / {len(resolved)} | {len(values)-len(resolved)} | {median([s['signed_error_ms'] for s in values]):.3f} / {median([s['absolute_error_ms'] for s in values]):.3f} |")
     lines.extend(['','File predictions include independent read/deserialization/H2D legs, or the direct torch-load CPU leg plus H2D. '
                   'These are **local-file API results; cold physical-disk access is unverified**. Files are on local container scratch. '
-                  'The virtualized filesystem reports zero physical-read bytes in the observations summarized below. '
+                  +physical_statement+
                   'Upstream [gVisor ignores fadvise advice](https://github.com/google/gvisor/blob/master/pkg/sentry/syscalls/linux/sys_file.go); '
                   'the deployed runtime revision is not identified, so successful advisory calls cannot establish eviction. '
                   'These host/storage paths differ from Kaggle, so changes in file wins cannot be assigned solely to GPU speed.','',
@@ -219,15 +223,21 @@ def figure(crosses,t4):
         for r in crosses:
             if r['model']!=model or r['turn_tokens']!=32:continue
             plotted.append(dict(gpu=r['gpu'],session=r['run_id'],x=r['measured_prefill_tokens_s'],
-                                length=r['prefix_tokens'],px=r['predicted_prefill_tokens_s'],pred=r['predicted_bstar_mb_s'],measured=r['measured']))
+                                length=r['prefix_tokens'],px=r['predicted_prefill_tokens_s'],pred=r['predicted_bstar_mb_s'],measured=r['measured'],points=r['points']))
         for r in t4:
             if r['kind']!='bandwidth_crossover' or r['model']!=model or r['turn_tokens']!=32:continue
             if model==MAIN and r['workload']!='ultrachat':continue
             prefix=r['kv_bytes_per_token']*r['prefix_tokens']/r['predicted_prefix_bstar_mb_s']/1000
-            plotted.append(dict(gpu='T4',session=r['run_id'],x=r['prefix_tokens']*1000/prefix,px=None,pred=None,measured=r['measured']))
+            plotted.append(dict(gpu='T4',session=r['run_id'],x=r['prefix_tokens']*1000/prefix,px=None,pred=None,measured=r['measured'],points=r['points']))
         sessions=defaultdict(list)
         for r in plotted:
             if r['pred'] is not None and r['px'] is not None:sessions[(r['gpu'],r['session'])].append(r)
+            status=r['measured']['status']
+            if status=='recompute_faster_at_all_tested_simulated_rates':
+                ax.scatter(r['x'],r['measured']['largest_achieved_mb_s'],marker='^',facecolors='none',edgecolors=colors[r['gpu']],alpha=.45,s=25)
+            elif status=='reload_faster_at_all_tested_simulated_rates':
+                first=min(r['points'],key=lambda p:p['target_mb_s'] if p['target_mb_s'] is not None else float('inf'))
+                ax.scatter(r['x'],first['achieved_mb_s'],marker='v',facecolors='none',edgecolors=colors[r['gpu']],alpha=.45,s=25)
             for b in r['measured'].get('brackets',[]):
                 lo,hi=sorted(b['achieved_mb_s']);y=b['interpolated_mb_s']
                 if y is None:continue
@@ -245,12 +255,13 @@ def figure(crosses,t4):
         ax.set_xscale('log');ax.set_yscale('log');ax.grid(alpha=.2)
     axes.flat[-1].axis('off')
     from matplotlib.lines import Line2D
-    handles=[Line2D([0],[0],marker='o',color=c,label=gpu) for gpu,c in colors.items() if any(r.get('gpu')==gpu for r in crosses) or gpu=='T4']
+    handles=[Line2D([0],[0],marker='o',color=c,label=gpu.rstrip('!')) for gpu,c in colors.items() if any(r.get('gpu')==gpu for r in crosses) or gpu=='T4']
     handles.extend([Line2D([0],[0],color='black',linestyle='--',label='Frozen adjusted-rule prediction'),
                     Line2D([0],[0],color='#777777',linestyle=':',label='Prefix-only KV bytes/token × tokens/s'),
-                    Line2D([0],[0],color='black',marker='x',linestyle='',label='Median-only bracket')])
-    axes.flat[-1].legend(handles=handles,loc='center',frameon=False)
-    axes.flat[-1].text(.05,.1,'Points: harmonic interpolation within observed\nachieved-rate brackets; bars: bracket endpoints.\nDashed: calibration-only predictions, no refit.\nOnly bracketed thresholds shown; censoring retained\nin the CSV and canonical records.',transform=axes.flat[-1].transAxes,fontsize=10)
+                    Line2D([0],[0],color='black',marker='x',linestyle='',label='Median-only bracket'),
+                    Line2D([0],[0],color='black',marker='^',markerfacecolor='none',linestyle='',label='Censored median bound (up / down)')])
+    axes.flat[-1].legend(handles=handles,loc='upper left',bbox_to_anchor=(.02,.95),frameon=False)
+    axes.flat[-1].text(.05,.1,'Points: harmonic interpolation within observed\nachieved-rate brackets; bars: bracket endpoints.\nDashed: calibration-only predictions, no refit.\nHollow triangles: censored median bounds.\nFull intervals and censoring remain in the CSV.',transform=axes.flat[-1].transAxes,fontsize=10)
     fig.suptitle('Simulated-bandwidth crossovers versus prefill throughput (new turn 32)')
     folder=ROOT/'figures';folder.mkdir(exist_ok=True);fig.savefig(folder/'phase3_bstar_vs_prefill.png',dpi=170);plt.close(fig)
 

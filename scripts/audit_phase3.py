@@ -67,6 +67,13 @@ def audit():
     main=ledger['infrastructure_reservation_usd']+sum(r.get('estimated_cost_usd',r['reserved_cost_usd']) for r in ledger['runs'] if r.get('gpu')!='H100!')
     h100=sum(r.get('estimated_cost_usd',r['reserved_cost_usd']) for r in ledger['runs'] if r.get('gpu')=='H100!')
     if main>6 or h100>4:failures.append('Cost cap exceeded')
+    h100_runs=[r for r in ledger['runs'] if r.get('gpu')=='H100!']
+    if len(h100_runs)>1:failures.append('More than one H100 allocation')
+    for run in h100_runs:
+        if run['timeout_s']+run['overhead_allowance_s']>1800:failures.append('H100 exceeds thirty-minute bound')
+        if run.get('outcome'):
+            identities={stage['outcome']['container_id'] for stage in run.get('logical_runs',[])}
+            if identities!={run['outcome']['container_id']}:failures.append('H100 logical stages did not share one allocation')
     result=dict(kind='phase3_final_audit',phase='phase3',record_origin='audit',passed=not failures,failures=failures,
                 measurement_count=len(samples),registered_cells=sum(len(r['predictions']) for r in registrations),
                 main_conservative_usd=main,h100_conservative_usd=h100)

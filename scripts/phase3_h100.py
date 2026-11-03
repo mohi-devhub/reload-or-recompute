@@ -90,7 +90,9 @@ def release(ready):
     projections=[];stages=[]
     for planned in registration['planned_runs']:
         projection=project(registration,planned);timeout=projection['projected_timeout_s']
-        projection.update(selected_timeout_s=timeout,cost_covered_by_allocation=NAME)
+        projection.update(selected_timeout_s=timeout,cost_covered_by_allocation=NAME,
+                          maximum_stage_cost_usd=timeout*control.rate(run['prices'],GPU,run['resources']),
+                          pricing_captured_at=run['prices']['captured_at'])
         projections.append(projection)
         stages.append(specification(planned['name'],GPU,'sweep',timeout,planned['models'],planned['lengths_by_model'],
             planned['turns_by_model'],planned['workload'],planned['seed'],dict(_stage_timeout_s=timeout,cost_projection=projection)))
