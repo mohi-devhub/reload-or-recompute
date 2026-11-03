@@ -13,23 +13,7 @@
     "projected_timeout_s": 1500,
     "prediction_only": true,
     "selected_timeout_s": 1500,
-    "prediction_commit": ""
-  },
-  {
-    "kind": "phase3_cost_projection",
-    "phase": "phase3",
-    "gpu": "A10",
-    "run_name": "a10-main-2",
-    "round_projection_s": 1025.9086598124543,
-    "micro_projection_s": 15.19582800423002,
-    "validation_projection_s": 11.716982472584066,
-    "margin_fraction": 0.25,
-    "setup_allowance_s": 90,
-    "finalization_allowance_s": 90,
-    "projected_timeout_s": 1500,
-    "prediction_only": true,
-    "selected_timeout_s": 1500,
-    "prediction_commit": ""
+    "prediction_commit": "615f9ddaba7e45d76c72dce85812e36502ecf05a"
   },
   {
     "kind": "phase3_cost_projection",
@@ -45,6 +29,22 @@
     "projected_timeout_s": 2850,
     "prediction_only": true,
     "selected_timeout_s": 2850,
-    "prediction_commit": ""
+    "prediction_commit": "615f9ddaba7e45d76c72dce85812e36502ecf05a"
+  },
+  {
+    "kind": "phase3_cost_projection",
+    "phase": "phase3",
+    "gpu": "A10",
+    "run_name": "a10-main-2",
+    "round_projection_s": 1025.9086598124543,
+    "micro_projection_s": 15.19582800423002,
+    "validation_projection_s": 11.716982472584066,
+    "margin_fraction": 0.25,
+    "setup_allowance_s": 90,
+    "finalization_allowance_s": 90,
+    "projected_timeout_s": 1500,
+    "prediction_only": true,
+    "selected_timeout_s": 1500,
+    "prediction_commit": "615f9ddaba7e45d76c72dce85812e36502ecf05a"
   }
 ]

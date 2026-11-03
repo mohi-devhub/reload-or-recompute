@@ -61,7 +61,11 @@ Main targets share a hard cap of $6. Optional H100 has a separate $4 cap and at 
 | calibration-a10-main | A10 | calibration | collected | 42.53546738624573 | 0.069836 |
 | calibration-a10-controls | A10 | calibration | collected | 132.464763879776 | 0.108476 |
 | calibration-l4-controls | L4 | calibration | submitted | Pending | 0.249040 |
+| a10-main-1 | A10 | sweep | submitted | Pending | 0.696060 |
+| a10-controls | A10 | sweep | submitted | Pending | 1.276110 |
+| a10-main-2 | A10 | sweep | submitted | Pending | 0.696060 |
+| calibration-l4-main-smallhost | L4 | calibration | cancelled_queued_reservation_retained | Pending | 0.153390 |
 
-Main usage plus reservations: $0.917363 / $6. H100: $0.000000 / $4. Infrastructure reservation: $0.200000.
+Main usage plus reservations: $3.738983 / $6. H100: $0.000000 / $4. Infrastructure reservation: $0.200000.
 
 Measured wall time excludes provider initialization; the estimate adds a conservative initialization/teardown allowance. Provider billing snapshots are retained separately. No unmeasured invoice amount is claimed.
