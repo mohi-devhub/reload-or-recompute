@@ -1,0 +1,42 @@
+"""Map each empirical TeX value to frozen evidence and classify other numeric tokens."""
+from pathlib import Path
+from collections import defaultdict
+import hashlib,json,re,subprocess
+P=Path(__file__).resolve().parents[1];R=P.parent
+registry=json.loads((P/'generated/number_registry.json').read_text());uses=defaultdict(list);literals=[]
+models=['Qwen2.5-0.5B','Qwen2.5-1.5B','Qwen2.5-3B','Llama-3.2-3B-Instruct','Llama 3.2-3B','Pythia-1.4B','pythia-1.4b','opt-1.3b','Phi-2','phi-2','Qwen 0.5B','Qwen 1.5B','Qwen 3B']
+metadata=['0009-0003-2978-3045','achumohith14@gmail.com','v0.1.0-data','2.11.0+cu130','4.51.3']
+for path in [P/'main.tex',*sorted((P/'generated').glob('*.tex'))]:
+ if path.name=='numbers.tex':continue
+ for lineno,line in enumerate(path.read_text().splitlines(),1):
+  if line.lstrip().startswith('%'):continue
+  for match in re.finditer(r'\\N\{([^}]+)\}',line):
+   key=match[1];assert key in registry,'Undefined empirical number: '+key;uses[key].append(f'{path.relative_to(P)}:{lineno}')
+  remainder=re.sub(r'\\N\{[^}]+\}','',line)
+  layout=any(s in line for s in ['renewcommand','documentclass','usepackage','setlength','includegraphics','begin{minipage}','begin{longtable}'])
+  for value in models+metadata:remainder=remainder.replace(value,'')
+  remainder=re.sub(r'\b(?:l4|a10|h100)-(?:main(?:-[12])?|controls)\b','',remainder,flags=re.I)
+  remainder=re.sub(r'\b(?:T4|L4|A10G?|H100|P100|x16|x8|fp16|bf16|H2D)\b','',remainder)
+  for match in re.finditer(r'\d+(?:[.,]\d+)*',remainder):
+   category='command or script identifier from released reproduction instructions' if line.startswith('python3 ') else 'typesetting parameter' if layout else 'mathematical boundary definition' if match[0]=='0' and ('D>0' in line) else 'UNCLASSIFIED'
+   literals.append(dict(file=str(path.relative_to(P)),line=lineno,token=match[0],category=category,context=line.strip()))
+unknown=[r for r in literals if r['category']=='UNCLASSIFIED']
+if unknown:
+ print(json.dumps(unknown,indent=2));raise SystemExit('Classify non-empirical tokens or replace empirical literals with source-mapped macros')
+manifest=json.loads((P/'DATA_SOURCES.json').read_text())
+for path,digest in manifest['files'].items():assert hashlib.sha256(subprocess.check_output(['git','show','v0.1.0-data:'+path],cwd=R)).hexdigest()==digest,path
+figures=[]
+reformat=json.loads((P/'generated/figure_reformat.json').read_text())
+for name in ['bstar-vs-gpu','frozen-scorecard','short-context-regime','bstar-vs-prefill']:
+ original=subprocess.check_output(['git','show','v0.1.0-data:figures/paper/'+name+'.pdf'],cwd=R);current=(P/'figures'/(name+'.pdf')).read_bytes();same=original==current
+ assert same or (name=='bstar-vs-prefill' and hashlib.sha256(current).hexdigest()==reformat['print_sha256'])
+ figures.append(dict(name=name,released_sha256=hashlib.sha256(original).hexdigest(),draft_sha256=hashlib.sha256(current).hexdigest(),unchanged=same,source='v0.1.0-data:figures/paper/'+name+'.pdf',data_source='outputs/consolidated_crossovers.csv' if name not in ['frozen-scorecard','short-context-regime'] else 'outputs/consolidated_scorecard.csv' if name=='frozen-scorecard' else 'outputs/consolidated_results.jsonl'))
+lines=['# Numerical evidence map','','All empirical values in the manuscript use `\\N{key}` macros generated from **v0.1.0-data**. This map lists every use in the text, captions and appendix tables. Values are not fitted or replaced using later observations. Commas are thousands separators; retained precision follows the released claims or cited tables.','','## Coverage','',f'- {len(uses)} distinct source-mapped empirical values or table cells occur at {sum(map(len,uses.values()))} TeX locations.',f'- {len(registry)} registry entries are available; unused entries are not claims in the paper.',f'- {len(figures)} figure source/data mappings are verified. Three PDFs are byte-identical to the release; only the throughput figure is reflowed for legibility, with unchanged data and predictions.','- No unclassified numeric literal remains in manuscript TeX after the metadata and layout categories below.','- Regenerate the macros with `python3 paper/scripts/generate_evidence.py`; verify this map with `python3 paper/scripts/audit_numbers.py`.','','## Empirical values and their uses','','| Key | Printed value | Release file and exact selector | Claim | TeX locations |','| --- | --- | --- | --- | --- |']
+for key in sorted(uses):
+ r=registry[key];lines.append('| '+key+' | '+r['rendered'].replace('|','/')+' | `'+r['source']+'`: '+r['selector'].replace('|','/')+' | '+str(r['claim'])+' | '+', '.join('`'+p+'`' for p in uses[key])+' |')
+lines.extend(['','## Figures','','| Figure | Numeric source | Preservation |','| --- | --- | --- |'])
+for r in figures:lines.append('| '+r['name']+' | `'+r['data_source']+'` in the release; exact released PDF and draft SHA-256 in `generated/number_audit.json` | '+('Exact PDF' if r['unchanged'] else 'Layout-only reflow; `generated/figure_reformat.json`')+' |')
+lines.extend(['','Axes ticks, figure labels, table/section/equation counters, bibliography labels and page numbers are display/document counters, not additional measurements. The figure data mappings cover plotted values and censoring; axis tick spacing does not constitute another observed bandwidth.','','## Identifiers and non-empirical numbers','','| Kind | Tokens | Source and interpretation |','| --- | --- | --- |','| Model names | '+', '.join(models)+' | Released model and coverage tables; numeric substrings are checkpoint identifiers, not extra results. |','| Hardware and dtype labels | T4, L4, A10, A10G, H100, P100; x16, x8; fp16, bf16; H2D | Released PHASE3_REPORT.md, model table and claim 22. PCIe widths remain separate. H2D names host-to-device movement, not a measurement. |','| Runtime versions | 2.11.0+cu130; 4.51.3 | Released PHASE3_REPORT.md; exact software identifiers. |','| Artifact version | v0.1.0-data | Frozen release/tag, not a measurement. |','| Author identity | achumohith14@gmail.com; 0009-0003-2978-3045 | Explicit author-provided email and ORCID. |','| Run and command identifiers | l4-main-1, l4-main-2, l4-controls, a10-main-1, a10-main-2, a10-controls, h100-main; python3 and phase2/phase3 script names | Released PHASE3_REPORT.md and README.md; label digits are identifiers, not additional observations. |','| Formula constants | Positive denominator, zero boundary | Mathematical definition in claim 6 and the user-requested rule; zero is not a measured latency. |','| Proposed recipe | One-minute checklist | User-requested operating suggestion, explicitly not a timing guarantee. Actual calibration function times are separately mapped as CalA10Seconds and CalL4Seconds. |','| Bibliographic numbers | Citation years, arXiv IDs, versions and access date | Primary-source metadata verified in CITATIONS.md and sources/verified_citations.json; no external performance numbers are adopted. |','| Typesetting parameters | Article font size, page margins, figure widths, table widths and spacing | Standard document layout adapted from grammar-vs-bits, not experimental quantities. Individual occurrences are in generated/number_audit.json. |','','The registry preserves direct sources for descriptive same-session statistics separately from frozen predictions. A10/A10G aggregates are never pooled. The source strengths and limitations remain those of CLAIMS.md.'])
+(P/'NUMBERS.md').write_text('\n'.join(lines)+'\n')
+result=dict(passed=True,release='v0.1.0-data',used_values=len(uses),empirical_occurrences=sum(map(len,uses.values())),registered_values=len(registry),unclassified_literals=unknown,classified_layout_or_definition_literals=literals,uses=dict(uses),figures=figures)
+(P/'generated/number_audit.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:result[k] for k in ['passed','used_values','empirical_occurrences','registered_values','unclassified_literals']}))

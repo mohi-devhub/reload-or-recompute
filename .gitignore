@@ -12,3 +12,12 @@ kernels/production/production.py
 kernels/phase2/generated/
 outputs/results.jsonl
 outputs/phase3_analysis.jsonl
+paper/build/
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.fls
+paper/*.fdb_latexmk
+paper/build-*.txt

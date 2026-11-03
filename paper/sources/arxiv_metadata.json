@@ -1,0 +1,264 @@
+{
+  "lmcache": {
+    "source": "https://arxiv.org/abs/2510.09665",
+    "sha256": "f0f7c755095661709febd8ff06fa3a99c387f4664f02bb16efb415c47d09336f",
+    "metadata": {
+      "citation_title": [
+        "LMCache: An Efficient KV Cache Layer for Enterprise-Scale LLM Inference"
+      ],
+      "citation_author": [
+        "Liu, Yuhan",
+        "Cheng, Yihua",
+        "Yao, Jiayi",
+        "An, Yuwei",
+        "Chen, Xiaokun",
+        "Feng, Shaoting",
+        "Huang, Yuyang",
+        "Shen, Samuel",
+        "Zhang, Rui",
+        "Du, Kuntai",
+        "Jiang, Junchen"
+      ],
+      "citation_date": [
+        "2025/10/08"
+      ],
+      "citation_online_date": [
+        "2025/12/05"
+      ],
+      "citation_pdf_url": [
+        "https://arxiv.org/pdf/2510.09665"
+      ],
+      "citation_arxiv_id": [
+        "2510.09665"
+      ]
+    },
+    "version": 2
+  },
+  "cachegen": {
+    "source": "https://arxiv.org/abs/2310.07240",
+    "sha256": "3fb708b04dfcd55dbe07deea596b8e2c9a6c669976933e3bcb81bf38da9e18a3",
+    "metadata": {
+      "citation_title": [
+        "CacheGen: KV Cache Compression and Streaming for Fast Large Language Model Serving"
+      ],
+      "citation_author": [
+        "Liu, Yuhan",
+        "Li, Hanchen",
+        "Cheng, Yihua",
+        "Ray, Siddhant",
+        "Huang, Yuyang",
+        "Zhang, Qizheng",
+        "Du, Kuntai",
+        "Yao, Jiayi",
+        "Lu, Shan",
+        "Ananthanarayanan, Ganesh",
+        "Maire, Michael",
+        "Hoffmann, Henry",
+        "Holtzman, Ari",
+        "Jiang, Junchen"
+      ],
+      "citation_date": [
+        "2023/10/11"
+      ],
+      "citation_online_date": [
+        "2024/07/19"
+      ],
+      "citation_pdf_url": [
+        "https://arxiv.org/pdf/2310.07240"
+      ],
+      "citation_arxiv_id": [
+        "2310.07240"
+      ]
+    },
+    "version": 6
+  },
+  "cacheblend": {
+    "source": "https://arxiv.org/abs/2405.16444",
+    "sha256": "ed63ec34c2888a192bfb5d403ee16cbe6b5e4ca71fa0e49be41ef3ef31e34a87",
+    "metadata": {
+      "citation_title": [
+        "CacheBlend: Fast Large Language Model Serving for RAG with Cached Knowledge Fusion"
+      ],
+      "citation_author": [
+        "Yao, Jiayi",
+        "Li, Hanchen",
+        "Liu, Yuhan",
+        "Ray, Siddhant",
+        "Cheng, Yihua",
+        "Zhang, Qizheng",
+        "Du, Kuntai",
+        "Lu, Shan",
+        "Jiang, Junchen"
+      ],
+      "citation_date": [
+        "2024/05/26"
+      ],
+      "citation_online_date": [
+        "2025/04/03"
+      ],
+      "citation_pdf_url": [
+        "https://arxiv.org/pdf/2405.16444"
+      ],
+      "citation_arxiv_id": [
+        "2405.16444"
+      ]
+    },
+    "version": 3
+  },
+  "cake": {
+    "source": "https://arxiv.org/abs/2410.03065",
+    "sha256": "d81a0e3eea1d5443f6ca42d46368c3ad44fb2cad13acd117f391e6af4f8ba174",
+    "metadata": {
+      "citation_title": [
+        "Compute Or Load KV Cache? Why Not Both?"
+      ],
+      "citation_author": [
+        "Jin, Shuowei",
+        "Liu, Xueshen",
+        "Zhang, Qingzhao",
+        "Mao, Z. Morley"
+      ],
+      "citation_date": [
+        "2024/10/04"
+      ],
+      "citation_online_date": [
+        "2025/02/20"
+      ],
+      "citation_pdf_url": [
+        "https://arxiv.org/pdf/2410.03065"
+      ],
+      "citation_arxiv_id": [
+        "2410.03065"
+      ]
+    },
+    "version": 2
+  },
+  "pykvcache": {
+    "source": "https://arxiv.org/abs/2609.11744",
+    "sha256": "5e8873e30d85543bc8209f45f6152bfcfc75433334db352249a1c0b6ae459955",
+    "metadata": {
+      "citation_title": [
+        "Building py-kvcache: A Performance Characterization of External KV Caching for vLLM with NVMe SSDs"
+      ],
+      "citation_author": [
+        "Kanichai, Joseph",
+        "De Matteis, Tiziano",
+        "Trivedi, Animesh"
+      ],
+      "citation_date": [
+        "2026/09/10"
+      ],
+      "citation_online_date": [
+        "2026/09/10"
+      ],
+      "citation_pdf_url": [
+        "https://arxiv.org/pdf/2609.11744"
+      ],
+      "citation_arxiv_id": [
+        "2609.11744"
+      ]
+    },
+    "version": 1
+  },
+  "fileobservability": {
+    "source": "https://arxiv.org/abs/2610.21249",
+    "sha256": "97a7bd02bb4c11f536280f86ef1aa14103657ce0a859c465fb57bf65c098dea8",
+    "metadata": {
+      "citation_title": [
+        "Characterizing Predictability-Latency Trade-offs of KV-Cache SSD Offloading in LMCache for LLM Serving Systems"
+      ],
+      "citation_author": [
+        "He, Ying",
+        "Shi, Dingsen",
+        "Dai, Yanbo",
+        "Chen, Donger",
+        "Fu, Harry",
+        "Tsu, Chris",
+        "Feng, Wang",
+        "Fu, Song"
+      ],
+      "citation_date": [
+        "2026/10/15"
+      ],
+      "citation_online_date": [
+        "2026/10/15"
+      ],
+      "citation_pdf_url": [
+        "https://arxiv.org/pdf/2610.21249"
+      ],
+      "citation_arxiv_id": [
+        "2610.21249"
+      ]
+    },
+    "version": 1
+  },
+  "kvserve": {
+    "source": "https://arxiv.org/abs/2605.13734",
+    "sha256": "63cbb16be8c79d6620ac3c74f387b3e23668ac3ff839436c2bfded3c8b734a8c",
+    "metadata": {
+      "citation_title": [
+        "KVServe: Service-Aware KV Cache Compression for Communication-Efficient Disaggregated LLM Serving"
+      ],
+      "citation_author": [
+        "Liu, Zedong",
+        "Ma, Xinyang",
+        "Luo, Dejun",
+        "Zhao, Hairui",
+        "Lu, Bing",
+        "Huang, Wenjing",
+        "Gu, Yida",
+        "Liu, Xingchen",
+        "Wei, Zheng",
+        "Liu, Jinyang",
+        "Tao, Dingwen",
+        "Tan, Guangming"
+      ],
+      "citation_date": [
+        "2026/05/13"
+      ],
+      "citation_online_date": [
+        "2026/05/13"
+      ],
+      "citation_pdf_url": [
+        "https://arxiv.org/pdf/2605.13734"
+      ],
+      "citation_arxiv_id": [
+        "2605.13734"
+      ]
+    },
+    "version": 1
+  },
+  "shadowserve": {
+    "source": "https://arxiv.org/abs/2509.16857",
+    "sha256": "5302f0c7e0c96cdb7443765111374868b14ef6db6e8ca67ba7cd16707aa6bcc6",
+    "metadata": {
+      "citation_title": [
+        "ShadowServe: Interference-Free KV Cache Fetching for Distributed Prefix Caching"
+      ],
+      "citation_author": [
+        "Xiang, Xingyu",
+        "Joshi, Raj",
+        "Liu, Yuhan",
+        "Yao, Jiayi",
+        "Zhao, Chenxingyu",
+        "Jiang, Junchen",
+        "Zhou, Yang",
+        "Kohler, Eddie",
+        "Yu, Minlan"
+      ],
+      "citation_date": [
+        "2025/09/21"
+      ],
+      "citation_online_date": [
+        "2025/09/21"
+      ],
+      "citation_pdf_url": [
+        "https://arxiv.org/pdf/2509.16857"
+      ],
+      "citation_arxiv_id": [
+        "2509.16857"
+      ]
+    },
+    "version": 1
+  }
+}

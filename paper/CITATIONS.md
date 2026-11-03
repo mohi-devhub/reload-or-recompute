@@ -1,0 +1,23 @@
+# Citation verification
+
+Each reference was checked against a primary source before use. All research papers are cited explicitly as arXiv versions, not assigned an unverified conference venue. Official documentation has no individual-author or publication-year attribution when the page supplies none. Metadata and SHA-256 digests are retained in paper/sources; full source snapshots are retained locally under ignored outputs/raw/paper-citations for review. No cited paper's performance result is treated as a measurement of this study.
+
+| Key | Authors as verified | Exact title | Cited venue/year and identifier | Primary source |
+| --- | --- | --- | --- | --- |
+| lmcache | Liu, Yuhan; Cheng, Yihua; Yao, Jiayi; An, Yuwei; Chen, Xiaokun; Feng, Shaoting; Huang, Yuyang; Shen, Samuel; Zhang, Rui; Du, Kuntai; Jiang, Junchen | LMCache: An Efficient KV Cache Layer for Enterprise-Scale LLM Inference | arXiv preprint, 2025; 2510.09665v2 | https://arxiv.org/abs/2510.09665v2 |
+| cachegen | Liu, Yuhan; Li, Hanchen; Cheng, Yihua; Ray, Siddhant; Huang, Yuyang; Zhang, Qizheng; Du, Kuntai; Yao, Jiayi; Lu, Shan; Ananthanarayanan, Ganesh; Maire, Michael; Hoffmann, Henry; Holtzman, Ari; Jiang, Junchen | CacheGen: KV Cache Compression and Streaming for Fast Large Language Model Serving | arXiv preprint, 2024; 2310.07240v6 | https://arxiv.org/abs/2310.07240v6 |
+| cacheblend | Yao, Jiayi; Li, Hanchen; Liu, Yuhan; Ray, Siddhant; Cheng, Yihua; Zhang, Qizheng; Du, Kuntai; Lu, Shan; Jiang, Junchen | CacheBlend: Fast Large Language Model Serving for RAG with Cached Knowledge Fusion | arXiv preprint, 2025; 2405.16444v3 | https://arxiv.org/abs/2405.16444v3 |
+| cake | Jin, Shuowei; Liu, Xueshen; Zhang, Qingzhao; Mao, Z. Morley | Compute Or Load KV Cache? Why Not Both? | arXiv preprint, 2025; 2410.03065v2 | https://arxiv.org/abs/2410.03065v2 |
+| pykvcache | Kanichai, Joseph; De Matteis, Tiziano; Trivedi, Animesh | Building py-kvcache: A Performance Characterization of External KV Caching for vLLM with NVMe SSDs | arXiv preprint, 2026; 2609.11744v1 | https://arxiv.org/abs/2609.11744v1 |
+| fileobservability | He, Ying; Shi, Dingsen; Dai, Yanbo; Chen, Donger; Fu, Harry; Tsu, Chris; Feng, Wang; Fu, Song | Characterizing Predictability-Latency Trade-offs of KV-Cache SSD Offloading in LMCache for LLM Serving Systems | arXiv preprint, 2026; 2610.21249v1 | https://arxiv.org/abs/2610.21249v1 |
+| kvserve | Liu, Zedong; Ma, Xinyang; Luo, Dejun; Zhao, Hairui; Lu, Bing; Huang, Wenjing; Gu, Yida; Liu, Xingchen; Wei, Zheng; Liu, Jinyang; Tao, Dingwen; Tan, Guangming | KVServe: Service-Aware KV Cache Compression for Communication-Efficient Disaggregated LLM Serving | arXiv preprint, 2026; 2605.13734v1 | https://arxiv.org/abs/2605.13734v1 |
+| shadowserve | Xiang, Xingyu; Joshi, Raj; Liu, Yuhan; Yao, Jiayi; Zhao, Chenxingyu; Jiang, Junchen; Zhou, Yang; Kohler, Eddie; Yu, Minlan | ShadowServe: Interference-Free KV Cache Fetching for Distributed Prefix Caching | arXiv preprint, 2025; 2509.16857v1 | https://arxiv.org/abs/2509.16857v1 |
+| vllmprefix | not supplied; project documentation | vLLM: Automatic Prefix Caching | official project documentation, not supplied; accessed 2026-11-03; not applicable | https://raw.githubusercontent.com/vllm-project/vllm/main/docs/features/automatic_prefix_caching.md |
+| vllmoffload | not supplied; project documentation | vLLM: KV Offloading Usage Guide | official project documentation, not supplied; accessed 2026-11-03; not applicable | https://raw.githubusercontent.com/vllm-project/vllm/main/docs/features/kv_offloading_usage.md |
+| hicache | not supplied; project documentation | SGLang: HiCache System Design and Optimization | official project documentation, not supplied; accessed 2026-11-03; not applicable | https://docs.sglang.io/docs/advanced_features/hicache_design |
+
+The arXiv landing-page metadata for the file-observability reference says **Characterizing Predictability-Latency Trade-offs ...**; its experimental HTML heading says **Predictability–Throughput ...**. The bibliography uses the landing-page title and records the discrepancy here. The released RELATED_WORK.md is unchanged.
+
+CacheGen's source also identifies SIGCOMM 2024. We cite its inspected arXiv revision rather than invent conference pagination or DOI metadata. KVServe's source states acceptance at SIGCOMM 2026; this draft likewise cites its inspected preprint. Other venues are not inferred from memory.
+
+Cake explicitly combines computation and loading. The paper describes our scalar rule as a whole-prefix decision boundary, not an evaluated overlap scheduler. py-kvcache is acknowledged as close prior hardware/break-even characterization.

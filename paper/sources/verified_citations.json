@@ -1,0 +1,206 @@
+[
+  {
+    "key": "lmcache",
+    "title": "LMCache: An Efficient KV Cache Layer for Enterprise-Scale LLM Inference",
+    "authors": [
+      "Liu, Yuhan",
+      "Cheng, Yihua",
+      "Yao, Jiayi",
+      "An, Yuwei",
+      "Chen, Xiaokun",
+      "Feng, Shaoting",
+      "Huang, Yuyang",
+      "Shen, Samuel",
+      "Zhang, Rui",
+      "Du, Kuntai",
+      "Jiang, Junchen"
+    ],
+    "venue": "arXiv preprint",
+    "year": "2025",
+    "arxiv_id": "2510.09665",
+    "version": 2,
+    "source": "https://arxiv.org/abs/2510.09665v2",
+    "sha256": "f0f7c755095661709febd8ff06fa3a99c387f4664f02bb16efb415c47d09336f",
+    "scope": "metadata and qualitative related-work description; no imported performance results"
+  },
+  {
+    "key": "cachegen",
+    "title": "CacheGen: KV Cache Compression and Streaming for Fast Large Language Model Serving",
+    "authors": [
+      "Liu, Yuhan",
+      "Li, Hanchen",
+      "Cheng, Yihua",
+      "Ray, Siddhant",
+      "Huang, Yuyang",
+      "Zhang, Qizheng",
+      "Du, Kuntai",
+      "Yao, Jiayi",
+      "Lu, Shan",
+      "Ananthanarayanan, Ganesh",
+      "Maire, Michael",
+      "Hoffmann, Henry",
+      "Holtzman, Ari",
+      "Jiang, Junchen"
+    ],
+    "venue": "arXiv preprint",
+    "year": "2024",
+    "arxiv_id": "2310.07240",
+    "version": 6,
+    "source": "https://arxiv.org/abs/2310.07240v6",
+    "sha256": "3fb708b04dfcd55dbe07deea596b8e2c9a6c669976933e3bcb81bf38da9e18a3",
+    "scope": "metadata and qualitative related-work description; no imported performance results"
+  },
+  {
+    "key": "cacheblend",
+    "title": "CacheBlend: Fast Large Language Model Serving for RAG with Cached Knowledge Fusion",
+    "authors": [
+      "Yao, Jiayi",
+      "Li, Hanchen",
+      "Liu, Yuhan",
+      "Ray, Siddhant",
+      "Cheng, Yihua",
+      "Zhang, Qizheng",
+      "Du, Kuntai",
+      "Lu, Shan",
+      "Jiang, Junchen"
+    ],
+    "venue": "arXiv preprint",
+    "year": "2025",
+    "arxiv_id": "2405.16444",
+    "version": 3,
+    "source": "https://arxiv.org/abs/2405.16444v3",
+    "sha256": "ed63ec34c2888a192bfb5d403ee16cbe6b5e4ca71fa0e49be41ef3ef31e34a87",
+    "scope": "metadata and qualitative related-work description; no imported performance results"
+  },
+  {
+    "key": "cake",
+    "title": "Compute Or Load KV Cache? Why Not Both?",
+    "authors": [
+      "Jin, Shuowei",
+      "Liu, Xueshen",
+      "Zhang, Qingzhao",
+      "Mao, Z. Morley"
+    ],
+    "venue": "arXiv preprint",
+    "year": "2025",
+    "arxiv_id": "2410.03065",
+    "version": 2,
+    "source": "https://arxiv.org/abs/2410.03065v2",
+    "sha256": "d81a0e3eea1d5443f6ca42d46368c3ad44fb2cad13acd117f391e6af4f8ba174",
+    "scope": "metadata and qualitative related-work description; no imported performance results"
+  },
+  {
+    "key": "pykvcache",
+    "title": "Building py-kvcache: A Performance Characterization of External KV Caching for vLLM with NVMe SSDs",
+    "authors": [
+      "Kanichai, Joseph",
+      "De Matteis, Tiziano",
+      "Trivedi, Animesh"
+    ],
+    "venue": "arXiv preprint",
+    "year": "2026",
+    "arxiv_id": "2609.11744",
+    "version": 1,
+    "source": "https://arxiv.org/abs/2609.11744v1",
+    "sha256": "5e8873e30d85543bc8209f45f6152bfcfc75433334db352249a1c0b6ae459955",
+    "scope": "metadata and qualitative related-work description; no imported performance results"
+  },
+  {
+    "key": "fileobservability",
+    "title": "Characterizing Predictability-Latency Trade-offs of KV-Cache SSD Offloading in LMCache for LLM Serving Systems",
+    "authors": [
+      "He, Ying",
+      "Shi, Dingsen",
+      "Dai, Yanbo",
+      "Chen, Donger",
+      "Fu, Harry",
+      "Tsu, Chris",
+      "Feng, Wang",
+      "Fu, Song"
+    ],
+    "venue": "arXiv preprint",
+    "year": "2026",
+    "arxiv_id": "2610.21249",
+    "version": 1,
+    "source": "https://arxiv.org/abs/2610.21249v1",
+    "sha256": "97a7bd02bb4c11f536280f86ef1aa14103657ce0a859c465fb57bf65c098dea8",
+    "scope": "metadata and qualitative related-work description; no imported performance results"
+  },
+  {
+    "key": "kvserve",
+    "title": "KVServe: Service-Aware KV Cache Compression for Communication-Efficient Disaggregated LLM Serving",
+    "authors": [
+      "Liu, Zedong",
+      "Ma, Xinyang",
+      "Luo, Dejun",
+      "Zhao, Hairui",
+      "Lu, Bing",
+      "Huang, Wenjing",
+      "Gu, Yida",
+      "Liu, Xingchen",
+      "Wei, Zheng",
+      "Liu, Jinyang",
+      "Tao, Dingwen",
+      "Tan, Guangming"
+    ],
+    "venue": "arXiv preprint",
+    "year": "2026",
+    "arxiv_id": "2605.13734",
+    "version": 1,
+    "source": "https://arxiv.org/abs/2605.13734v1",
+    "sha256": "63cbb16be8c79d6620ac3c74f387b3e23668ac3ff839436c2bfded3c8b734a8c",
+    "scope": "metadata and qualitative related-work description; no imported performance results"
+  },
+  {
+    "key": "shadowserve",
+    "title": "ShadowServe: Interference-Free KV Cache Fetching for Distributed Prefix Caching",
+    "authors": [
+      "Xiang, Xingyu",
+      "Joshi, Raj",
+      "Liu, Yuhan",
+      "Yao, Jiayi",
+      "Zhao, Chenxingyu",
+      "Jiang, Junchen",
+      "Zhou, Yang",
+      "Kohler, Eddie",
+      "Yu, Minlan"
+    ],
+    "venue": "arXiv preprint",
+    "year": "2025",
+    "arxiv_id": "2509.16857",
+    "version": 1,
+    "source": "https://arxiv.org/abs/2509.16857v1",
+    "sha256": "5302f0c7e0c96cdb7443765111374868b14ef6db6e8ca67ba7cd16707aa6bcc6",
+    "scope": "metadata and qualitative related-work description; no imported performance results"
+  },
+  {
+    "key": "vllmprefix",
+    "title": "vLLM: Automatic Prefix Caching",
+    "authors": "not supplied; project documentation",
+    "venue": "official project documentation",
+    "year": "not supplied; accessed 2026-11-03",
+    "arxiv_id": "not applicable",
+    "source": "https://raw.githubusercontent.com/vllm-project/vllm/main/docs/features/automatic_prefix_caching.md",
+    "sha256": "56af436bf0c5c714bcd929a731358db495b1a872180a1089a161c0eb1973beb1"
+  },
+  {
+    "key": "vllmoffload",
+    "title": "vLLM: KV Offloading Usage Guide",
+    "authors": "not supplied; project documentation",
+    "venue": "official project documentation",
+    "year": "not supplied; accessed 2026-11-03",
+    "arxiv_id": "not applicable",
+    "source": "https://raw.githubusercontent.com/vllm-project/vllm/main/docs/features/kv_offloading_usage.md",
+    "sha256": "608e34d508c014974ead2b9cba0668d73e00fa3e56b23bb4d18e406cd8a37f84"
+  },
+  {
+    "key": "hicache",
+    "title": "SGLang: HiCache System Design and Optimization",
+    "authors": "not supplied; project documentation",
+    "venue": "official project documentation",
+    "year": "not supplied; accessed 2026-11-03",
+    "arxiv_id": "not applicable",
+    "source": "https://docs.sglang.io/docs/advanced_features/hicache_design",
+    "sha256": "4f2eaac3f84fa48edbad348f7f4873f4e9deed5bd2622cfd08ae2573f6de1ebf"
+  }
+]

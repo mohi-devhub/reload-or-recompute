@@ -1,0 +1,29 @@
+{
+  "vllmprefix": {
+    "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/docs/features/automatic_prefix_caching.md",
+    "sha256": "56af436bf0c5c714bcd929a731358db495b1a872180a1089a161c0eb1973beb1",
+    "accessed": "2026-11-03",
+    "publication_date": "not supplied",
+    "individual_authors": "not supplied",
+    "venue": "official project documentation",
+    "arxiv_id": null
+  },
+  "vllmoffload": {
+    "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/docs/features/kv_offloading_usage.md",
+    "sha256": "608e34d508c014974ead2b9cba0668d73e00fa3e56b23bb4d18e406cd8a37f84",
+    "accessed": "2026-11-03",
+    "publication_date": "not supplied",
+    "individual_authors": "not supplied",
+    "venue": "official project documentation",
+    "arxiv_id": null
+  },
+  "hicache": {
+    "url": "https://docs.sglang.io/docs/advanced_features/hicache_design",
+    "sha256": "4f2eaac3f84fa48edbad348f7f4873f4e9deed5bd2622cfd08ae2573f6de1ebf",
+    "accessed": "2026-11-03",
+    "publication_date": "not supplied",
+    "individual_authors": "not supplied",
+    "venue": "official project documentation",
+    "arxiv_id": null
+  }
+}

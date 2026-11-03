@@ -1,0 +1,19 @@
+"""Create BibTeX only from inspected primary-source metadata snapshots."""
+from pathlib import Path
+import json,re
+P=Path(__file__).resolve().parents[1]
+meta=json.loads((P/'sources/arxiv_metadata.json').read_text());verified=[];bib=[]
+for key,r in meta.items():
+ m=r['metadata'];ident=m['citation_arxiv_id'][0];version=r['version']
+ date=m.get('citation_online_date',m['citation_date'])[0];year=date[:4];title=m['citation_title'][0];authors=m['citation_author'];url='https://arxiv.org/abs/'+ident+'v'+str(version)
+ bib.append('@misc{'+key+',\n  author = {'+' and '.join(authors)+'},\n  title = {{'+title+'}},\n  year = {'+year+'},\n  howpublished = {arXiv:'+ident+'v'+str(version)+'},\n  url = {'+url+'},\n  note = {\\url{'+url+'}}\n}\n')
+ verified.append(dict(key=key,title=title,authors=authors,venue='arXiv preprint',year=year,arxiv_id=ident,version=version,source=url,sha256=r['sha256'],scope='metadata and qualitative related-work description; no imported performance results'))
+docs=json.loads((P/'sources/documentation_metadata.json').read_text())
+for key,title,project in [('vllmprefix','Automatic Prefix Caching','vLLM'),('vllmoffload','KV Offloading Usage Guide','vLLM'),('hicache','HiCache System Design and Optimization','SGLang')]:
+ r=docs[key];bib.append('@misc{'+key+',\n  title = {{'+project+': '+title+'}},\n  howpublished = {Official project documentation},\n  note = {No individual authors or publication date supplied; accessed November 3, 2026. \\url{'+r['url']+'}}\n}\n')
+ verified.append(dict(key=key,title=project+': '+title,authors='not supplied; project documentation',venue=r['venue'],year='not supplied; accessed 2026-11-03',arxiv_id='not applicable',source=r['url'],sha256=r['sha256']))
+(P/'references.bib').write_text('\n'.join(bib));(P/'sources/verified_citations.json').write_text(json.dumps(verified,indent=2)+'\n')
+lines=['# Citation verification','','Each reference was checked against a primary source before use. All research papers are cited explicitly as arXiv versions, not assigned an unverified conference venue. Official documentation has no individual-author or publication-year attribution when the page supplies none. Metadata and SHA-256 digests are retained in paper/sources; full source snapshots are retained locally under ignored outputs/raw/paper-citations for review. No cited paper\'s performance result is treated as a measurement of this study.','','| Key | Authors as verified | Exact title | Cited venue/year and identifier | Primary source |','| --- | --- | --- | --- | --- |']
+for r in verified:lines.append('| '+r['key']+' | '+('; '.join(r['authors']) if isinstance(r['authors'],list) else r['authors'])+' | '+r['title']+' | '+r['venue']+', '+r['year']+'; '+r['arxiv_id']+('v'+str(r['version']) if 'version' in r else '')+' | '+r['source']+' |')
+lines.extend(['','The arXiv landing-page metadata for the file-observability reference says **Characterizing Predictability-Latency Trade-offs ...**; its experimental HTML heading says **Predictability–Throughput ...**. The bibliography uses the landing-page title and records the discrepancy here. The released RELATED_WORK.md is unchanged.','','CacheGen\'s source also identifies SIGCOMM 2024. We cite its inspected arXiv revision rather than invent conference pagination or DOI metadata. KVServe\'s source states acceptance at SIGCOMM 2026; this draft likewise cites its inspected preprint. Other venues are not inferred from memory.','','Cake explicitly combines computation and loading. The paper describes our scalar rule as a whole-prefix decision boundary, not an evaluated overlap scheduler. py-kvcache is acknowledged as close prior hardware/break-even characterization.'])
+(P/'CITATIONS.md').write_text('\n'.join(lines)+'\n');print('Verified and generated',len(verified),'references')

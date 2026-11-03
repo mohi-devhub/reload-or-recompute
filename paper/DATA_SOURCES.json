@@ -1,0 +1,24 @@
+{
+  "release": "v0.1.0-data",
+  "commit": "691cfe1006482468891a23114e4b93bcb3eb9dd0",
+  "files": {
+    "docs/CLAIMS.md": "c4303d70911d62f29e7dd54233c01c0c26c42094f3161e6118ff60ebf739cb0b",
+    "docs/RELATED_WORK.md": "ba82249c3ba7fbca566da197640ed9231ca32989251f0d91dd9b0bb6f69625a1",
+    "outputs/claims_evidence.json": "121401161086470166aa795e2ae3439db9ca07f38d8b5eee9d6c3efcf2a95061",
+    "outputs/consolidated_coverage.csv": "ce4415ef8cd6b5b281e77684a36878d65da0aec57fa8a643f70cdbc47378cd09",
+    "outputs/consolidated_scorecard.csv": "d46000e501f5f54ec75a83c1b63049610e738500e724f92d8e28eb2a8bcc0e05",
+    "outputs/consolidated_file_wins.csv": "b7356986a42c22c0951a54445ddfc54fac08c39fcc532a7c89c533f831a83aed",
+    "outputs/consolidated_crossovers.csv": "c63c39ab6f80c8da10f8d9c24624a8a849108c5b8fb0049842f95956fb4bd03b",
+    "docs/PHASE2_REPORT.md": "c6b5fa125750946126aeb96f1deebe5d7a923aa99bde2b418cad20d585c19707",
+    "docs/PHASE3_REPORT.md": "3d0f515348c9438379631c5134b61067ce60f96fc13730e08fc738f9dfdff899",
+    "docs/PHASE3_PROTOCOL.md": "859c3507028e29ec8e3f3c7ecf46445489041fe4a0dbddd2a264cf8eecfc2336",
+    "docs/PHASE2_PROTOCOL.md": "18c88869c991f106f1cde1323d20ccd98efabc2daae2500f409d4e91678c92c7",
+    "outputs/results_archive.json": "e90077b47dc2bc52cd9aabaf21f4c39f8b52c85062e660f8fac98dba2251bd64",
+    "figures/paper/bstar-vs-gpu.pdf": "21a7f79e7948a0c0cb7643abc4da0d8f787a8f1223e9009849ca06725a41f9b9",
+    "figures/paper/frozen-scorecard.pdf": "9506433a11a187e783e1f0c99d65fbcc98adeaf50a6045726325e03b2e1389e8",
+    "figures/paper/short-context-regime.pdf": "170b0911874db62f0449d076cc9cccd52818dd8c6dcf5e13212fc2063bba9ae3",
+    "figures/paper/bstar-vs-prefill.pdf": "b56f7692e14e3bca52419456b7829939522a8ab3411089e5bcfa2264704bb6b5",
+    "outputs/consolidated_file_observability.csv": "ebb364dceea08fa973e7343cf24ed583729fab70dd4fba449d16b16e5b5791b2",
+    "outputs/results.jsonl.gz": "d3d07cb9a33971fb155d844f4834da2911950c3a3f34846dc0a3af5f3dbc3897"
+  }
+}
