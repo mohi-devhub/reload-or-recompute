@@ -37,10 +37,10 @@ def report():
            f"optional H100: ${audit['h100_cost_estimate_and_reservation_usd']:.4f}. "
            'These are list-price estimates including CPU, capped memory, initialization and infrastructure, not an invoice.','',
            '## Frozen prediction scorecard','',
-           '| GPU | Region | Correct / resolved decisions | Unresolved | Complete timing cells | Median absolute TTFT error, ms | Median absolute relative error |',
+           '| Requested tier / allocated name | Region or session | Correct / resolved decisions | Unresolved | Complete timing cells | Median absolute TTFT error, ms | Median absolute relative error |',
            '| --- | --- | --- | --- | --- | --- | --- |']
     for r in scorecards:
-        lines.append(f"| {r['gpu']} | {r['scope']} | {r['correct_decisions']} / {r['resolved_decisions']} | {r['unresolved_decisions']} | {r['complete_cells']} | {r['median_absolute_ttft_error_ms']:.3f} | {100*r['median_absolute_relative_ttft_error']:.1f}% |")
+        lines.append(f"| {r['gpu']} / {', '.join(r['allocated_gpu_names'])} | {r['scope']} | {r['correct_decisions']} / {r['resolved_decisions']} | {r['unresolved_decisions']} | {r['complete_cells']} | {r['median_absolute_ttft_error_ms']:.3f} | {100*r['median_absolute_relative_ttft_error']:.1f}% |")
     lines.extend(['','Resolved decisions require the paired-round bootstrap interval for path-minus-recompute TTFT to exclude zero. '
                   'Errors include prefix-only, recompute and resident-hit baselines; decisions include resident hit and reload paths. '
                   'The unthrottled pinned path is counted once. Cell counts are descriptive and are not independent trials. '
@@ -52,6 +52,7 @@ def report():
         if r.get('environment'):
             e=r['environment'];lines.append(f"| {r['name']} | {', '.join(e['gpu_names'])} / {e['compute_capability']} | {e['gpu_query']} | {e['torch']} / {e['transformers']} | {r['duration_s']:.1f} |")
     lines.extend(['','Modal names its Ampere request `A10`; the actual GPU name above is authoritative. '
+                  'A10 and A10G names within that service tier are retained separately in the session scorecards. '
                   'GPU UUIDs, exact driver/runtime versions, clocks, CPU/RAM and disk capacity are retained per run. '
                   'All measurements use fp16 and efficient/math SDPA, with FlashAttention disabled. '
                   'The full scheduling difference and protected function hashes are in `outputs/phase3_provenance.json`; '
@@ -143,7 +144,7 @@ def report():
                   'and deviations are in `docs/NOTES.md`. No production-path claim is made.',''])
     (ROOT/'docs/PHASE3_REPORT.md').write_text('\n'.join(lines))
     csvpath=ROOT/'outputs/phase3_crossovers.csv'
-    fields=['gpu']+['run_id','model','workload','prefix_tokens','turn_tokens','kv_bytes_per_token','predicted_bstar_mb_s','measured_prefill_tokens_s','t4_prefill_tokens_s','measured_prefill_ratio_to_t4','hypothesis_prefill_ratio_to_t4','observed_bracket','observed_harmonic_estimate_mb_s']
+    fields=['gpu','allocated_gpu_name']+['run_id','model','workload','prefix_tokens','turn_tokens','kv_bytes_per_token','predicted_bstar_mb_s','measured_prefill_tokens_s','t4_prefill_tokens_s','measured_prefill_ratio_to_t4','hypothesis_prefill_ratio_to_t4','observed_bracket','observed_harmonic_estimate_mb_s']
     with csvpath.open('w') as f:
         writer=csv.DictWriter(f,fieldnames=fields);writer.writeheader()
         for r in crosses:writer.writerow({**{k:r[k] for k in fields if k not in ['observed_bracket','observed_harmonic_estimate_mb_s']},

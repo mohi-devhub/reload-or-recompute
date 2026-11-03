@@ -129,3 +129,7 @@ Both original L4 calibration apps stayed at zero running tasks while A10 calibra
 The smaller-host L4 diagnostic also remained queued with zero running containers and was cancelled. It supplies no timings or evidence that host size caused the wait. Its reservation remains charged conservatively; it is explicitly excluded from prediction fitting. Original L4 host requests remain unchanged. Modal function statistics confirmed one queued input and no running worker for each original L4 calibration app.
 
 A separate, bounded minimal-image L4 Sandbox probe tests allocation through Modal's second interface. It is excluded from benchmark prediction fits. Sandboxes use standard GPU pricing but non-preemptible CPU/RAM tariffs; the probe's reservation was corrected to those higher CPU/RAM rates while remaining within the main cap. This diagnostic has no model timing function and is not a hardware-transfer data point.
+
+### Ampere service-tier variation
+
+The two A10-tier main sweeps report different actual names (`NVIDIA A10` and `NVIDIA A10G`) and distinct GPU UUIDs. Their initial PCIe link snapshots also differ. Calibration predictions remain frozen from the original calibration allocation. Each session retains its actual board name and PCIe telemetry; session spread therefore includes service-tier allocation variation, not just repeated measurements on a homogeneous physical board. The final report must not silently label every A10-tier allocation A10G or attribute the spread solely to clock drift.

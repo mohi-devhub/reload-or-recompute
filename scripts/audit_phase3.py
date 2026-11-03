@@ -33,6 +33,8 @@ def audit():
             if timestamp>submitted:failures.append('Commit after submission: '+run['name'])
             observed=[r for r in rows if r.get('run_id')==spec['run_id'] and r['kind']=='measurement']
             if observed and timestamp>min(r['wall_start_unix'] for r in observed):failures.append('Commit after sweep: '+run['name'])
+    missing_targets={'L4','A10'}-{r['gpu'] for r in registrations}
+    if missing_targets:failures.append('Missing mandatory target registrations: '+', '.join(sorted(missing_targets)))
     samples=[r for r in rows if r['kind']=='measurement']
     if any(not r['valid'] for r in samples):failures.append('Invalid measured cache restoration')
     if any(r['wall_ms']<=0 or r['cuda_event_ms']<=0 or r['peak_vram_bytes']<=0 for r in samples):failures.append('Invalid timing/physical allocation')

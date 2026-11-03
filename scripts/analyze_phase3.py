@@ -99,6 +99,7 @@ def analyze(source=None):
             decision=True if delta['ci95'][1]<0 else False if delta['ci95'][0]>0 else None
         error=p['predicted_ttft_ms']-observed['median']
         row=emit('phase3_prediction_score',**p,observed_ttft_ms=observed['median'],observed_ci95_ms=observed['ci95'],
+                 allocated_gpu_name=observed['environment']['gpu_names'][0],
                  signed_error_ms=error,absolute_error_ms=abs(error),absolute_relative_error=abs(error)/observed['median'],
                  paired_path_minus_recompute_ms=delta,observed_reload=decision,
                  correct=decision==p['predicted_reload'] if decision is not None else None)
@@ -126,6 +127,7 @@ def analyze(source=None):
                          and r['turn_tokens']==shape[4] and r['condition']=='prefix_only']
         t4_tps=statistics.median(matched_prefill) if matched_prefill else None
         row=emit('phase3_bandwidth_crossover',**fields,gpu=p['gpu'],kv_bytes_per_token=p['kv_bytes_per_token'],
+                 allocated_gpu_name=rec['environment']['gpu_names'][0],
                  predicted_bstar_mb_s=p['predicted_bstar_mb_s'],predicted_prefill_tokens_s=shape[3]*1000/p['predicted_prefix_ms'],
                  measured_prefill_tokens_s=pref['prefill_tokens_s'],measured=observed,points=points,
                  t4_prefill_tokens_s=t4_tps,measured_prefill_ratio_to_t4=pref['prefill_tokens_s']/t4_tps if t4_tps else None,
@@ -149,10 +151,13 @@ def analyze(source=None):
              interpretation='resolved achieved-bandwidth brackets; no ratio inferred from censored thresholds')
     # Aggregate only score summaries; observations keep run and session identity.
     for gpu in registrations:
-        for scope,subset in [('all',[s for s in scored if s['gpu']==gpu])]+[(r,[s for s in scored if s['gpu']==gpu and s['calibration_region']==r]) for r in ['anchor','interpolation','extrapolation']]:
+        scopes=[('all',[s for s in scored if s['gpu']==gpu])]+[(r,[s for s in scored if s['gpu']==gpu and s['calibration_region']==r]) for r in ['anchor','interpolation','extrapolation']]
+        scopes += [('session: '+run_id,[s for s in scored if s['gpu']==gpu and s['run_id']==run_id]) for run_id in sorted({s['run_id'] for s in scored if s['gpu']==gpu})]
+        for scope,subset in scopes:
             if not subset:continue
             decisions=[r for r in subset if r['correct'] is not None]
             emit('phase3_scorecard',gpu=gpu,scope=scope,complete_cells=len(subset),resolved_decisions=len(decisions),
+                 allocated_gpu_names=sorted({s['allocated_gpu_name'] for s in subset}),
                  correct_decisions=sum(r['correct'] for r in decisions),
                  unresolved_decisions=sum(r['predicted_reload'] is not None and r['correct'] is None for r in subset),
                  median_absolute_ttft_error_ms=statistics.median(r['absolute_error_ms'] for r in subset),
