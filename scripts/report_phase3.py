@@ -45,6 +45,12 @@ def report():
                   'Errors include prefix-only, recompute and resident-hit baselines; decisions include resident hit and reload paths. '
                   'The unthrottled pinned path is counted once. Cell counts are descriptive and are not independent trials. '
                   'Anchor/interpolation/extrapolation refer to the calibration length range.','',
+                  'Largest absolute TTFT prediction errors (all conditions, without refitting):','',
+                  '| Requested GPU | Model | Prefix / new turn | Condition | Predicted / observed, ms | Region |',
+                  '| --- | --- | --- | --- | --- | --- |'])
+    for r in sorted(scores,key=lambda s:s['absolute_error_ms'],reverse=True)[:5]:
+        lines.append(f"| {r['gpu']} | {short(r['model'])} | {r['prefix_tokens']} / {r['turn_tokens']} | {r['condition']} | {r['predicted_ttft_ms']:.2f} / {r['observed_ttft_ms']:.2f} | {r['calibration_region']} |")
+    lines.extend(['',
                   '## Hardware and provenance','',
                   '| Run | Allocated GPU / capability | Driver and PCIe snapshot | Torch / Transformers | Wall seconds |',
                   '| --- | --- | --- | --- | --- |'])
@@ -125,14 +131,24 @@ def report():
         for turn in [32,256]:
             values=[r['relative_range'] for r in old if r['turn_tokens']==turn]
             if values:lines.append(f"T4 new turn {turn}: median recompute session range {100*median(values):.1f}%, maximum {100*max(values):.1f}%.")
-    lines.extend(['','| Run | Samples during timed intervals | SM MHz | Memory MHz | Temperature C | Power W | Throttle reason bitmasks |',
-                  '| --- | --- | --- | --- | --- | --- | --- |'])
+    lines.extend(['','| GPU / session | Prefix / new turn | Recompute median and within-session 95% CI, ms | Across-session range / median |',
+                  '| --- | --- | --- | --- |'])
+    spreads={(r['gpu'],r['prefix_tokens'],r['turn_tokens']):r for r in rows if r['kind']=='phase3_session_spread' and r['condition']=='recompute'}
+    for r in summaries:
+        if r['model']!=MAIN or r['prefix_tokens'] not in [1024,8192] or r['condition']!='recompute':continue
+        spread=spreads.get((r['gpu'],r['prefix_tokens'],r['turn_tokens']))
+        if spread:lines.append(f"| {r['gpu']} / {r['run_id']} | {r['prefix_tokens']} / {r['turn_tokens']} | {r['median']:.3f} [{r['ci95'][0]:.3f}, {r['ci95'][1]:.3f}] | {100*spread['range_over_median']:.1f}% |")
+    lines.extend(['','| Run | Samples during timed intervals | SM MHz | Memory MHz | Temperature C | Power W | PCIe gen / width | Throttle reason bitmasks |',
+                  '| --- | --- | --- | --- | --- | --- | --- | --- |'])
     for r in rows:
         if r['kind']=='phase3_telemetry_summary':
-            v=r['timing_ranges'];lines.append(f"| {r['run_id']} | {r['timing_sample_count']} | {v.get('clocks.sm')} | {v.get('clocks.mem')} | {v.get('temperature.gpu')} | {v.get('power.draw')} | {', '.join(r['timing_throttle_reasons'])} |")
+            v=r['timing_ranges'];lines.append(f"| {r['run_id']} | {r['timing_sample_count']} | {v.get('clocks.sm')} | {v.get('clocks.mem')} | {v.get('temperature.gpu')} | {v.get('power.draw')} | {v.get('pcie.link.gen.current')} / {v.get('pcie.link.width.current')} | {', '.join(r['timing_throttle_reasons'])} |")
     lines.extend(['','Telemetry is sampled at approximately one-second intervals and can miss brief short-context trials. '
                   'Randomized within-round condition order reduces ordering bias; telemetry association does not prove a cause '
                   'for latency differences. GPU UUIDs in the ledger distinguish independent allocations from reused physical cards.','',
+                  'Bitmask `0x4` denotes software power-cap limiting, per the '
+                  '[NVIDIA NVML definitions](https://docs.nvidia.com/deploy/archive/R535/nvml-api/group__nvmlClocksEventReasons.html). '
+                  'Per-condition clock sample counts and medians are archived separately, since pooled timed intervals include rate-limiter sleeps.','',
                   '## Rule of thumb and limits','',
                   'Reload when `KV_bytes / effective_bandwidth + CPU_read_and_deserialization + fixed_overhead + resident_new_turn_TTFT < full_recompute_TTFT`; '
                   'otherwise recompute, using locally calibrated baselines and treating near-zero savings as unresolved.','',
@@ -140,6 +156,7 @@ def report():
                   'tokenization, network transfer and queueing; CPU caches and files already exist. The paced copy path simulates '
                   'bandwidth and does not emulate network/storage latency distributions. Calibration extrapolation, '
                   'host CPU differences, CUDA/driver differences, per-file eviction limits, two-session sampling and '
+                  'unpropagated calibration-fit uncertainty, '
                   'model-specific context limits restrict transfer claims. Full configuration drops are in `configs/phase3_plan.json` '
                   'and deviations are in `docs/NOTES.md`. No production-path claim is made.',''])
     (ROOT/'docs/PHASE3_REPORT.md').write_text('\n'.join(lines))

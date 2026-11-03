@@ -20,6 +20,11 @@ from phase3_plan import MAIN,MODELS,CONDITIONS
 FIELDS=['run_id','model','workload','prefix_tokens','turn_tokens']
 
 
+def reason_mask(value):
+    try:return int(value,16)
+    except (ValueError,TypeError):return None
+
+
 def archived_rows(ledger,source=None):
     archive=[]
     if source:
@@ -161,6 +166,8 @@ def analyze(source=None):
                  correct_decisions=sum(r['correct'] for r in decisions),
                  unresolved_decisions=sum(r['predicted_reload'] is not None and r['correct'] is None for r in subset),
                  median_absolute_ttft_error_ms=statistics.median(r['absolute_error_ms'] for r in subset),
+                 p95_absolute_ttft_error_ms=float(np.percentile([r['absolute_error_ms'] for r in subset],95)),
+                 maximum_absolute_ttft_error_ms=max(r['absolute_error_ms'] for r in subset),
                  median_absolute_relative_ttft_error=statistics.median(r['absolute_relative_error'] for r in subset))
         for condition in CONDITIONS:
             subset=[s for s in scored if s['gpu']==gpu and s['condition']==condition]
@@ -183,7 +190,16 @@ def analyze(source=None):
         run_id=run['specification']['run_id'];samples=[s['sample'] for s in streams if s['run_id']==run_id]
         trials=[r for r in raw if r['kind']=='measurement' and r['run_id']==run_id]
         active=[s for s in samples if any(r['wall_start_unix']<=s['timestamp_unix']<=r['wall_end_unix'] for r in trials)]
+        by_condition={}
+        for condition in sorted({r['condition'] for r in trials}):
+            selected=[r for r in trials if r['condition']==condition]
+            matched=[s for s in samples if any(r['wall_start_unix']<=s['timestamp_unix']<=r['wall_end_unix'] for r in selected)]
+            if matched:by_condition[condition]=dict(samples=len(matched),median_sm_mhz=statistics.median(s['clocks.sm'] for s in matched),
+                    sm_range_mhz=[min(s['clocks.sm'] for s in matched),max(s['clocks.sm'] for s in matched)],
+                    software_power_cap_samples=sum(bool(reason_mask(s.get('throttle_reasons'))&4) for s in matched if reason_mask(s.get('throttle_reasons')) is not None),
+                    unknown_reason_samples=sum(reason_mask(s.get('throttle_reasons')) is None for s in matched))
         emit('phase3_telemetry_summary',run_id=run_id,gpu=run['gpu'],sample_count=len(samples),timing_sample_count=len(active),
+             by_condition=by_condition,
              timing_ranges={field:[min(s[field] for s in active if field in s),max(s[field] for s in active if field in s)] for field in ['clocks.sm','clocks.mem','temperature.gpu','power.draw','pcie.link.gen.current','pcie.link.width.current'] if any(field in s for s in active)},
              timing_throttle_reasons=sorted({s['throttle_reasons'] for s in active if s.get('throttle_reasons')}))
     invalid=[r for r in raw if r['kind']=='measurement' and not r['valid']]
