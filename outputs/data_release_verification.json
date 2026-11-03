@@ -1,0 +1,74 @@
+{
+  "verified": true,
+  "checked_commit": "607ee5f985a252053bce6bf9ab3481e257eefb88",
+  "archive": {
+    "kind": "results_archive",
+    "format": "gzip",
+    "canonical_path": "outputs/results.jsonl",
+    "archive_path": "outputs/results.jsonl.gz",
+    "uncompressed_bytes": 127231839,
+    "uncompressed_sha256": "4c764d39510a88c5b7b9814be41ab614390d7fd0797e88b0000eb448d67fab75",
+    "compressed_sha256": "d3d07cb9a33971fb155d844f4834da2911950c3a3f34846dc0a3af5f3dbc3897"
+  },
+  "original_records_sha256": "3b0e631b08997c65d03ac4bd1fb963eef1f703e333ea2461a4503ce7339f87b8",
+  "claim_count": 23,
+  "commands": [
+    [
+      "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+      "scripts/materialize_results.py"
+    ],
+    [
+      "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+      "scripts/analyze_phase2.py",
+      "--from-results",
+      "outputs/results.jsonl"
+    ],
+    [
+      "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+      "scripts/report_phase2.py"
+    ],
+    [
+      "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+      "scripts/analyze_phase3.py",
+      "--from-results",
+      "outputs/results.jsonl"
+    ],
+    [
+      "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+      "scripts/audit_phase3.py"
+    ],
+    [
+      "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+      "scripts/report_phase3.py"
+    ],
+    [
+      "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+      "scripts/consolidate_study.py",
+      "--check",
+      "--figures"
+    ],
+    [
+      "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests"
+    ]
+  ],
+  "figure_sha256": {
+    "figures/paper/bstar-vs-gpu.pdf": "21a7f79e7948a0c0cb7643abc4da0d8f787a8f1223e9009849ca06725a41f9b9",
+    "figures/paper/bstar-vs-gpu.png": "83da65b8a06cec64837a0ab2faaa034bf60ae7779ccb6055b0cc92089ac3d85a",
+    "figures/paper/bstar-vs-prefill.pdf": "b56f7692e14e3bca52419456b7829939522a8ab3411089e5bcfa2264704bb6b5",
+    "figures/paper/bstar-vs-prefill.png": "66b54614b5d5e8dda5e5cead18ef7ef7be9621257d058960fbef86a73ef15dae",
+    "figures/paper/frozen-scorecard.pdf": "9506433a11a187e783e1f0c99d65fbcc98adeaf50a6045726325e03b2e1389e8",
+    "figures/paper/frozen-scorecard.png": "4c6b46ca3b9ddb36c0357b594b63252430d0ab22b25a0b6bc29bb4cd9696be93",
+    "figures/paper/short-context-regime.pdf": "170b0911874db62f0449d076cc9cccd52818dd8c6dcf5e13212fc2063bba9ae3",
+    "figures/paper/short-context-regime.png": "2c16360a10d4c82e7183d2f92fa39e107fa9f37b74aab8032ac0936e86a98769"
+  },
+  "clean_checkout_status_after_rebuild": "",
+  "source_and_preregistrations_unchanged": true,
+  "no_new_gpu_runs": true,
+  "claim_tamper_rejected": true,
+  "vector_pdf_no_embedded_images": true
+}
