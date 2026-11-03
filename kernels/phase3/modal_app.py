@@ -51,10 +51,7 @@ def preload():
     outputs.commit()
     return json.dumps(result)
 
-@app.function(image=image,gpu=GPU,cpu=(CPU,CPU),memory=(RAM,RAM),
-              volumes={'/cache':cache,'/persist':outputs},timeout=LIMIT,startup_timeout=90,
-              scaledown_window=2,max_containers=1,retries=0,single_use_containers=True)
-def execute(spec):
+def execute_reference(spec,limit):
     import shutil,signal,subprocess,sys,time
     start=time.time();run=spec['run_id']
     scratch=Path('/work')/run;scratch.mkdir(parents=True,exist_ok=True)
@@ -76,7 +73,7 @@ def execute(spec):
         child=subprocess.Popen([sys.executable,'/study/adapter.py',str(scratch/'spec.json')],cwd=scratch,
                                stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
         while child.poll() is None:
-            if time.time()-start>LIMIT-45:
+            if time.time()-start>limit-45:
                 os.killpg(child.pid,signal.SIGTERM)
                 try:child.wait(timeout=5)
                 except subprocess.TimeoutExpired:
@@ -87,7 +84,59 @@ def execute(spec):
     backup();shutil.copyfile(scratch/'process.log',destination/'process.log')
     result=dict(kind='phase3_modal_run',phase='phase3',run_id=run,returncode=code,
                 duration_s=time.time()-start,requested_gpu=GPU,container_id=os.environ.get('MODAL_TASK_ID'))
+    rows=[json.loads(line) for line in (destination/'results.jsonl').read_text().splitlines()]
+    completed={r['model'] for r in rows if r['kind']=='model_complete' and r['completed']}
+    result['complete']=code==0 and set(spec['models'])<=completed and not any(r['kind']=='measurement' and not r['valid'] for r in rows)
     (destination/'done.json').write_text(json.dumps(result));outputs.commit()
+    return result
+
+
+def execute_h100(spec):
+    import hashlib,time,traceback
+    start=time.time();folder=Path('/persist')/spec['run_id'];folder.mkdir(parents=True,exist_ok=True)
+    completed=[];success=False;error=None
+    try:
+        for stage in spec['calibration_stages']:
+            outcome=execute_reference(stage,240);completed.append(stage['run_id'])
+            assert outcome['complete'],'H100 calibration failed: '+stage['run_id']
+        (folder/'ready.json').write_text(json.dumps(dict(started_unix=start,elapsed_s=time.time()-start,
+             calibration_run_ids=completed,container_id=os.environ.get('MODAL_TASK_ID'))));outputs.commit()
+        deadline=min(time.time()+300,start+LIMIT-1000)
+        release=None
+        while time.time()<deadline:
+            outputs.reload()
+            if (folder/'release.json').exists():
+                release=json.loads((folder/'release.json').read_text());break
+            time.sleep(2)
+        assert release is not None,'No committed prediction release before H100 gate deadline'
+        assert len(release['prediction_commit'])==40 and all(c in '0123456789abcdef' for c in release['prediction_commit'])
+        assert hashlib.sha256(release['manifest_text'].encode()).hexdigest()==release['manifest_sha256']
+        manifest=json.loads(release['manifest_text']);assert manifest['gpu']=='H100!' and manifest['calibration_only']
+        allowed={r['name']:r for r in spec['planned_runs']}
+        stages=release['sweep_stages']
+        assert sum(s['_stage_timeout_s'] for s in stages)+time.time()-start+45<LIMIT,'H100 projections do not fit remaining session'
+        for stage in stages:
+            planned=allowed[stage['run_id'].removeprefix('phase3-')]
+            assert stage['models']==planned['models'] and stage['lengths_by_model']==planned['lengths_by_model']
+            assert stage['turns_by_model']==planned['turns_by_model'] and stage['workloads']==[planned['workload']]
+            assert stage['prediction_commit']==release['prediction_commit']
+            outcome=execute_reference(stage,stage['_stage_timeout_s']);completed.append(stage['run_id'])
+            assert outcome['complete'],'H100 sweep stage incomplete: '+stage['run_id']
+        success=True
+    except Exception:
+        error=traceback.format_exc()
+    result=dict(kind='phase3_modal_run',phase='phase3',run_id=spec['run_id'],duration_s=time.time()-start,
+                requested_gpu=GPU,container_id=os.environ.get('MODAL_TASK_ID'),complete=success,
+                stage_run_ids=completed,error=error,returncode=0 if success else 1)
+    (folder/'done.json').write_text(json.dumps(result));outputs.commit()
+    return result
+
+
+@app.function(image=image,gpu=GPU,cpu=(CPU,CPU),memory=(RAM,RAM),
+              volumes={'/cache':cache,'/persist':outputs},timeout=LIMIT,startup_timeout=90,
+              scaledown_window=2,max_containers=1,retries=0,single_use_containers=True)
+def execute(spec):
+    result=execute_h100(spec) if spec['purpose']=='h100_combined' else execute_reference(spec,LIMIT)
     return json.dumps(result)
 
 @app.local_entrypoint()

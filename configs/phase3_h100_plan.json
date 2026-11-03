@@ -1,0 +1,273 @@
+{
+  "kind": "phase3_h100_plan",
+  "phase": "phase3",
+  "schema_version": 3,
+  "gpu": "H100!",
+  "planned_runs": [
+    {
+      "name": "h100-main",
+      "models": [
+        "Qwen/Qwen2.5-1.5B"
+      ],
+      "workload": "ultrachat",
+      "lengths_by_model": {
+        "Qwen/Qwen2.5-1.5B": [
+          256,
+          1024,
+          4096,
+          16384
+        ]
+      },
+      "turns_by_model": {
+        "Qwen/Qwen2.5-1.5B": [
+          32
+        ]
+      },
+      "seed": 8901
+    },
+    {
+      "name": "h100-pythia",
+      "models": [
+        "EleutherAI/pythia-1.4b"
+      ],
+      "workload": "repeated_control",
+      "lengths_by_model": {
+        "EleutherAI/pythia-1.4b": [
+          256,
+          1024
+        ]
+      },
+      "turns_by_model": {
+        "EleutherAI/pythia-1.4b": [
+          32
+        ]
+      },
+      "seed": 8902
+    }
+  ],
+  "allocation_timeout_s": 1680,
+  "initialization_allowance_s": 120,
+  "registration_gate_max_s": 300,
+  "calibration_anchors": {
+    "Qwen/Qwen2.5-1.5B": [
+      64,
+      1024,
+      8192
+    ],
+    "EleutherAI/pythia-1.4b": [
+      64,
+      512,
+      2016
+    ]
+  },
+  "dropped_cells": [
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "prefix_only",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "recompute",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "gpu_hit",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "cpu_pageable",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "file_torch_direct",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "file_raw_staged",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "simulated_50_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "simulated_100_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "simulated_200_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "simulated_400_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "simulated_800_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "simulated_1600_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 4096,
+      "turn_tokens": 32,
+      "condition": "simulated_unthrottled",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "prefix_only",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "recompute",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "gpu_hit",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "cpu_pageable",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "file_torch_direct",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "file_raw_staged",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "simulated_50_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "simulated_100_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "simulated_200_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "simulated_400_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "simulated_800_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "simulated_1600_MBps",
+      "reason": "prefix plus new turn exceeds native context"
+    },
+    {
+      "gpu": "H100!",
+      "model": "EleutherAI/pythia-1.4b",
+      "prefix_tokens": 16384,
+      "turn_tokens": 32,
+      "condition": "simulated_unthrottled",
+      "reason": "prefix plus new turn exceeds native context"
+    }
+  ]
+}

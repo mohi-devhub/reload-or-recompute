@@ -15,7 +15,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 from analyze_pilot import interval
 from analyze_phase2 import crossover,telemetry
-from phase3_plan import MAIN,MODELS,CONDITIONS
+from phase3_plan import MAIN,MODELS,CONDITIONS,artifact_gpu,measurement_runs
 
 FIELDS=['run_id','model','workload','prefix_tokens','turn_tokens']
 
@@ -31,7 +31,7 @@ def archived_rows(ledger,source=None):
         with Path(source).open() as f:
             archive=[json.loads(line) for line in f if line.strip()]
     raw=[];samples=[]
-    for run in ledger['runs']:
+    for run in measurement_runs(ledger):
         if run['purpose']=='prepare' or run['status']!='collected':continue
         run_id=run['specification']['run_id']
         if source:
@@ -59,10 +59,10 @@ def archived_rows(ledger,source=None):
 def analyze(source=None):
     ledger=json.loads((ROOT/'outputs/phase3_ledger.json').read_text())
     raw,streams=archived_rows(ledger,source)
-    purposes={r['specification']['run_id']:r['purpose'] for r in ledger['runs'] if r.get('specification')}
+    purposes={r['specification']['run_id']:r['purpose'] for r in measurement_runs(ledger) if r.get('specification')}
     registrations={}
     for gpu in ['L4','A10','H100!']:
-        path=ROOT/'configs'/('predictions_'+gpu+'.json')
+        path=ROOT/'configs'/('predictions_'+artifact_gpu(gpu)+'.json')
         if path.exists():registrations[gpu]=json.loads(path.read_text())
     prediction={tuple(p[k] for k in FIELDS)+ (p['condition'],):p for reg in registrations.values() for p in reg['predictions']}
     derived=[]
@@ -199,7 +199,7 @@ def analyze(source=None):
              condition='simulated_unthrottled',matched_prefixes_only=True,
              recompute_wins=sorted(L for L,d in values if d is False),reload_wins=sorted(L for L,d in values if d is True),
              unresolved=sorted(L for L,d in values if d is None))
-    for run in ledger['runs']:
+    for run in measurement_runs(ledger):
         if run.get('purpose')=='prepare' or run['status']!='collected':continue
         run_id=run['specification']['run_id'];samples=[s['sample'] for s in streams if s['run_id']==run_id]
         file_rows=[r for r in raw if r['run_id']==run_id and r['kind'] in ['measurement','microbenchmark'] and 'physical_read_bytes' in r]

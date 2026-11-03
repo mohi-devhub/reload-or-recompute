@@ -10,6 +10,8 @@ ROOT=Path(__file__).resolve().parents[1]
 import sys
 sys.path.insert(0,str(ROOT/'kernels/phase3'))
 from provenance import matches_gpu
+sys.path.insert(0,str(ROOT/'scripts'))
+from phase3_plan import artifact_gpu,measurement_runs
 
 
 def audit():
@@ -19,18 +21,19 @@ def audit():
     expected=json.loads((ROOT/'outputs/phase3_provenance.json').read_text())['protected_function_hashes']
     failures=[];registrations=[]
     for gpu in ['L4','A10','H100!']:
-        path=ROOT/'configs'/('predictions_'+gpu+'.json')
+        label=artifact_gpu(gpu)
+        path=ROOT/'configs'/('predictions_'+label+'.json')
         if not path.exists():continue
         registration=json.loads(path.read_text());registrations.append(registration)
         for source in registration['calibration_sources']:
             original=[{k:v for k,v in r.items() if k!='record_origin'} for r in rows if r.get('record_origin')=='kernel' and r.get('run_id')==source['run_id']]
             payload=''.join(json.dumps(r,allow_nan=False)+'\n' for r in original).encode()
             if hashlib.sha256(payload).hexdigest()!=source['sha256']:failures.append('Calibration source hash: '+source['run_id'])
-        for run in ledger['runs']:
+        for run in measurement_runs(ledger):
             if run.get('gpu')!=gpu or run['purpose']!='sweep':continue
             spec=run['specification'];commit=spec['prediction_commit']
             timestamp=int(subprocess.check_output(['git','show','-s','--format=%ct',commit],cwd=ROOT,text=True))
-            committed=subprocess.check_output(['git','show',commit+':configs/predictions_'+gpu+'.json'],cwd=ROOT)
+            committed=subprocess.check_output(['git','show',commit+':configs/predictions_'+label+'.json'],cwd=ROOT)
             if committed!=path.read_bytes():failures.append('Changed frozen registration: '+gpu)
             submitted=datetime.datetime.fromisoformat(run['submitted_at']).timestamp()
             if timestamp>submitted:failures.append('Commit after submission: '+run['name'])
@@ -58,7 +61,7 @@ def audit():
             key=tuple(p[k] for k in ['run_id','model','workload','prefix_tokens','turn_tokens','condition'])
             values=by[key]
             if sorted(r['repeat'] for r in values)!=list(range(10)):failures.append('Incomplete registered cell: '+str(key))
-    sweep_ids={r['specification']['run_id'] for r in ledger['runs'] if r['purpose']=='sweep'}
+    sweep_ids={r['specification']['run_id'] for r in measurement_runs(ledger) if r['purpose']=='sweep'}
     for key,rounds in orders.items():
         if key[0] in sweep_ids and len({tuple(sorted(v)) for v in rounds.values()})<2:failures.append('Condition order did not vary: '+str(key))
     main=ledger['infrastructure_reservation_usd']+sum(r.get('estimated_cost_usd',r['reserved_cost_usd']) for r in ledger['runs'] if r.get('gpu')!='H100!')

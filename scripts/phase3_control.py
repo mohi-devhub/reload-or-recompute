@@ -13,6 +13,8 @@ import sys
 from urllib.request import urlopen
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'scripts'))
+from phase3_plan import artifact_gpu
 RAW=ROOT/'outputs/raw/phase3'
 LEDGER=ROOT/'outputs/phase3_ledger.json'
 OUTPUT_VOLUME='reload-recompute-phase3-results-20261103'
@@ -83,7 +85,13 @@ def submit(args):
         r.get('estimated_cost_usd',r['reserved_cost_usd']) for r in data['runs']
         if (r.get('gpu')=='H100!')==(bucket=='H100!'))
     assert used+reserved<=(4 if gpu=='H100!' else 6),'Dollar reservation exceeds the authorized cap'
-    if gpu=='H100!':assert args.timeout+overhead<=1800,'H100 session exceeds thirty minutes'
+    if gpu=='H100!':
+        assert args.timeout+overhead<=1800,'H100 session exceeds thirty minutes'
+        assert not any(r.get('gpu')=='H100!' for r in data['runs']),'Only one H100 allocation is authorized'
+        required={'l4-main-1','l4-main-2','l4-controls','a10-main-1','a10-main-2','a10-controls'}
+        finished={r['name'] for r in data['runs'] if r['status']=='collected' and r.get('complete')}
+        assert required<=finished,'H100 requires both main target grids to finish first'
+        assert data['infrastructure_reservation_usd']+sum(r.get('estimated_cost_usd',r['reserved_cost_usd']) for r in data['runs'])<=6,'Main targets exceeded their cap'
     if spec and spec['purpose']=='sweep':
         manifest=ROOT/Path(spec['prediction_manifest'])
         registered=json.loads(manifest.read_text())
@@ -92,7 +100,7 @@ def submit(args):
         frozen=subprocess.check_output(['git','show',commit+':'+str(manifest.relative_to(ROOT))],cwd=ROOT)
         assert hashlib.sha256(frozen).hexdigest()==hashlib.sha256(manifest.read_bytes()).hexdigest(),'Predictions changed after commit'
         assert registered['gpu']==gpu and registered['calibration_only'],'Wrong prediction registration'
-        document=Path('docs')/('PREDICTIONS_'+gpu+'.md')
+        document=Path('docs')/('PREDICTIONS_'+artifact_gpu(gpu)+'.md')
         committed_document=subprocess.check_output(['git','show',commit+':'+str(document)],cwd=ROOT)
         assert committed_document==(ROOT/document).read_bytes(),'Prediction document changed after commit'
     directory=RAW/args.name;directory.mkdir(parents=True,exist_ok=True)
@@ -123,6 +131,11 @@ def collect(args):
         if recovery.returncode:
             print('No completed result yet; reservation retained');return
     outcome=json.loads(result.read_text())
+    if run['purpose']=='h100_combined':
+        run.update(duration_s=outcome['duration_s'],estimated_cost_usd=(outcome['duration_s']+run['overhead_allowance_s'])*rate(run['prices'],run['gpu'],run.get('resources')),
+                   status='collected',outcome=outcome,complete=outcome['complete'])
+        save(data);print(json.dumps(dict(name=run['name'],complete=run['complete'],duration_s=run['duration_s'],estimated_cost_usd=run['estimated_cost_usd'])))
+        return
     remote='preload.json' if run['purpose']=='prepare' else run['specification']['run_id']
     target=directory/'preload.json' if run['purpose']=='prepare' else directory/'output'
     if run['purpose']!='prepare':

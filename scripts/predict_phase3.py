@@ -11,7 +11,7 @@ import numpy as np
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-from phase3_plan import MAIN,MODELS,RATES,CONDITIONS,specification
+from phase3_plan import MAIN,MODELS,RATES,CONDITIONS,specification,artifact_gpu,measurement_runs
 
 
 def fit(xs,ys,degree):
@@ -32,16 +32,17 @@ def fit(xs,ys,degree):
 def evaluate(model,x):return sum(c*(x/model['scale'])**i for i,c in enumerate(model['coefficients']))
 
 
-def calibration(gpu):
+def calibration(gpu,models=None,turns_by_model=None):
+    models=MODELS if models is None else models
     ledger=json.loads((ROOT/'outputs/phase3_ledger.json').read_text());rows=[];sources=[]
-    for run in ledger['runs']:
+    for run in measurement_runs(ledger):
         if run.get('gpu')!=gpu or run['purpose']!='calibration' or run['status']!='collected' or not run.get('use_for_prediction',True):continue
         path=ROOT/'outputs/raw/phase3'/run['name']/'output/results.jsonl'
         sources.append(dict(run_id=run['specification']['run_id'],sha256=hashlib.sha256(path.read_bytes()).hexdigest()))
         rows.extend(json.loads(line) for line in path.read_text().splitlines())
     if not rows:raise ValueError('No completed calibration for '+gpu)
     completed={r['model'] for r in rows if r['kind']=='model_complete' and r['completed']}
-    assert set(MODELS)<=completed,'A requested model has not completed calibration'
+    assert set(models)<=completed,'A requested model has not completed calibration'
     measurements=defaultdict(list);micros=defaultdict(list)
     for r in rows:
         if r['kind']=='measurement':
@@ -50,10 +51,10 @@ def calibration(gpu):
             measurements[(r['model'],r['workload'],r['turn_tokens'],r['condition'],r['prefix_tokens'])].append(r['wall_ms'])
         elif r['kind']=='microbenchmark':micros[(r['model'],r['workload'],r['condition'],r['prefix_tokens'])].append(r)
     baseline={};legs={}
-    for model in MODELS:
+    for model in models:
         workload='ultrachat' if model==MAIN else 'repeated_control'
         baseline[model]={};legs[model]={}
-        for turn in ([32,256] if model==MAIN else [32]):
+        for turn in ((turns_by_model or {}).get(model,[32,256] if model==MAIN else [32])):
             baseline[model][str(turn)]={}
             for condition in ['prefix_only','recompute','gpu_hit']:
                 points=sorted((key[-1],statistics.median(values)) for key,values in measurements.items() if key[:4]==(model,workload,turn,condition))
@@ -74,18 +75,23 @@ def calibration(gpu):
 
 
 def create(gpu):
-    destination=ROOT/'configs'/('predictions_'+gpu+'.json')
+    label=artifact_gpu(gpu)
+    destination=ROOT/'configs'/('predictions_'+label+'.json')
     assert not destination.exists(),'Prediction registration is immutable; use a new registered experiment for changes'
     plan=json.loads((ROOT/'configs/phase3_plan.json').read_text())
     reference=json.loads((ROOT/'configs/phase3_t4_reference.json').read_text())
-    baseline,legs,sources,rows=calibration(gpu)
+    selected=[MAIN,MODELS[3]] if gpu=='H100!' else MODELS
+    baseline,legs,sources,rows=calibration(gpu,selected,{m:[32] for m in selected} if gpu=='H100!' else None)
     scheduled=[]
-    for session in [1,2]:
-        name=gpu.lower()+'-main-'+str(session)
-        scheduled.append(dict(name=name,models=[MAIN],workload='ultrachat',
-                              lengths_by_model={MAIN:plan['main_lengths']},turns_by_model={MAIN:[32,256]},seed=8600+session))
-    scheduled.append(dict(name=gpu.lower()+'-controls',models=MODELS[1:],workload='repeated_control',
-                          lengths_by_model=plan['control_lengths_by_model'],turns_by_model={m:[32] for m in MODELS[1:]},seed=8701))
+    if gpu=='H100!':
+        scheduled=json.loads((ROOT/'configs/phase3_h100_plan.json').read_text())['planned_runs']
+    else:
+        for session in [1,2]:
+            name=gpu.lower()+'-main-'+str(session)
+            scheduled.append(dict(name=name,models=[MAIN],workload='ultrachat',
+                                  lengths_by_model={MAIN:plan['main_lengths']},turns_by_model={MAIN:[32,256]},seed=8600+session))
+        scheduled.append(dict(name=gpu.lower()+'-controls',models=MODELS[1:],workload='repeated_control',
+                              lengths_by_model=plan['control_lengths_by_model'],turns_by_model={m:[32] for m in MODELS[1:]},seed=8701))
     predictions=[]
     t4=reference['observations']
     for run in scheduled:
@@ -126,10 +132,12 @@ def create(gpu):
                       method='calibration-only nonnegative quadratic prefix/recompute; affine GPU-hit and transport; no sweep refit',
                       source_commit=__import__('subprocess').check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
     destination.write_text(json.dumps(registration,indent=2,allow_nan=False)+'\n')
-    lines=['# Preregistered predictions: '+gpu,'',
+    replication=('Both model sweeps share one H100 allocation, after calibration and this committed release. '
+                 if gpu=='H100!' else 'The same main-model predictions apply to both independently allocated sweep sessions. ')
+    lines=['# Preregistered predictions: '+label,'',
            'Frozen using calibration data only, before any sweep for this GPU. The JSON registration contains every '
            'session/rate/path cell, coefficients, source hashes, expected TTFT, and the throughput-ratio hypothesis. '
-           'The same main-model predictions apply to both independently allocated sweep sessions. '
+           +replication+
            'T4 time measurements are used only in the hypothesis comparison, not the new-GPU fits.','',
            '| Model | Prefix | New turn | Predicted B*, MB/s | Expected prefill ratio to T4 | Decisions by rate/path |',
            '| --- | --- | --- | --- | --- | --- |']
@@ -145,7 +153,7 @@ def create(gpu):
     lines.extend(['','The swept simulated rates are 50, 100, 200, 400, 800, 1600 MB/s and unthrottled. '
                   'The unthrottled pinned control is scored once. File predictions include the independently measured '
                   'CPU load/read/deserialization and H2D legs. A nonpositive denominator predicts recomputation for any finite bandwidth.',''])
-    (ROOT/'docs'/('PREDICTIONS_'+gpu+'.md')).write_text('\n'.join(lines))
+    (ROOT/'docs'/('PREDICTIONS_'+label+'.md')).write_text('\n'.join(lines))
     print('Wrote immutable prediction registration for',gpu)
     return registration
 

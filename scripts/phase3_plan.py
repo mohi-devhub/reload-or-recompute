@@ -13,6 +13,17 @@ RATES=[50,100,200,400,800,1600]
 CONDITIONS=['prefix_only','recompute','gpu_hit','cpu_pageable','file_torch_direct','file_raw_staged']+['simulated_'+str(r)+'_MBps' for r in RATES]+['simulated_unthrottled']
 
 
+def artifact_gpu(gpu):return gpu.rstrip('!')
+
+
+def measurement_runs(ledger):
+    """Logical stages share one priced allocation in the optional H100 session."""
+    for run in ledger['runs']:
+        if run['purpose']=='h100_combined':
+            for stage in run.get('logical_runs',[]):yield dict(allocation_parent=run['name'],**stage)
+        else:yield run
+
+
 def create():
     rows=[json.loads(line) for line in (ROOT/'outputs/results.jsonl').read_text().splitlines()]
     configs={r['model']:r for r in rows if r['kind']=='model_config' and r.get('phase')=='phase2' and r['model'] in MODELS}
