@@ -16,7 +16,8 @@ cache=modal.Volume.from_name(CACHE_NAME,create_if_missing=True)
 outputs=modal.Volume.from_name(OUTPUT_NAME,create_if_missing=True)
 image=(modal.Image.debian_slim(python_version='3.13')
        .pip_install('torch==2.11.0+cu130',index_url='https://download.pytorch.org/whl/cu130')
-       .pip_install('transformers==4.51.3','safetensors','accelerate','numpy==2.4.6')
+       .pip_install('transformers==4.51.3','safetensors==0.8.0','accelerate==1.15.0','numpy==2.4.6',
+                    'huggingface-hub==0.36.2','tokenizers==0.21.4')
        .env({'HF_HOME':'/cache/hf','HF_HUB_DISABLE_PROGRESS_BARS':'1','HF_HUB_DISABLE_TELEMETRY':'1',
              'PHASE3_GPU':GPU,'PHASE3_TIMEOUT':str(LIMIT),'PHASE3_RUN_NAME':NAME,
              'PHASE3_CPU':str(CPU),'PHASE3_MEMORY_MIB':str(RAM)})

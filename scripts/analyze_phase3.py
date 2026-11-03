@@ -218,6 +218,8 @@ def analyze(source=None):
     records.append(dict(phase='phase3',record_origin='control',kind='phase3_source_comparison',**json.loads((ROOT/'outputs/phase3_provenance.json').read_text())))
     projection=ROOT/'outputs/phase3_projections.json'
     if projection.exists():records.extend(dict(record_origin='control',**r) for r in json.loads(projection.read_text()))
+    packages=ROOT/'configs/phase3_packages.json'
+    if packages.exists():records.append(json.loads(packages.read_text()))
     (ROOT/'outputs/phase3_audit.json').write_text(json.dumps(audit,indent=2)+'\n')
     (ROOT/'outputs/phase3_analysis.jsonl').write_text(''.join(json.dumps(r,allow_nan=False,separators=(',',':'))+'\n' for r in derived))
     return records,derived,registrations

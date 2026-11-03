@@ -52,21 +52,31 @@ def report():
         lines.append(f"| {r['gpu']} | {short(r['model'])} | {r['prefix_tokens']} / {r['turn_tokens']} | {r['condition']} | {r['predicted_ttft_ms']:.2f} / {r['observed_ttft_ms']:.2f} | {r['calibration_region']} |")
     lines.extend(['',
                   '## Hardware and provenance','',
-                  '| Run | Allocated GPU / capability | Driver and PCIe snapshot | Torch / Transformers | Wall seconds |',
+                  '| Run | Allocated GPU / capability | Driver and PCIe snapshot | Torch / Transformers / Python | Wall seconds |',
                   '| --- | --- | --- | --- | --- |'])
     for r in ledger['runs']:
         if r.get('environment'):
-            e=r['environment'];lines.append(f"| {r['name']} | {', '.join(e['gpu_names'])} / {e['compute_capability']} | {e['gpu_query']} | {e['torch']} / {e['transformers']} | {r['duration_s']:.1f} |")
+            e=r['environment'];lines.append(f"| {r['name']} | {', '.join(e['gpu_names'])} / {e['compute_capability']} | {e['gpu_query']} | {e['torch']} / {e['transformers']} / {e['python']} | {r['duration_s']:.1f} |")
     lines.extend(['','Modal names its Ampere request `A10`; the actual GPU name above is authoritative. '
                   'A10 and A10G names within that service tier are retained separately in the session scorecards. '
                   'GPU UUIDs, exact driver/runtime versions, clocks, CPU/RAM and disk capacity are retained per run. '
                   'All measurements use fp16 and efficient/math SDPA, with FlashAttention disabled. '
                   'The full scheduling difference and protected function hashes are in `outputs/phase3_provenance.json`; '
                   'each executed source and adapter hash is also in the canonical records.','',
+                  '| Model | Attention family | KV bytes/token, fp16 |',
+                  '| --- | --- | --- |'])
+    reference=json.loads((ROOT/'configs/phase3_t4_reference.json').read_text())
+    for model in MODELS:
+        c=reference['configs'][model];lines.append(f"| {short(model)} | {c['attention_family']} | {c['kv_bytes_per_token']} |")
+    historical=next(iter(reference['configs'].values()))['environment']
+    lines.extend(['',f"The T4 reference used Python {historical['python']}, Torch {historical['torch']} and Transformers {historical['transformers']}. "
+                  'Python patch and driver differences from the Modal allocations are explicit platform differences. '
+                  'KV footprints are computed from each config and independently checked against cache tensors.','',
                   '## Crossover bandwidth and the throughput hypothesis','',
                   'The complete per-session, per-model, per-length predictions and observed brackets are in '
                   '[phase3_crossovers.csv](../outputs/phase3_crossovers.csv). Brackets are measured adjacent simulated-rate cells; '
                   'interpolation is supplementary and assumes local inverse-bandwidth linearity. '
+                  'Censored bounds describe medians and are not confidence limits. '
                   'A “median only” bracket has an unresolved endpoint interval.','',
                   '| GPU / session | Model | Prefix / new turn | Predicted B*, MB/s | Observed simulated-bandwidth bracket, MB/s | Prefill tokens/s | Pinned / pageable H2D, MB/s |',
                   '| --- | --- | --- | --- | --- | --- | --- |'])
@@ -161,12 +171,25 @@ def report():
                   'and deviations are in `docs/NOTES.md`. No production-path claim is made.',''])
     (ROOT/'docs/PHASE3_REPORT.md').write_text('\n'.join(lines))
     csvpath=ROOT/'outputs/phase3_crossovers.csv'
-    fields=['gpu','allocated_gpu_name']+['run_id','model','workload','prefix_tokens','turn_tokens','kv_bytes_per_token','predicted_bstar_mb_s','measured_prefill_tokens_s','t4_prefill_tokens_s','measured_prefill_ratio_to_t4','hypothesis_prefill_ratio_to_t4','observed_bracket','observed_harmonic_estimate_mb_s']
+    fields=['gpu','allocated_gpu_name','prediction_kind']+['run_id','model','workload','prefix_tokens','turn_tokens','kv_bytes_per_token','predicted_bstar_mb_s','measured_prefill_tokens_s','t4_prefill_tokens_s','measured_prefill_ratio_to_t4','hypothesis_prefill_ratio_to_t4','pinned_h2d_mb_s','pageable_h2d_mb_s','observed_bracket','observed_harmonic_estimate_mb_s']
     with csvpath.open('w') as f:
         writer=csv.DictWriter(f,fieldnames=fields);writer.writeheader()
-        for r in crosses:writer.writerow({**{k:r[k] for k in fields if k not in ['observed_bracket','observed_harmonic_estimate_mb_s']},
+        for r in crosses:writer.writerow({**{k:r[k] for k in fields if k not in ['prediction_kind','pinned_h2d_mb_s','pageable_h2d_mb_s','observed_bracket','observed_harmonic_estimate_mb_s']},
+                                         'prediction_kind':'frozen calibration only',
+                                         'pinned_h2d_mb_s':bandwidth(r['run_id'],r['model'],r['prefix_tokens'],'h2d_pinned'),
+                                         'pageable_h2d_mb_s':bandwidth(r['run_id'],r['model'],r['prefix_tokens'],'h2d_pageable'),
                                          'observed_bracket':label(r['measured']),
                                          'observed_harmonic_estimate_mb_s':';'.join(str(b['interpolated_mb_s']) for b in r['measured'].get('brackets',[]))})
+        matched={(r['model'],r['workload'],r['prefix_tokens'],r['turn_tokens']) for r in crosses}
+        for r in t4:
+            if r['kind']!='bandwidth_crossover' or (r['model'],r['workload'],r['prefix_tokens'],r['turn_tokens']) not in matched:continue
+            pref=next(s for s in t4 if s['kind']=='phase2_summary' and s['run_id']==r['run_id'] and s['model']==r['model'] and s['workload']==r['workload'] and s['prefix_tokens']==r['prefix_tokens'] and s['turn_tokens']==r['turn_tokens'] and s['condition']=='prefix_only')
+            transport={s['condition']:s['bandwidth_mb_s']['median'] for s in t4 if s['kind']=='phase2_micro_summary' and s['run_id']==r['run_id'] and s['model']==r['model'] and s['prefix_tokens']==r['prefix_tokens']}
+            writer.writerow(dict(gpu='T4',allocated_gpu_name=r['environment']['gpu_names'][0],prediction_kind='descriptive T4 adjusted rule',
+                **{k:r[k] for k in ['run_id','model','workload','prefix_tokens','turn_tokens','kv_bytes_per_token']},
+                predicted_bstar_mb_s=r['predicted_ttft_bstar_mb_s'],measured_prefill_tokens_s=pref['prefill_tokens_s'],
+                pinned_h2d_mb_s=transport.get('h2d_pinned'),pageable_h2d_mb_s=transport.get('h2d_pageable'),
+                observed_bracket=label(r['measured']),observed_harmonic_estimate_mb_s=';'.join(str(b['interpolated_mb_s']) for b in r['measured'].get('brackets',[]))))
     figure(crosses,t4)
 
 
