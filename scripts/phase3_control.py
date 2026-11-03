@@ -36,7 +36,10 @@ def save(data):
            '| Run | GPU | Purpose | Status | Observed function wall seconds | Reserved or estimated USD |',
            '| --- | --- | --- | --- | --- | --- |']
     for r in data['runs']:
-        lines.append(f"| {r['name']} | {r.get('gpu') or 'CPU'} | {r['purpose']} | {r['status']} | "
+        gpu_label=r.get('gpu') or 'CPU'
+        if r.get('environment'):
+            e=r['environment'];parts=e['gpu_query'].split(',');gpu_label=e['gpu_names'][0]+' / PCIe x'+parts[6].strip()
+        lines.append(f"| {r['name']} | {gpu_label} | {r['purpose']} | {r['status']} | "
                      f"{r.get('duration_s','Pending')} | {r.get('estimated_cost_usd',r['reserved_cost_usd']):.6f} |")
     main=data['infrastructure_reservation_usd']+sum(r.get('estimated_cost_usd',r['reserved_cost_usd']) for r in data['runs'] if r.get('gpu')!='H100!')
     h100=sum(r.get('estimated_cost_usd',r['reserved_cost_usd']) for r in data['runs'] if r.get('gpu')=='H100!')

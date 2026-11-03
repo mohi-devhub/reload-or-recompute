@@ -32,6 +32,7 @@ def generate(results, report, figures):
               if successful else 'Pilot incomplete. No crossover or speedup conclusion is accepted.'), '',
              'This report is generated from `outputs/results.jsonl`. Configuration values describe the requested experiment; '
              'all observed values below come from its records. The full grid has not been started.', '',
+             'The measured file tier is a local file API path with positive process physical-read counters on Kaggle; underlying storage and host cache are unidentified. See FILE_API_AUDIT.md.', '',
              '## Environment', '',
              f"- Requested GPU: `{env['requested_gpu']}`. Observed: " +
              ', '.join(f"`{g['name']}`" for g in env['gpus']) + '.',
@@ -40,7 +41,7 @@ def generate(results, report, figures):
              f"Transformers: `{env['transformers']}`. vLLM in the reference environment: `{env['vllm']}`.",
              '- GPU and driver query: ' + '; '.join(env['gpu_query']['output'].strip().splitlines()) + '.',
              f"- CPU cores: {env['cpu_count']}. Load average at process startup: `{env['load_average']}`.",
-             '- CPU memory and initial free disk bytes are preserved verbatim in each source environment record.', '',
+             '- CPU memory and initial free filesystem bytes are preserved verbatim in each source environment record.', '',
              '## Raw timing summaries', '',
              'Wall-clock TTFT ends when a greedy first token is available on the CPU. Tokenization, cache creation, '
              'offload writes, queueing, and transport are excluded. Cache acquisition and the new turn are included. '
@@ -83,7 +84,7 @@ def generate(results, report, figures):
     memory_total = next(line.split()[1] for line in env['cpu_ram'].splitlines()
                         if line.startswith('MemTotal:'))
     lines.extend(['', f"CPU RAM: {int(memory_total) * 1024 / 2**30:.3f} GiB. "
-                  'Initial free disk, bytes: ' + ', '.join(f'`{k}` = {v}' for k, v in env['free_disk_bytes'].items()) + '.'])
+                  'Initial free filesystem, bytes: ' + ', '.join(f'`{k}` = {v}' for k, v in env['free_disk_bytes'].items()) + '.'])
     controls = [r for r in rows if r['kind'] == 'disk_cache_control']
     if controls:
         lines.extend(['', 'Page-cache control: `' + controls[-1]['global_drop_caches'] + '`. '
@@ -140,7 +141,7 @@ def generate(results, report, figures):
                       'The reviewed error and implications belong in NOTES.md. '
                       'The first setup failed in ensurepip. The supplemental install reached pip and rejected '
                       '`vllm==0.9.0`: `Requires-Python >=3.9,<3.13`; Kaggle provided Python 3.13. '
-                      'LMCache native kernels, CPU reuse, and disk reuse were not reached. '
+                      'LMCache native kernels, CPU reuse, and file reuse were not reached. '
                       'No sm_75 compatibility claim or production performance result is made. '
                       'Both setup failures and the package choice are recorded in NOTES.md.'])
     else:
@@ -224,7 +225,7 @@ def generate(results, report, figures):
                       'FLOP or PCIe saturation. The profile file read was not evicted and is excluded from storage timing claims.'])
     lines.extend(['', '## Provisional rule of thumb', '',
                   'Reload when measured prefix prefill exceeds `fixed_overhead + L × kv_bytes_per_token / effective_bandwidth`, '
-                  'adding the disk-read leg for files. Recompute when that cost is larger; include the new-turn baseline '
+                  'adding the file-read leg for files. Recompute when that cost is larger; include the new-turn baseline '
                   'for TTFT and recalibrate for each model, GPU, and storage path.', '',
                   'This pilot favours reload at every sampled length, so it cannot locate the threshold or validate '
                   'the rule on a different model or GPU.', '', '## Limitations and review', '',

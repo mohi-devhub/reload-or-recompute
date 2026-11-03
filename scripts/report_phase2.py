@@ -100,6 +100,7 @@ def report():
     path.write_text(''.join(json.dumps(r,allow_nan=False)+'\n' for r in rows))
     lines=['# Phase two: simulated bandwidth crossovers','',
            ('Redesigned run queue finished.' if complete else 'Partial report: experiments are still active.'),
+           'The local file API path has positive process physical-read counters on Kaggle; underlying storage and host cache are unidentified. See [the counter audit](FILE_API_AUDIT.md).',
            'All bandwidth-sweep rates and crossover intervals below are **simulated transport bandwidth**. '
            'They do not measure a physical storage device at those rates.','',
            f"Accepted full-sweep timing samples: {len(accepted)}. Invalid full-sweep samples: {len(invalid)}. "
