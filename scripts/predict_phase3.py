@@ -35,7 +35,7 @@ def evaluate(model,x):return sum(c*(x/model['scale'])**i for i,c in enumerate(mo
 def calibration(gpu):
     ledger=json.loads((ROOT/'outputs/phase3_ledger.json').read_text());rows=[];sources=[]
     for run in ledger['runs']:
-        if run.get('gpu')!=gpu or run['purpose']!='calibration' or run['status']!='collected':continue
+        if run.get('gpu')!=gpu or run['purpose']!='calibration' or run['status']!='collected' or not run.get('use_for_prediction',True):continue
         path=ROOT/'outputs/raw/phase3'/run['name']/'output/results.jsonl'
         sources.append(dict(run_id=run['specification']['run_id'],sha256=hashlib.sha256(path.read_bytes()).hexdigest()))
         rows.extend(json.loads(line) for line in path.read_text().splitlines())

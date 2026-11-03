@@ -54,6 +54,8 @@ def specification(name,gpu,purpose,timeout,models,lengths_by_model,turns_by_mode
               conversation_data=json.loads((ROOT/'data/phase2_conversations.json').read_text()),
               protected_function_hashes=functions((ROOT/'kernels/phase2/runner.py').read_text()),
               continue_on_model_error=purpose=='calibration',anomaly_profile=False)
+    platform=ROOT/'configs/phase3_platforms.json'
+    if platform.exists():spec.update(json.loads(platform.read_text()).get(gpu,{}))
     if registration:spec.update(registration)
     return spec
 
