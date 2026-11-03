@@ -107,7 +107,7 @@ def report():
                   'The adjusted threshold also depends on the new-turn baseline and fixed overhead, so an exact throughput ratio is not guaranteed.','',
                   '![Break-even bandwidth versus prefill throughput](../figures/phase3_bstar_vs_prefill.png)','',
                   '## Real file paths and short contexts','',
-                  '| GPU | Model | Real path | Reload wins / resolved cells | Unresolved | Median signed prediction error, ms |',
+                  '| GPU | Model | Real path | Reload wins / resolved cells | Unresolved | Median signed / absolute prediction error, ms |',
                   '| --- | --- | --- | --- | --- | --- |'])
     for gpu in sorted({r['gpu'] for r in scores}):
         for model in MODELS:
@@ -115,17 +115,32 @@ def report():
                 values=[s for s in scores if s['gpu']==gpu and s['model']==model and s['condition']==condition]
                 if not values:continue
                 resolved=[s for s in values if s['observed_reload'] is not None]
-                lines.append(f"| {gpu} | {short(model)} | {condition} | {sum(s['observed_reload'] for s in resolved)} / {len(resolved)} | {len(values)-len(resolved)} | {median([s['signed_error_ms'] for s in values]):.3f} |")
+                lines.append(f"| {gpu} | {short(model)} | {condition} | {sum(s['observed_reload'] for s in resolved)} / {len(resolved)} | {len(values)-len(resolved)} | {median([s['signed_error_ms'] for s in values]):.3f} / {median([s['absolute_error_ms'] for s in values]):.3f} |")
     lines.extend(['','File predictions include independent read/deserialization/H2D legs, or the direct torch-load CPU leg plus H2D. '
-                  'Files are on local container scratch; advisory eviction and physical-read ratios do not prove a uniformly cold physical device. '
+                  'These are **local-file API results; cold physical-disk access is unverified**. Files are on local container scratch. '
+                  'The virtualized filesystem reports zero physical-read bytes in the observations summarized below. '
+                  'Upstream [gVisor ignores fadvise advice](https://github.com/google/gvisor/blob/master/pkg/sentry/syscalls/linux/sys_file.go); '
+                  'the deployed runtime revision is not identified, so successful advisory calls cannot establish eviction. '
                   'These host/storage paths differ from Kaggle, so changes in file wins cannot be assigned solely to GPU speed.','',
+                  '| Run | File observations | Nonzero physical-read counters | Median physical-read / file-byte ratio |',
+                  '| --- | --- | --- | --- |'])
+    for r in rows:
+        if r['kind']=='phase3_file_observability':
+            lines.append(f"| {r['run_id']} | {r['observed_file_samples']} | {r['nonzero_physical_read_samples']} | {r['physical_read_ratio_median']:.3f} |")
+    lines.extend(['',
                   '| GPU | Main model, prefixes through 128 | Recompute wins / resolved pinned-path cells | Unresolved |',
                   '| --- | --- | --- | --- |'])
     for gpu in sorted({r['gpu'] for r in scores}):
         values=[s for s in scores if s['gpu']==gpu and s['model']==MAIN and s['prefix_tokens']<=128 and s['condition']=='simulated_unthrottled']
         resolved=[s for s in values if s['observed_reload'] is not None]
         lines.append(f"| {gpu} | Separate turns and sessions | {sum(not s['observed_reload'] for s in resolved)} / {len(resolved)} | {len(values)-len(resolved)} |")
-    lines.extend(['','Short-prefix decisions can be dominated by host dispatch, allocation and the resident-hit baseline. '
+    lines.extend(['','| GPU / session | New turn | Recompute wins at matched short prefixes | Reload wins | Unresolved |',
+                  '| --- | --- | --- | --- | --- |'])
+    for r in rows:
+        if r['kind']=='phase3_short_regime':
+            lines.append(f"| {r['gpu']} / {r['run_id']} | {r['turn_tokens']} | {r['recompute_wins']} | {r['reload_wins']} | {r['unresolved']} |")
+    lines.extend(['','The regime table compares the main model at common prefixes through 256 tokens, using the real unthrottled pinned path. '
+                  'Short-prefix decisions can be dominated by host dispatch, allocation and the resident-hit baseline. '
                   'The full score records retain every short-length decision and its paired interval; the sparse length grid '
                   'cannot establish a continuous crossover length.','',
                   '## Session spread and clock drift','',

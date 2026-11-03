@@ -185,9 +185,31 @@ def analyze(source=None):
         emit('phase3_session_spread',gpu=gpu,model=MAIN,prefix_tokens=L,turn_tokens=N,condition=c,
              sessions=[r['run_id'] for r in values],medians_ms=medians,ci95_ms=[r['ci95'] for r in values],
              range_over_median=(max(medians)-min(medians))/statistics.median(medians))
+    short_groups=defaultdict(list)
+    for r in scored:
+        if r['model']==MAIN and r['condition']=='simulated_unthrottled' and r['prefix_tokens']<=256:
+            short_groups[(r['gpu'],r['run_id'],r['turn_tokens'])].append((r['prefix_tokens'],r['observed_reload']))
+    for r in t4:
+        if r['kind']=='bandwidth_crossover' and r['model']==MAIN and r['workload']=='ultrachat' and r['prefix_tokens'] in [16,64,128,256]:
+            point=next(p for p in r['points'] if p['condition']=='simulated_unthrottled')
+            lo,hi=point['paired_delta']['ci95'];decision=True if hi<0 else False if lo>0 else None
+            short_groups[('T4',r['run_id'],r['turn_tokens'])].append((r['prefix_tokens'],decision))
+    for (gpu,run_id,turn),values in short_groups.items():
+        emit('phase3_short_regime',gpu=gpu,run_id=run_id,model=MAIN,turn_tokens=turn,
+             condition='simulated_unthrottled',matched_prefixes_only=True,
+             recompute_wins=sorted(L for L,d in values if d is False),reload_wins=sorted(L for L,d in values if d is True),
+             unresolved=sorted(L for L,d in values if d is None))
     for run in ledger['runs']:
         if run.get('purpose')=='prepare' or run['status']!='collected':continue
         run_id=run['specification']['run_id'];samples=[s['sample'] for s in streams if s['run_id']==run_id]
+        file_rows=[r for r in raw if r['run_id']==run_id and r['kind'] in ['measurement','microbenchmark'] and 'physical_read_bytes' in r]
+        if file_rows:
+            env=next(r for r in raw if r['run_id']==run_id and r['kind']=='environment')
+            emit('phase3_file_observability',run_id=run_id,gpu=run['gpu'],filesystem=env.get('filesystem'),
+                 observed_file_samples=len(file_rows),nonzero_physical_read_samples=sum(r['physical_read_bytes']>0 for r in file_rows),
+                 physical_read_ratio_median=statistics.median(r['physical_read_bytes']/r.get('file_bytes',r.get('bytes')) for r in file_rows),
+                 cold_physical_disk_verified=False,
+                 interpretation='local-file API timings; advisory eviction and virtualized counters cannot establish cold physical disk access')
         trials=[r for r in raw if r['kind']=='measurement' and r['run_id']==run_id]
         active=[s for s in samples if any(r['wall_start_unix']<=s['timestamp_unix']<=r['wall_end_unix'] for r in trials)]
         by_condition={}
