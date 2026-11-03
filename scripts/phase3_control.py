@@ -7,6 +7,7 @@ import json
 import math
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 from urllib.request import urlopen
@@ -121,8 +122,15 @@ def collect(args):
     outcome=json.loads(result.read_text())
     remote='preload.json' if run['purpose']=='prepare' else run['specification']['run_id']
     target=directory/'preload.json' if run['purpose']=='prepare' else directory/'output'
+    if run['purpose']!='prepare':
+        if target.is_file():target.rename(directory/'first-download.jsonl')
+        target.mkdir(exist_ok=True)
     subprocess.run(['modal','volume','get',OUTPUT_VOLUME,remote,str(target),'--force'],cwd=ROOT,check=True,
                    stdout=subprocess.DEVNULL)
+    if run['purpose']!='prepare' and (target/remote).is_dir():
+        nested=target/remote
+        for path in nested.iterdir():shutil.move(str(path),str(target/path.name))
+        nested.rmdir()
     run.update(duration_s=outcome['duration_s'],estimated_cost_usd=(outcome['duration_s']+run['overhead_allowance_s'])*rate(run['prices'],run['gpu']),
                status='collected',outcome=outcome)
     if run['purpose']!='prepare':
