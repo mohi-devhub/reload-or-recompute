@@ -46,5 +46,53 @@
     "prediction_only": true,
     "selected_timeout_s": 1500,
     "prediction_commit": "615f9ddaba7e45d76c72dce85812e36502ecf05a"
+  },
+  {
+    "kind": "phase3_cost_projection",
+    "phase": "phase3",
+    "gpu": "L4",
+    "run_name": "l4-main-1",
+    "round_projection_s": 1121.8236009361106,
+    "micro_projection_s": 24.437199681320763,
+    "validation_projection_s": 16.50348402839903,
+    "margin_fraction": 0.25,
+    "setup_allowance_s": 90,
+    "finalization_allowance_s": 90,
+    "projected_timeout_s": 1650,
+    "prediction_only": true,
+    "selected_timeout_s": 1650,
+    "prediction_commit": ""
+  },
+  {
+    "kind": "phase3_cost_projection",
+    "phase": "phase3",
+    "gpu": "L4",
+    "run_name": "l4-main-2",
+    "round_projection_s": 1121.8236009361106,
+    "micro_projection_s": 24.437199681320763,
+    "validation_projection_s": 16.50348402839903,
+    "margin_fraction": 0.25,
+    "setup_allowance_s": 90,
+    "finalization_allowance_s": 90,
+    "projected_timeout_s": 1650,
+    "prediction_only": true,
+    "selected_timeout_s": 1650,
+    "prediction_commit": ""
+  },
+  {
+    "kind": "phase3_cost_projection",
+    "phase": "phase3",
+    "gpu": "L4",
+    "run_name": "l4-controls",
+    "round_projection_s": 2007.5271384351472,
+    "micro_projection_s": 93.33269323950238,
+    "validation_projection_s": 30.913950019756626,
+    "margin_fraction": 0.25,
+    "setup_allowance_s": 360,
+    "finalization_allowance_s": 90,
+    "projected_timeout_s": 3120,
+    "prediction_only": true,
+    "selected_timeout_s": 3120,
+    "prediction_commit": ""
   }
 ]
