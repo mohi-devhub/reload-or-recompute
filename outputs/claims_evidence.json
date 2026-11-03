@@ -1,0 +1,2912 @@
+{
+  "source": "outputs/results.jsonl.gz",
+  "base_records_sha256": "3b0e631b08997c65d03ac4bd1fb963eef1f703e333ea2461a4503ce7339f87b8",
+  "claims": [
+    {
+      "id": 1,
+      "title": "The pilot found reload faster at every sampled prefix, without locating a crossover length.",
+      "strength": "supported",
+      "numbers": "18/18 reload-path median comparisons favor reload; prefixes 512, 2048, 8192; turns 32 and 256; 12 repeats per cell.",
+      "scope": "Kaggle T4; Qwen2.5-1.5B; repeated text; pinned, pageable and file paths.",
+      "sources": [
+        "summary / measurement_kind=ttft",
+        "docs/PILOT_REPORT.md"
+      ],
+      "caveat": "Median ordering is descriptive; the pilot does not establish a universal crossover length."
+    },
+    {
+      "id": 2,
+      "title": "The pilot prefix-only bandwidth threshold is measured, not assumed.",
+      "strength": "supported",
+      "numbers": "L=512: 178.611 MB/s; L=2048: 172.441 MB/s; L=8192: 124.937 MB/s",
+      "scope": "Pilot T4, Qwen2.5-1.5B; prefix-only threshold, independent of later TTFT adjustment.",
+      "sources": [
+        "pilot_bstar",
+        "docs/NOTES.md"
+      ],
+      "caveat": "These values do not include returning-turn or fixed costs."
+    },
+    {
+      "id": 3,
+      "title": "The redesigned T4 data cover seven fp16 models with no invalid accepted sweep timings.",
+      "strength": "strong",
+      "numbers": "26040 accepted timings; 0 invalid; 7 measured model configurations; 10 full sweep sessions.",
+      "scope": "T4; prefixes and new-turn coverage are enumerated per run in the phase-two report.",
+      "sources": [
+        "phase2_report_totals",
+        "docs/PHASE2_REPORT.md#model-coverage-and-kv-size"
+      ],
+      "caveat": "Native context and budget exclusions prevent a balanced full grid."
+    },
+    {
+      "id": 4,
+      "title": "Verified KV size differs substantially across the measured attention layouts.",
+      "strength": "strong",
+      "numbers": "pythia-1.4b = 196608 bytes/token; Qwen2.5-0.5B = 12288 bytes/token; Qwen2.5-1.5B = 28672 bytes/token; Qwen2.5-3B = 36864 bytes/token; opt-1.3b = 196608 bytes/token; phi-2 = 327680 bytes/token; Llama-3.2-3B-Instruct = 114688 bytes/token",
+      "scope": "Seven fp16 model configurations on T4; the five transfer models match their cache tensors on Modal.",
+      "sources": [
+        "model_config + cache_layout",
+        "docs/PHASE2_REPORT.md#model-coverage-and-kv-size"
+      ],
+      "caveat": "Models also differ in size and kernels; this is not an isolated GQA/MHA architecture intervention."
+    },
+    {
+      "id": 5,
+      "title": "Adding the resident-turn baseline improves descriptive T4 rule agreement.",
+      "strength": "supported",
+      "numbers": "TTFT-adjusted 1237/1258; prefix-only 1017/1258 resolved simulated-rate decisions.",
+      "scope": "T4, seven models and observed lengths; all simulated rates; same-session measured baselines.",
+      "sources": [
+        "phase2_report_totals.rule_counts",
+        "docs/PHASE2_REPORT.md#findings"
+      ],
+      "caveat": "This is descriptive agreement, not preregistered hardware transfer or independent Bernoulli trials."
+    },
+    {
+      "id": 6,
+      "title": "Returning-turn and fixed costs can dominate a small KV footprint.",
+      "strength": "supported",
+      "numbers": "Qwen2.5-0.5B at L=512, N=32: prefix-only B* 226.626 MB/s; adjusted B* 2442.265 MB/s; observed [1600.0, unthrottled] target / [1558.1, 9531.0] achieved MB/s.",
+      "scope": "T4, Qwen2.5-0.5B repeated-text control.",
+      "sources": [
+        "bandwidth_crossover",
+        "docs/PHASE2_REPORT.md#findings"
+      ],
+      "caveat": "Use B* = KV_bytes / (T_recompute - T_GPU_hit - fixed_overhead - other_CPU_and_transfer_legs), only for a positive denominator. Count read, deserialization and H2D costs once; the prefix-only formula is insufficient here."
+    },
+    {
+      "id": 7,
+      "title": "The selected MHA controls require higher simulated bandwidth than the selected GQA controls.",
+      "strength": "supported",
+      "numbers": "Qwen2.5-1.5B: [200.0, 400.0] target / [199.5, 398.4] achieved MB/s; Qwen2.5-3B: [100.0, 200.0] target / [99.9, 199.7] achieved MB/s; pythia-1.4b: [800.0, 1600.0] target / [798.9, 1597.2] achieved (median only) MB/s; phi-2: [800.0, 1600.0] target / [799.2, 1598.4] achieved MB/s",
+      "scope": "T4 repeated text, prefix 512 and new turn 32; Qwen2.5-1.5B/3B versus Pythia-1.4B and Phi-2.",
+      "sources": [
+        "bandwidth_crossover",
+        "docs/PHASE2_REPORT.md#findings"
+      ],
+      "caveat": "Descriptive model comparison. Model size, prefill kernels and cache layout all differ; this does not isolate the causal effect of GQA."
+    },
+    {
+      "id": 8,
+      "title": "A fixed first-session T4 calibration predicts later main-model sessions reasonably well.",
+      "strength": "supported",
+      "numbers": "phase2-main-session-2: 148/149 correct, median relative TTFT error 2.954%; phase2-main-session-3: 146/150 correct, median relative TTFT error 1.714%",
+      "scope": "T4; Qwen2.5-1.5B UltraChat; common grid; calibration stays fixed.",
+      "sources": [
+        "heldout_session_score",
+        "docs/PHASE2_REPORT.md"
+      ],
+      "caveat": "Same hardware type and input; no claim about unseen GPU types."
+    },
+    {
+      "id": 9,
+      "title": "Frozen calibration transfers to most resolved cells on each observed board.",
+      "strength": "supported",
+      "numbers": "L4 (PCIe 3 x16): 574/636 correct, 13 unresolved, median absolute TTFT error 3.203 ms; A10 (PCIe 4 x16): 192/206 correct, 14 unresolved, median absolute TTFT error 2.040 ms; A10G (PCIe 4 x8): 398/426 correct, 3 unresolved, median absolute TTFT error 5.758 ms; H100 (PCIe 5 x16): 20/21 correct, 1 unresolved, median absolute TTFT error 6.579 ms",
+      "scope": "L4: main and four control models; A10: main only; A10G: main and four controls; H100: complete main-model cells only.",
+      "sources": [
+        "consolidated_scorecard in outputs/consolidated_results.jsonl",
+        "figures/paper/frozen-scorecard.pdf",
+        "docs/PHASE3_REPORT.md#frozen-prediction-scorecard"
+      ],
+      "caveat": "Coverage differs across boards. H100 is partial. Unresolved paired intervals are excluded from decision accuracy."
+    },
+    {
+      "id": 10,
+      "title": "Short calibration does not reliably extrapolate TTFT to the largest native contexts.",
+      "strength": "strong",
+      "numbers": "A10G (PCIe 4 x8), Qwen2.5-3B, L=32736, N=32, recompute: predicted 8041.096 vs observed 13914.555 ms, absolute error 5873.459 ms; L4 (PCIe 3 x16), Qwen2.5-3B, L=32736, N=32, recompute: predicted 13088.360 vs observed 18022.902 ms, absolute error 4934.542 ms; L4 (PCIe 3 x16), Qwen2.5-3B, L=32736, N=32, prefix_only: predicted 13980.511 vs observed 9148.164 ms, absolute error 4832.347 ms",
+      "scope": "Observed Qwen2.5-3B native-limit extrapolation on L4 and A10G.",
+      "sources": [
+        "phase3_prediction_score sorted by absolute_error_ms",
+        "docs/PHASE3_REPORT.md#frozen-prediction-scorecard"
+      ],
+      "caveat": "Median errors conceal these tails; a low median cannot justify universal long-context prediction."
+    },
+    {
+      "id": 11,
+      "title": "Exact proportional scaling of crossover bandwidth with prefill throughput is not established.",
+      "strength": "not supported",
+      "numbers": "L4 (PCIe 3 x16): 25/27 ratio-resolved shapes compatible with at least one matched T4 bracket; 32 not ratio-resolved; A10 (PCIe 4 x16): 11/12 ratio-resolved shapes compatible with at least one matched T4 bracket; 8 not ratio-resolved; A10G (PCIe 4 x8): 20/24 ratio-resolved shapes compatible with at least one matched T4 bracket; 15 not ratio-resolved; H100 (PCIe 5 x16): 0/1 ratio-resolved shapes compatible with at least one matched T4 bracket; 1 not ratio-resolved",
+      "scope": "Five transfer models where complete simulated-rate shapes and matched T4 observations exist.",
+      "sources": [
+        "consolidated_hypothesis_score",
+        "figures/paper/bstar-vs-prefill.pdf",
+        "docs/PHASE3_REPORT.md#crossover-bandwidth-and-the-throughput-hypothesis"
+      ],
+      "caveat": "Compatibility is a broad-bracket test using frozen calibration throughput, not an equality test. Fixed overhead, new-turn cost and extrapolation error matter."
+    },
+    {
+      "id": 12,
+      "title": "At a matched main-model context, the faster GPU allocations shift crossover bandwidth upward.",
+      "strength": "supported",
+      "numbers": "T4 / phase2-main-session-1: [100.0, 200.0] target / [100.0, 199.8] achieved MB/s; prefill 5581.6 tokens/s; T4 / phase2-main-session-2: [200.0, 400.0] target / [199.8, 399.0] achieved (median only) MB/s; prefill 6285.1 tokens/s; T4 / phase2-main-session-3: [200.0, 400.0] target / [199.7, 399.0] achieved MB/s; prefill 6469.7 tokens/s; A10 (PCIe 4 x16) / phase3-a10-main-1: [800.0, 1600.0] target / [795.2, 1544.2] achieved MB/s; prefill 18391.1 tokens/s; A10G (PCIe 4 x8) / phase3-a10-main-2: [400.0, 800.0] target / [396.2, 791.0] achieved MB/s; prefill 14178.2 tokens/s; H100 (PCIe 5 x16) / phase3-h100-main: above tested achieved rates (bound only) MB/s; prefill 73677.8 tokens/s; L4 (PCIe 3 x16) / phase3-l4-main-1: [800.0, 1600.0] target / [787.2, 1539.1] achieved MB/s; prefill 15213.0 tokens/s; L4 (PCIe 3 x16) / phase3-l4-main-2: [800.0, 1600.0] target / [788.6, 1552.0] achieved (median only) MB/s; prefill 14438.4 tokens/s",
+      "scope": "Qwen2.5-1.5B, UltraChat, L=1024, N=32; T4, L4, A10, A10G, H100.",
+      "sources": [
+        "consolidated_crossovers.csv",
+        "figures/paper/bstar-vs-gpu.pdf"
+      ],
+      "caveat": "Only adjacent simulated-rate brackets or censored bounds are observed; host and driver also change. This is an allocation comparison, not isolated GPU causality."
+    },
+    {
+      "id": 13,
+      "title": "L4 extends the sampled short-context recompute-favored regime relative to T4.",
+      "strength": "supported",
+      "numbers": "L4 (PCIe 3 x16) / phase3-l4-main-1: recompute [16, 64, 128, 256], reload [], unresolved []; L4 (PCIe 3 x16) / phase3-l4-main-2: recompute [16, 64, 128, 256], reload [], unresolved []; A10 (PCIe 4 x16) / phase3-a10-main-1: recompute [16, 64, 128], reload [], unresolved [256]; A10G (PCIe 4 x8) / phase3-a10-main-2: recompute [16, 64, 128], reload [256], unresolved []; T4 / phase2-main-session-1: recompute [16, 64, 128], reload [256], unresolved []; T4 / phase2-main-session-2: recompute [16, 64, 128], reload [256], unresolved []; T4 / phase2-main-session-3: recompute [16], reload [256], unresolved [64, 128]",
+      "scope": "Qwen2.5-1.5B UltraChat, prefixes 16, 64, 128, 256, new turn 32; real unthrottled pinned path.",
+      "sources": [
+        "phase3_short_regime",
+        "figures/paper/short-context-regime.pdf"
+      ],
+      "caveat": "No continuous crossover length is identified. A10 and A10G have separate allocations and boundaries."
+    },
+    {
+      "id": 14,
+      "title": "Session variability remains larger than some within-session intervals.",
+      "strength": "supported",
+      "numbers": "T4, N=32: median 12.341%, maximum 17.332%; T4, N=256: median 14.847%, maximum 20.958%; L4, N=32: median 4.956%, maximum 8.755%; L4, N=256: median 4.417%, maximum 7.338%; L4 example L=8192, N=32: phase3-l4-main-1: 760.407 ms, within-session 95% CI [759.673, 766.897]; phase3-l4-main-2: 814.803 ms, within-session 95% CI [811.700, 820.760]",
+      "scope": "Main UltraChat model; three T4 sessions and two L4 sessions, all measured lengths, recompute.",
+      "sources": [
+        "session_spread + phase3_session_spread",
+        "docs/PHASE3_REPORT.md#session-spread-and-clock-drift"
+      ],
+      "caveat": "Range over median is descriptive; small session counts do not estimate a population confidence interval."
+    },
+    {
+      "id": 15,
+      "title": "The earlier A10 service-tier spread compares different boards and PCIe widths.",
+      "strength": "limited",
+      "numbers": "A10: PCIe 4 x16, one main session; A10G: PCIe 4 x8, one main session; N=32: median matched-cell relative range 23.611%; N=256: median matched-cell relative range 22.664%",
+      "scope": "Matched Qwen2.5-1.5B UltraChat cells on A10 and A10G.",
+      "sources": [
+        "consolidated_allocation_spread",
+        "outputs/phase3_ledger.json",
+        "docs/PHASE3_REPORT.md#session-spread-and-clock-drift"
+      ],
+      "caveat": "Different board/PCIe allocations are the likely source of this service-tier difference. Causal attribution is unproved; host changes are confounded, and each board has only one main session."
+    },
+    {
+      "id": 16,
+      "title": "Kaggle file counters report physical reads.",
+      "strength": "strong",
+      "numbers": "7762/7762 recorded file observations have positive physical_read_bytes; byte-counter range 196608 to 1879052288.",
+      "scope": "Kaggle T4, all recorded phase-two file measurements and microbenchmarks, including calibration.",
+      "sources": [
+        "consolidated_file_observability",
+        "docs/FILE_API_AUDIT.md"
+      ],
+      "caveat": "These are process I/O counters, not physical-device traces. Page-cache-only interpretation is contradicted; underlying device and host cache remain unidentified."
+    },
+    {
+      "id": 17,
+      "title": "Modal file counters do not report physical reads.",
+      "strength": "limited",
+      "numbers": "0/4575 recorded file observations have positive physical_read_bytes; byte-counter range 0 to 0.",
+      "scope": "L4, A10, A10G, and the recovered H100 observations; file measurements and microbenchmarks.",
+      "sources": [
+        "consolidated_file_observability",
+        "docs/FILE_API_AUDIT.md"
+      ],
+      "caveat": "Use local file API path (page-cache resident; physical reads not observed). Page-cache residency is the operational interpretation of zero counters, not proof of the underlying host storage state."
+    },
+    {
+      "id": 18,
+      "title": "MHA file-path outcomes do not transfer uniformly from T4 to A10G.",
+      "strength": "supported",
+      "numbers": "T4, pythia-1.4b, file_raw_staged: 0/4 reload wins, 0 unresolved; T4, pythia-1.4b, file_torch_direct: 0/4 reload wins, 0 unresolved; T4, phi-2, file_raw_staged: 0/1 reload wins, 3 unresolved; T4, phi-2, file_torch_direct: 2/3 reload wins, 1 unresolved; L4 (PCIe 3 x16), pythia-1.4b, file_raw_staged: 0/4 reload wins, 0 unresolved; L4 (PCIe 3 x16), pythia-1.4b, file_torch_direct: 0/4 reload wins, 0 unresolved; L4 (PCIe 3 x16), phi-2, file_raw_staged: 0/4 reload wins, 0 unresolved; L4 (PCIe 3 x16), phi-2, file_torch_direct: 0/4 reload wins, 0 unresolved; A10G (PCIe 4 x8), pythia-1.4b, file_raw_staged: 0/4 reload wins, 0 unresolved; A10G (PCIe 4 x8), pythia-1.4b, file_torch_direct: 1/4 reload wins, 0 unresolved; A10G (PCIe 4 x8), phi-2, file_raw_staged: 3/4 reload wins, 0 unresolved; A10G (PCIe 4 x8), phi-2, file_torch_direct: 3/4 reload wins, 0 unresolved",
+      "scope": "Pythia-1.4B and Phi-2 repeated text; matched prefixes 64, 256, 512, 1024, new turn 32; T4, L4 and A10G. A10 x16 has no MHA sweep.",
+      "sources": [
+        "outputs/consolidated_file_wins.csv",
+        "docs/FILE_API_AUDIT.md",
+        "docs/PHASE3_REPORT.md#real-file-paths-and-short-contexts"
+      ],
+      "caveat": "Phi-2 already has direct-file wins on T4, so a blanket claim that all MHA file paths lose there is false. Host file paths and read-counter behavior differ, so changes cannot be attributed to GPU speed alone. No MHA performance claim is available for A10 x16 or H100."
+    },
+    {
+      "id": 19,
+      "title": "Including deserialization improves the descriptive torch-file rule residual on T4.",
+      "strength": "supported",
+      "numbers": "Torch median absolute relative error 11.780% to 3.097%; raw-format error 3.107% to 3.086%.",
+      "scope": "T4, seven models, full observed file cells; independently measured CPU legs and same-session baselines.",
+      "sources": [
+        "phase2_report_totals.file_errors",
+        "docs/PHASE2_REPORT.md"
+      ],
+      "caveat": "The raw path barely changes. This is descriptive residual analysis, not frozen cross-GPU validation."
+    },
+    {
+      "id": 20,
+      "title": "The H100 point is incomplete and cannot validate the full fast-GPU or MHA hypothesis.",
+      "strength": "limited",
+      "numbers": "26 complete timing cells; 52 unfinished registered cells; complete main-model prefixes [1024, 16384]; Pythia sweep timings 0.",
+      "scope": "One H100 allocation; Qwen2.5-1.5B UltraChat complete cells only.",
+      "sources": [
+        "phase3_audit + phase3_missing_prediction_cell",
+        "outputs/phase3_dropped_cells.json",
+        "docs/PHASE3_REPORT.md"
+      ],
+      "caveat": "Provider cancellation signal; initiating actor unknown; no second allocation. Partial cells are retained but excluded from scoring."
+    },
+    {
+      "id": 21,
+      "title": "The pilot prefill reversal has no established cause and did not repeat as a resolved reversal.",
+      "strength": "limited",
+      "numbers": "0/4 phase-two anomaly comparisons have a positive prefix-only-minus-prefix-plus-turn interval lower endpoint.",
+      "scope": "Qwen2.5-1.5B at prefix 8192 on repeated text and UltraChat; observed turn sizes.",
+      "sources": [
+        "prefill_anomaly_pair",
+        "docs/PHASE2_REPORT.md"
+      ],
+      "caveat": "Non-reproduction does not identify the historical cause."
+    },
+    {
+      "id": 22,
+      "title": "Production-serving, concurrency, quantization and P100 conclusions are not supported.",
+      "strength": "not supported",
+      "numbers": "Successful recorded production-status observations: 0; accepted full sweep timings use concurrency [1]; dtypes ['float16'].",
+      "scope": "Reference Hugging Face path only; allocated T4, L4, A10, A10G and partial H100.",
+      "sources": [
+        "production_status + measurement.environment",
+        "docs/NOTES.md"
+      ],
+      "caveat": "No measured vLLM/LMCache speedup, P100 transfer, multi-request scaling, 4-bit model comparison or bf16 claim."
+    },
+    {
+      "id": 23,
+      "title": "A novelty claim for the basic reload-versus-recompute idea is not supported.",
+      "strength": "not supported",
+      "numbers": "No novelty claim is made for KV reuse, cache offload or choosing compute versus load.",
+      "scope": "Novelty boundary, not a measured performance effect.",
+      "sources": [
+        "docs/RELATED_WORK.md"
+      ],
+      "caveat": "The permissible angle is this bounded older/commodity-GPU experiment, the calibrated rule and its measured transfer limits."
+    }
+  ],
+  "evidence": {
+    "scorecards": [
+      {
+        "kind": "phase3_scorecard",
+        "gpu": "L4",
+        "scope": "all",
+        "allocated_gpu_names": [
+          "NVIDIA L4"
+        ],
+        "correct_decisions": 574,
+        "resolved_decisions": 636,
+        "unresolved_decisions": 13,
+        "complete_cells": 767,
+        "median_absolute_ttft_error_ms": 3.2030901104188203,
+        "median_absolute_relative_ttft_error": 0.045990508997566903
+      },
+      {
+        "kind": "phase3_scorecard",
+        "gpu": "A10",
+        "scope": "all",
+        "allocated_gpu_names": [
+          "NVIDIA A10"
+        ],
+        "correct_decisions": 192,
+        "resolved_decisions": 206,
+        "unresolved_decisions": 14,
+        "complete_cells": 260,
+        "median_absolute_ttft_error_ms": 2.040422598566767,
+        "median_absolute_relative_ttft_error": 0.038741249344548465
+      },
+      {
+        "kind": "phase3_scorecard",
+        "gpu": "A10G",
+        "scope": "all",
+        "allocated_gpu_names": [
+          "NVIDIA A10G"
+        ],
+        "correct_decisions": 398,
+        "resolved_decisions": 426,
+        "unresolved_decisions": 3,
+        "complete_cells": 507,
+        "median_absolute_ttft_error_ms": 5.75844767161767,
+        "median_absolute_relative_ttft_error": 0.10813963628450796
+      },
+      {
+        "kind": "phase3_scorecard",
+        "gpu": "H100!",
+        "scope": "all",
+        "allocated_gpu_names": [
+          "NVIDIA H100 80GB HBM3"
+        ],
+        "correct_decisions": 20,
+        "resolved_decisions": 21,
+        "unresolved_decisions": 1,
+        "complete_cells": 26,
+        "median_absolute_ttft_error_ms": 6.579464545951296,
+        "median_absolute_relative_ttft_error": 0.026460268718223448
+      }
+    ],
+    "file_observability": [
+      {
+        "phase": "pilot",
+        "kind": "bandwidth",
+        "condition": "file_read",
+        "samples": 36,
+        "positive": 36,
+        "zero": 0,
+        "minimum_bytes": 14696448,
+        "maximum_bytes": 234897408,
+        "median_physical_to_file_ratio": 1.000005533203777,
+        "min_prefix": 512,
+        "max_prefix": 8192,
+        "models": [
+          "Qwen/Qwen2.5-1.5B"
+        ]
+      },
+      {
+        "phase": "pilot",
+        "kind": "ttft",
+        "condition": "file",
+        "samples": 72,
+        "positive": 72,
+        "zero": 0,
+        "minimum_bytes": 14696448,
+        "maximum_bytes": 234897408,
+        "median_physical_to_file_ratio": null,
+        "min_prefix": 512,
+        "max_prefix": 8192,
+        "models": [
+          "Qwen/Qwen2.5-1.5B"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "kind": "microbenchmark",
+        "condition": "file_legs_torch",
+        "samples": 1028,
+        "positive": 1028,
+        "zero": 0,
+        "minimum_bytes": 200704,
+        "maximum_bytes": 1879052288,
+        "median_physical_to_file_ratio": 1.0001375830842631,
+        "min_prefix": 16,
+        "max_prefix": 16384,
+        "models": [
+          "EleutherAI/pythia-1.4b",
+          "Qwen/Qwen2.5-0.5B",
+          "Qwen/Qwen2.5-1.5B",
+          "Qwen/Qwen2.5-3B",
+          "facebook/opt-1.3b",
+          "microsoft/phi-2",
+          "unsloth/Llama-3.2-3B-Instruct"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "kind": "microbenchmark",
+        "condition": "file_legs_raw",
+        "samples": 1028,
+        "positive": 1028,
+        "zero": 0,
+        "minimum_bytes": 196608,
+        "maximum_bytes": 1879048192,
+        "median_physical_to_file_ratio": 1.0,
+        "min_prefix": 16,
+        "max_prefix": 16384,
+        "models": [
+          "EleutherAI/pythia-1.4b",
+          "Qwen/Qwen2.5-0.5B",
+          "Qwen/Qwen2.5-1.5B",
+          "Qwen/Qwen2.5-3B",
+          "facebook/opt-1.3b",
+          "microsoft/phi-2",
+          "unsloth/Llama-3.2-3B-Instruct"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "kind": "measurement",
+        "condition": "file_raw_staged",
+        "samples": 1902,
+        "positive": 1902,
+        "zero": 0,
+        "minimum_bytes": 196608,
+        "maximum_bytes": 1879048192,
+        "median_physical_to_file_ratio": 1.0,
+        "min_prefix": 16,
+        "max_prefix": 16384,
+        "models": [
+          "EleutherAI/pythia-1.4b",
+          "Qwen/Qwen2.5-0.5B",
+          "Qwen/Qwen2.5-1.5B",
+          "Qwen/Qwen2.5-3B",
+          "facebook/opt-1.3b",
+          "microsoft/phi-2",
+          "unsloth/Llama-3.2-3B-Instruct"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "kind": "measurement",
+        "condition": "file_torch_direct",
+        "samples": 1902,
+        "positive": 1902,
+        "zero": 0,
+        "minimum_bytes": 200704,
+        "maximum_bytes": 1879052288,
+        "median_physical_to_file_ratio": 1.0001238257591814,
+        "min_prefix": 16,
+        "max_prefix": 16384,
+        "models": [
+          "EleutherAI/pythia-1.4b",
+          "Qwen/Qwen2.5-0.5B",
+          "Qwen/Qwen2.5-1.5B",
+          "Qwen/Qwen2.5-3B",
+          "facebook/opt-1.3b",
+          "microsoft/phi-2",
+          "unsloth/Llama-3.2-3B-Instruct"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "kind": "measurement",
+        "condition": "file_torch_staged",
+        "samples": 1902,
+        "positive": 1902,
+        "zero": 0,
+        "minimum_bytes": 200704,
+        "maximum_bytes": 1879052288,
+        "median_physical_to_file_ratio": 1.0001238257591814,
+        "min_prefix": 16,
+        "max_prefix": 16384,
+        "models": [
+          "EleutherAI/pythia-1.4b",
+          "Qwen/Qwen2.5-0.5B",
+          "Qwen/Qwen2.5-1.5B",
+          "Qwen/Qwen2.5-3B",
+          "facebook/opt-1.3b",
+          "microsoft/phi-2",
+          "unsloth/Llama-3.2-3B-Instruct"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "kind": "microbenchmark",
+        "condition": "file_legs_torch",
+        "samples": 990,
+        "positive": 0,
+        "zero": 990,
+        "minimum_bytes": 0,
+        "maximum_bytes": 0,
+        "median_physical_to_file_ratio": 0.0,
+        "min_prefix": 16,
+        "max_prefix": 32736,
+        "models": [
+          "EleutherAI/pythia-1.4b",
+          "Qwen/Qwen2.5-1.5B",
+          "Qwen/Qwen2.5-3B",
+          "microsoft/phi-2",
+          "unsloth/Llama-3.2-3B-Instruct"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "kind": "microbenchmark",
+        "condition": "file_legs_raw",
+        "samples": 990,
+        "positive": 0,
+        "zero": 990,
+        "minimum_bytes": 0,
+        "maximum_bytes": 0,
+        "median_physical_to_file_ratio": 0.0,
+        "min_prefix": 16,
+        "max_prefix": 32736,
+        "models": [
+          "EleutherAI/pythia-1.4b",
+          "Qwen/Qwen2.5-1.5B",
+          "Qwen/Qwen2.5-3B",
+          "microsoft/phi-2",
+          "unsloth/Llama-3.2-3B-Instruct"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "kind": "microbenchmark",
+        "condition": "file_legs_direct",
+        "samples": 180,
+        "positive": 0,
+        "zero": 180,
+        "minimum_bytes": 0,
+        "maximum_bytes": 0,
+        "median_physical_to_file_ratio": 0.0,
+        "min_prefix": 64,
+        "max_prefix": 8192,
+        "models": [
+          "EleutherAI/pythia-1.4b",
+          "Qwen/Qwen2.5-1.5B",
+          "Qwen/Qwen2.5-3B",
+          "microsoft/phi-2",
+          "unsloth/Llama-3.2-3B-Instruct"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "kind": "measurement",
+        "condition": "file_raw_staged",
+        "samples": 1208,
+        "positive": 0,
+        "zero": 1208,
+        "minimum_bytes": 0,
+        "maximum_bytes": 0,
+        "median_physical_to_file_ratio": 0.0,
+        "min_prefix": 16,
+        "max_prefix": 32736,
+        "models": [
+          "EleutherAI/pythia-1.4b",
+          "Qwen/Qwen2.5-1.5B",
+          "Qwen/Qwen2.5-3B",
+          "microsoft/phi-2",
+          "unsloth/Llama-3.2-3B-Instruct"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "kind": "measurement",
+        "condition": "file_torch_direct",
+        "samples": 1207,
+        "positive": 0,
+        "zero": 1207,
+        "minimum_bytes": 0,
+        "maximum_bytes": 0,
+        "median_physical_to_file_ratio": 0.0,
+        "min_prefix": 16,
+        "max_prefix": 32736,
+        "models": [
+          "EleutherAI/pythia-1.4b",
+          "Qwen/Qwen2.5-1.5B",
+          "Qwen/Qwen2.5-3B",
+          "microsoft/phi-2",
+          "unsloth/Llama-3.2-3B-Instruct"
+        ]
+      }
+    ],
+    "file_wins": [
+      {
+        "gpu": "T4",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_raw_staged",
+        "comparison": "all observed",
+        "wins": 2,
+        "resolved": 14,
+        "unresolved": 2,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          1792
+        ],
+        "turns": [
+          32,
+          256
+        ]
+      },
+      {
+        "gpu": "T4",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_raw_staged",
+        "comparison": "matched prefix and turn",
+        "wins": 0,
+        "resolved": 4,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "T4",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_torch_direct",
+        "comparison": "all observed",
+        "wins": 2,
+        "resolved": 13,
+        "unresolved": 3,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          1792
+        ],
+        "turns": [
+          32,
+          256
+        ]
+      },
+      {
+        "gpu": "T4",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_torch_direct",
+        "comparison": "matched prefix and turn",
+        "wins": 0,
+        "resolved": 4,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "T4",
+        "model": "microsoft/phi-2",
+        "condition": "file_raw_staged",
+        "comparison": "all observed",
+        "wins": 6,
+        "resolved": 11,
+        "unresolved": 5,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          1792
+        ],
+        "turns": [
+          32,
+          256
+        ]
+      },
+      {
+        "gpu": "T4",
+        "model": "microsoft/phi-2",
+        "condition": "file_raw_staged",
+        "comparison": "matched prefix and turn",
+        "wins": 0,
+        "resolved": 1,
+        "unresolved": 3,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "T4",
+        "model": "microsoft/phi-2",
+        "condition": "file_torch_direct",
+        "comparison": "all observed",
+        "wins": 12,
+        "resolved": 15,
+        "unresolved": 1,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          1792
+        ],
+        "turns": [
+          32,
+          256
+        ]
+      },
+      {
+        "gpu": "T4",
+        "model": "microsoft/phi-2",
+        "condition": "file_torch_direct",
+        "comparison": "matched prefix and turn",
+        "wins": 2,
+        "resolved": 3,
+        "unresolved": 1,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "L4",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_raw_staged",
+        "comparison": "all observed",
+        "wins": 0,
+        "resolved": 5,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "L4",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_raw_staged",
+        "comparison": "matched prefix and turn",
+        "wins": 0,
+        "resolved": 4,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "L4",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_torch_direct",
+        "comparison": "all observed",
+        "wins": 0,
+        "resolved": 5,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "L4",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_torch_direct",
+        "comparison": "matched prefix and turn",
+        "wins": 0,
+        "resolved": 4,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "L4",
+        "model": "microsoft/phi-2",
+        "condition": "file_raw_staged",
+        "comparison": "all observed",
+        "wins": 0,
+        "resolved": 5,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "L4",
+        "model": "microsoft/phi-2",
+        "condition": "file_raw_staged",
+        "comparison": "matched prefix and turn",
+        "wins": 0,
+        "resolved": 4,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "L4",
+        "model": "microsoft/phi-2",
+        "condition": "file_torch_direct",
+        "comparison": "all observed",
+        "wins": 0,
+        "resolved": 5,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "L4",
+        "model": "microsoft/phi-2",
+        "condition": "file_torch_direct",
+        "comparison": "matched prefix and turn",
+        "wins": 0,
+        "resolved": 4,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "A10G",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_raw_staged",
+        "comparison": "all observed",
+        "wins": 0,
+        "resolved": 5,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "A10G",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_raw_staged",
+        "comparison": "matched prefix and turn",
+        "wins": 0,
+        "resolved": 4,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "A10G",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_torch_direct",
+        "comparison": "all observed",
+        "wins": 2,
+        "resolved": 5,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "A10G",
+        "model": "EleutherAI/pythia-1.4b",
+        "condition": "file_torch_direct",
+        "comparison": "matched prefix and turn",
+        "wins": 1,
+        "resolved": 4,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "A10G",
+        "model": "microsoft/phi-2",
+        "condition": "file_raw_staged",
+        "comparison": "all observed",
+        "wins": 4,
+        "resolved": 5,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "A10G",
+        "model": "microsoft/phi-2",
+        "condition": "file_raw_staged",
+        "comparison": "matched prefix and turn",
+        "wins": 3,
+        "resolved": 4,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "A10G",
+        "model": "microsoft/phi-2",
+        "condition": "file_torch_direct",
+        "comparison": "all observed",
+        "wins": 4,
+        "resolved": 5,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "turns": [
+          32
+        ]
+      },
+      {
+        "gpu": "A10G",
+        "model": "microsoft/phi-2",
+        "condition": "file_torch_direct",
+        "comparison": "matched prefix and turn",
+        "wins": 3,
+        "resolved": 4,
+        "unresolved": 0,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "turns": [
+          32
+        ]
+      }
+    ],
+    "hypothesis_scorecards": [
+      {
+        "gpu": "L4",
+        "resolved": 27,
+        "compatible_any": 25,
+        "compatible_all": 24,
+        "unresolved": 32
+      },
+      {
+        "gpu": "A10",
+        "resolved": 12,
+        "compatible_any": 11,
+        "compatible_all": 10,
+        "unresolved": 8
+      },
+      {
+        "gpu": "A10G",
+        "resolved": 24,
+        "compatible_any": 20,
+        "compatible_all": 20,
+        "unresolved": 15
+      },
+      {
+        "gpu": "H100!",
+        "resolved": 1,
+        "compatible_any": 0,
+        "compatible_all": 0,
+        "unresolved": 1
+      }
+    ],
+    "kv_bytes_per_token": {
+      "Qwen/Qwen2.5-0.5B": 12288,
+      "Qwen/Qwen2.5-1.5B": 28672,
+      "Qwen/Qwen2.5-3B": 36864,
+      "EleutherAI/pythia-1.4b": 196608,
+      "facebook/opt-1.3b": 196608,
+      "microsoft/phi-2": 327680,
+      "unsloth/Llama-3.2-3B-Instruct": 114688
+    },
+    "short_regimes": [
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "L4",
+        "run_id": "phase3-l4-main-1",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 32,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [
+          16,
+          64,
+          128,
+          256
+        ],
+        "reload_wins": [],
+        "unresolved": [],
+        "requested_gpu": "L4",
+        "allocated_gpu_name": "NVIDIA L4",
+        "pcie_widths": [
+          16
+        ],
+        "pcie_generations": [
+          3
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "L4",
+        "run_id": "phase3-l4-main-1",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 256,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [
+          16,
+          64,
+          128,
+          256
+        ],
+        "reload_wins": [],
+        "unresolved": [],
+        "requested_gpu": "L4",
+        "allocated_gpu_name": "NVIDIA L4",
+        "pcie_widths": [
+          16
+        ],
+        "pcie_generations": [
+          3
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "L4",
+        "run_id": "phase3-l4-main-2",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 32,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [
+          16,
+          64,
+          128,
+          256
+        ],
+        "reload_wins": [],
+        "unresolved": [],
+        "requested_gpu": "L4",
+        "allocated_gpu_name": "NVIDIA L4",
+        "pcie_widths": [
+          16
+        ],
+        "pcie_generations": [
+          3
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "L4",
+        "run_id": "phase3-l4-main-2",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 256,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [
+          16,
+          64,
+          128,
+          256
+        ],
+        "reload_wins": [],
+        "unresolved": [],
+        "requested_gpu": "L4",
+        "allocated_gpu_name": "NVIDIA L4",
+        "pcie_widths": [
+          16
+        ],
+        "pcie_generations": [
+          3
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "A10",
+        "run_id": "phase3-a10-main-1",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 32,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [
+          16,
+          64,
+          128
+        ],
+        "reload_wins": [],
+        "unresolved": [
+          256
+        ],
+        "requested_gpu": "A10",
+        "allocated_gpu_name": "NVIDIA A10",
+        "pcie_widths": [
+          16
+        ],
+        "pcie_generations": [
+          4
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "A10",
+        "run_id": "phase3-a10-main-1",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 256,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [],
+        "reload_wins": [
+          128,
+          256
+        ],
+        "unresolved": [
+          16,
+          64
+        ],
+        "requested_gpu": "A10",
+        "allocated_gpu_name": "NVIDIA A10",
+        "pcie_widths": [
+          16
+        ],
+        "pcie_generations": [
+          4
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "A10G",
+        "run_id": "phase3-a10-main-2",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 32,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [
+          16,
+          64,
+          128
+        ],
+        "reload_wins": [
+          256
+        ],
+        "unresolved": [],
+        "requested_gpu": "A10",
+        "allocated_gpu_name": "NVIDIA A10G",
+        "pcie_widths": [
+          8
+        ],
+        "pcie_generations": [
+          4
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "A10G",
+        "run_id": "phase3-a10-main-2",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 256,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [],
+        "reload_wins": [
+          16,
+          64,
+          128,
+          256
+        ],
+        "unresolved": [],
+        "requested_gpu": "A10",
+        "allocated_gpu_name": "NVIDIA A10G",
+        "pcie_widths": [
+          8
+        ],
+        "pcie_generations": [
+          4
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "T4",
+        "run_id": "phase2-main-session-1",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 32,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [
+          16,
+          64,
+          128
+        ],
+        "reload_wins": [
+          256
+        ],
+        "unresolved": []
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "T4",
+        "run_id": "phase2-main-session-1",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 256,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [],
+        "reload_wins": [
+          16,
+          64,
+          128,
+          256
+        ],
+        "unresolved": []
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "T4",
+        "run_id": "phase2-main-session-2",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 32,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [
+          16,
+          64,
+          128
+        ],
+        "reload_wins": [
+          256
+        ],
+        "unresolved": []
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "T4",
+        "run_id": "phase2-main-session-2",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 256,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [],
+        "reload_wins": [
+          16,
+          64,
+          128,
+          256
+        ],
+        "unresolved": []
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "T4",
+        "run_id": "phase2-main-session-3",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 32,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [
+          16
+        ],
+        "reload_wins": [
+          256
+        ],
+        "unresolved": [
+          64,
+          128
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_short_regime",
+        "gpu": "T4",
+        "run_id": "phase2-main-session-3",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "turn_tokens": 256,
+        "condition": "simulated_unthrottled",
+        "matched_prefixes_only": true,
+        "recompute_wins": [],
+        "reload_wins": [
+          16,
+          64,
+          128,
+          256
+        ],
+        "unresolved": []
+      }
+    ],
+    "coverage": [
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "EleutherAI/pythia-1.4b",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          1792
+        ],
+        "sessions": [
+          "phase2-pythia-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "EleutherAI/pythia-1.4b",
+        "workload": "repeated_control",
+        "turn_tokens": 256,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          1792
+        ],
+        "sessions": [
+          "phase2-pythia-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "sessions": [
+          "phase2-qwen-half-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "workload": "repeated_control",
+        "turn_tokens": 256,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "sessions": [
+          "phase2-qwen-half-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          1792,
+          2048,
+          8192
+        ],
+        "sessions": [
+          "phase2-main-repeated-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase2-main-session-1",
+          "phase2-main-session-2",
+          "phase2-main-session-3"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "turn_tokens": 256,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase2-main-session-1",
+          "phase2-main-session-2",
+          "phase2-main-session-3"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "Qwen/Qwen2.5-3B",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase2-qwen-3b-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "Qwen/Qwen2.5-3B",
+        "workload": "repeated_control",
+        "turn_tokens": 256,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase2-qwen-3b-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "facebook/opt-1.3b",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024
+        ],
+        "sessions": [
+          "phase2-opt-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "facebook/opt-1.3b",
+        "workload": "repeated_control",
+        "turn_tokens": 256,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024
+        ],
+        "sessions": [
+          "phase2-opt-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "microsoft/phi-2",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          1792
+        ],
+        "sessions": [
+          "phase2-phi2-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "microsoft/phi-2",
+        "workload": "repeated_control",
+        "turn_tokens": 256,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          1792
+        ],
+        "sessions": [
+          "phase2-phi2-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "unsloth/Llama-3.2-3B-Instruct",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase2-llama-mirror-control"
+        ]
+      },
+      {
+        "phase": "phase2",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "unsloth/Llama-3.2-3B-Instruct",
+        "workload": "repeated_control",
+        "turn_tokens": 256,
+        "prefixes": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase2-llama-mirror-control"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "A10",
+        "hardware": "A10 (PCIe 4 x16)",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase3-a10-main-1"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "A10",
+        "hardware": "A10 (PCIe 4 x16)",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "turn_tokens": 256,
+        "prefixes": [
+          16,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase3-a10-main-1"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "A10G",
+        "hardware": "A10G (PCIe 4 x8)",
+        "model": "EleutherAI/pythia-1.4b",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "sessions": [
+          "phase3-a10-controls"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "A10G",
+        "hardware": "A10G (PCIe 4 x8)",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase3-a10-main-2"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "A10G",
+        "hardware": "A10G (PCIe 4 x8)",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "turn_tokens": 256,
+        "prefixes": [
+          16,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase3-a10-main-2"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "A10G",
+        "hardware": "A10G (PCIe 4 x8)",
+        "model": "Qwen/Qwen2.5-3B",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          32736
+        ],
+        "sessions": [
+          "phase3-a10-controls"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "A10G",
+        "hardware": "A10G (PCIe 4 x8)",
+        "model": "microsoft/phi-2",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "sessions": [
+          "phase3-a10-controls"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "A10G",
+        "hardware": "A10G (PCIe 4 x8)",
+        "model": "unsloth/Llama-3.2-3B-Instruct",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "sessions": [
+          "phase3-a10-controls"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "H100!",
+        "hardware": "H100 (PCIe 5 x16)",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "turn_tokens": 32,
+        "prefixes": [
+          1024,
+          16384
+        ],
+        "sessions": [
+          "phase3-h100-main"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "L4",
+        "hardware": "L4 (PCIe 3 x16)",
+        "model": "EleutherAI/pythia-1.4b",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "sessions": [
+          "phase3-l4-controls"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "L4",
+        "hardware": "L4 (PCIe 3 x16)",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "turn_tokens": 32,
+        "prefixes": [
+          16,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase3-l4-main-1",
+          "phase3-l4-main-2"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "L4",
+        "hardware": "L4 (PCIe 3 x16)",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "turn_tokens": 256,
+        "prefixes": [
+          16,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "sessions": [
+          "phase3-l4-main-1",
+          "phase3-l4-main-2"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "L4",
+        "hardware": "L4 (PCIe 3 x16)",
+        "model": "Qwen/Qwen2.5-3B",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          32736
+        ],
+        "sessions": [
+          "phase3-l4-controls"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "L4",
+        "hardware": "L4 (PCIe 3 x16)",
+        "model": "microsoft/phi-2",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024,
+          2016
+        ],
+        "sessions": [
+          "phase3-l4-controls"
+        ]
+      },
+      {
+        "phase": "phase3",
+        "gpu": "L4",
+        "hardware": "L4 (PCIe 3 x16)",
+        "model": "unsloth/Llama-3.2-3B-Instruct",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          64,
+          256,
+          512,
+          1024
+        ],
+        "sessions": [
+          "phase3-l4-controls"
+        ]
+      },
+      {
+        "phase": "pilot",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "repeated_control",
+        "turn_tokens": 32,
+        "prefixes": [
+          512,
+          2048,
+          8192
+        ],
+        "sessions": [
+          "pilot-t4-v1"
+        ]
+      },
+      {
+        "phase": "pilot",
+        "gpu": "T4",
+        "hardware": "T4",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "repeated_control",
+        "turn_tokens": 256,
+        "prefixes": [
+          512,
+          2048,
+          8192
+        ],
+        "sessions": [
+          "pilot-t4-v1"
+        ]
+      }
+    ],
+    "pilot_bstar": [
+      {
+        "schema_version": 2,
+        "kind": "pilot_bstar",
+        "run_id": "phase2-pilot-analysis",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "gpu": "Tesla T4",
+        "prefix_tokens": 512,
+        "kv_bytes_per_token": 28672,
+        "prefill_ms": 82.19033550003019,
+        "prefix_bstar_bytes_s": 178610586.15577263,
+        "prefix_bstar_ci95_bytes_s": [
+          174934703.4935057,
+          181926901.4824079
+        ],
+        "overhead_ms": 0.2351781666523811,
+        "overhead_adjusted_bstar_bytes_s": 179123126.324855,
+        "ttft_bstar_bytes_s": {
+          "32": 272929837.06320405,
+          "256": 198111514.7176193
+        },
+        "source": "accepted pilot summary and independent H2D calibration records"
+      },
+      {
+        "schema_version": 2,
+        "kind": "pilot_bstar",
+        "run_id": "phase2-pilot-analysis",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "gpu": "Tesla T4",
+        "prefix_tokens": 2048,
+        "kv_bytes_per_token": 28672,
+        "prefill_ms": 340.5228299999692,
+        "prefix_bstar_bytes_s": 172441465.96574837,
+        "prefix_bstar_ci95_bytes_s": [
+          171369387.04411438,
+          173039854.57950756
+        ],
+        "overhead_ms": 0.2351781666523811,
+        "overhead_adjusted_bstar_bytes_s": 172560642.98437417,
+        "ttft_bstar_bytes_s": {
+          "32": 184063698.8104083,
+          "256": 178786504.19394487
+        },
+        "source": "accepted pilot summary and independent H2D calibration records"
+      },
+      {
+        "schema_version": 2,
+        "kind": "pilot_bstar",
+        "run_id": "phase2-pilot-analysis",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "gpu": "Tesla T4",
+        "prefix_tokens": 8192,
+        "kv_bytes_per_token": 28672,
+        "prefill_ms": 1879.9939105000192,
+        "prefix_bstar_bytes_s": 124937119.57690813,
+        "prefix_bstar_ci95_bytes_s": [
+          124034132.40000618,
+          127024469.20500506
+        ],
+        "overhead_ms": 0.2351781666523811,
+        "overhead_adjusted_bstar_bytes_s": 124952750.56306794,
+        "ttft_bstar_bytes_s": {
+          "32": 139986501.96608388,
+          "256": 134026990.44989985
+        },
+        "source": "accepted pilot summary and independent H2D calibration records"
+      }
+    ],
+    "phase2_report_totals": [
+      {
+        "schema_version": 2,
+        "kind": "phase2_report_totals",
+        "phase": "phase2",
+        "phase2_conservative_gpu_hours": 9.900915882508889,
+        "phase2_limit_gpu_hours": 10,
+        "accepted_measurements": 26040,
+        "invalid_measurements": 0,
+        "full_sessions": 10,
+        "incomplete_sweep_run_ids": [],
+        "unscheduled_run_names": [],
+        "rule_counts": {
+          "resolved_comparisons": 1258,
+          "prefix_rule_agreements": 1017,
+          "ttft_rule_agreements": 1237
+        },
+        "file_errors": {
+          "torch": {
+            "old_median_ape": 0.11780261833616312,
+            "new_median_ape": 0.030968244045874838
+          },
+          "raw": {
+            "old_median_ape": 0.031071711090386256,
+            "new_median_ape": 0.030862659502250547
+          }
+        },
+        "model_file_errors": {
+          "EleutherAI/pythia-1.4b": {
+            "torch": {
+              "cells": 16,
+              "old_median_ape": 0.3991742255383725,
+              "new_median_ape": 0.042841261563025784
+            },
+            "raw": {
+              "cells": 16,
+              "old_median_ape": 0.0366182156020288,
+              "new_median_ape": 0.03672017229412708
+            }
+          },
+          "Qwen/Qwen2.5-0.5B": {
+            "torch": {
+              "cells": 20,
+              "old_median_ape": 0.0888447891554571,
+              "new_median_ape": 0.028653799095647282
+            },
+            "raw": {
+              "cells": 20,
+              "old_median_ape": 0.02449473009543065,
+              "new_median_ape": 0.02439045341596504
+            }
+          },
+          "Qwen/Qwen2.5-1.5B": {
+            "torch": {
+              "cells": 76,
+              "old_median_ape": 0.08450576727831982,
+              "new_median_ape": 0.025874903807258362
+            },
+            "raw": {
+              "cells": 76,
+              "old_median_ape": 0.024333296005332874,
+              "new_median_ape": 0.024104356852245205
+            }
+          },
+          "Qwen/Qwen2.5-3B": {
+            "torch": {
+              "cells": 22,
+              "old_median_ape": 0.08511262324540414,
+              "new_median_ape": 0.033465582034940815
+            },
+            "raw": {
+              "cells": 22,
+              "old_median_ape": 0.03474974397783786,
+              "new_median_ape": 0.03466755625830255
+            }
+          },
+          "facebook/opt-1.3b": {
+            "torch": {
+              "cells": 14,
+              "old_median_ape": 0.26113340137771357,
+              "new_median_ape": 0.03466167580218538
+            },
+            "raw": {
+              "cells": 14,
+              "old_median_ape": 0.0445227462647277,
+              "new_median_ape": 0.044162929570439324
+            }
+          },
+          "microsoft/phi-2": {
+            "torch": {
+              "cells": 16,
+              "old_median_ape": 0.4347522249559259,
+              "new_median_ape": 0.03911288484876328
+            },
+            "raw": {
+              "cells": 16,
+              "old_median_ape": 0.04690325079688064,
+              "new_median_ape": 0.04668961650645472
+            }
+          },
+          "unsloth/Llama-3.2-3B-Instruct": {
+            "torch": {
+              "cells": 22,
+              "old_median_ape": 0.18188859191070278,
+              "new_median_ape": 0.031336620646290676
+            },
+            "raw": {
+              "cells": 22,
+              "old_median_ape": 0.03554182284618085,
+              "new_median_ape": 0.03550419683311132
+            }
+          }
+        },
+        "coverage_reductions": [
+          {
+            "run_id": "phase2-main-repeated-control",
+            "model": "Qwen/Qwen2.5-1.5B",
+            "workload": [
+              "repeated_control"
+            ],
+            "omitted_supported_requested_prefixes": [
+              4096,
+              16384
+            ],
+            "omitted_requested_turn_sizes": [
+              256
+            ]
+          },
+          {
+            "run_id": "phase2-qwen-half-control",
+            "model": "Qwen/Qwen2.5-0.5B",
+            "workload": [
+              "repeated_control"
+            ],
+            "omitted_supported_requested_prefixes": [
+              16384
+            ],
+            "omitted_requested_turn_sizes": []
+          }
+        ],
+        "recompute_session_spread_by_turn": {
+          "32": {
+            "median_relative_range": 0.12341161474621402,
+            "maximum_relative_range": 0.17332108428390475
+          },
+          "256": {
+            "median_relative_range": 0.14846634285206842,
+            "maximum_relative_range": 0.20957850956545523
+          }
+        }
+      }
+    ],
+    "heldout_session_score": [
+      {
+        "schema_version": 2,
+        "phase": "phase2",
+        "record_origin": "analysis",
+        "kind": "heldout_session_score",
+        "run_id": "phase2-main-session-2",
+        "calibration_run": "phase2-main-session-1",
+        "resolved_cells": 149,
+        "agreements": 148,
+        "median_absolute_relative_ttft_error": 0.02954373776164206,
+        "interpretation": "same model/input/lengths, first-session calibration fixed; separate GPU kernel session, not a different GPU type"
+      },
+      {
+        "schema_version": 2,
+        "phase": "phase2",
+        "record_origin": "analysis",
+        "kind": "heldout_session_score",
+        "run_id": "phase2-main-session-3",
+        "calibration_run": "phase2-main-session-1",
+        "resolved_cells": 150,
+        "agreements": 146,
+        "median_absolute_relative_ttft_error": 0.017144112170522023,
+        "interpretation": "same model/input/lengths, first-session calibration fixed; separate GPU kernel session, not a different GPU type"
+      }
+    ],
+    "prefill_anomaly_pair": [
+      {
+        "schema_version": 2,
+        "phase": "phase2",
+        "record_origin": "analysis",
+        "kind": "prefill_anomaly_pair",
+        "run_id": "phase2-main-repeated-control",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "repeated_control",
+        "prefix_tokens": 8192,
+        "turn_tokens": 32,
+        "prefix_minus_prefix_plus_turn_ms": {
+          "median": -14.340992500024186,
+          "ci95": [
+            -39.033370999959516,
+            7.291885999961778
+          ],
+          "minimum": -79.4938669999965,
+          "maximum": 24.301888999957555,
+          "n": 10
+        },
+        "interpretation": "positive value reproduces prefix-only slower than prefix-plus-turn in interleaved rounds"
+      },
+      {
+        "schema_version": 2,
+        "phase": "phase2",
+        "record_origin": "analysis",
+        "kind": "prefill_anomaly_pair",
+        "run_id": "phase2-main-session-1",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "prefix_tokens": 8192,
+        "turn_tokens": 32,
+        "prefix_minus_prefix_plus_turn_ms": {
+          "median": -35.365497500038146,
+          "ci95": [
+            -53.09606500003383,
+            -10.317619000034028
+          ],
+          "minimum": -66.65271999997913,
+          "maximum": 15.00456500002656,
+          "n": 10
+        },
+        "interpretation": "positive value reproduces prefix-only slower than prefix-plus-turn in interleaved rounds"
+      },
+      {
+        "schema_version": 2,
+        "phase": "phase2",
+        "record_origin": "analysis",
+        "kind": "prefill_anomaly_pair",
+        "run_id": "phase2-main-session-2",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "prefix_tokens": 8192,
+        "turn_tokens": 32,
+        "prefix_minus_prefix_plus_turn_ms": {
+          "median": -20.84355350007172,
+          "ci95": [
+            -58.561193499997444,
+            -10.691035000036209
+          ],
+          "minimum": -79.07413599991742,
+          "maximum": -4.2298360000359025,
+          "n": 10
+        },
+        "interpretation": "positive value reproduces prefix-only slower than prefix-plus-turn in interleaved rounds"
+      },
+      {
+        "schema_version": 2,
+        "phase": "phase2",
+        "record_origin": "analysis",
+        "kind": "prefill_anomaly_pair",
+        "run_id": "phase2-main-session-3",
+        "model": "Qwen/Qwen2.5-1.5B",
+        "workload": "ultrachat",
+        "prefix_tokens": 8192,
+        "turn_tokens": 32,
+        "prefix_minus_prefix_plus_turn_ms": {
+          "median": -20.442118000005394,
+          "ci95": [
+            -45.45586199992613,
+            2.539129999945544
+          ],
+          "minimum": -81.21775700010403,
+          "maximum": 14.533860000028653,
+          "n": 10
+        },
+        "interpretation": "positive value reproduces prefix-only slower than prefix-plus-turn in interleaved rounds"
+      }
+    ],
+    "pilot_ttft_summaries": [
+      {
+        "prefix_tokens": 512,
+        "turn_tokens": 32,
+        "condition": "recompute",
+        "median": 90.25789949998853,
+        "ci95": [
+          89.87429699996596,
+          91.24014999997598
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 512,
+        "turn_tokens": 32,
+        "condition": "cpu_pageable",
+        "median": 39.724255999999514,
+        "ci95": [
+          39.210117000010314,
+          40.15600050001922
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 512,
+        "turn_tokens": 32,
+        "condition": "cpu_pinned",
+        "median": 36.530852499993216,
+        "ci95": [
+          35.97667150000916,
+          37.000734499997634
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 512,
+        "turn_tokens": 32,
+        "condition": "file",
+        "median": 55.415662000001475,
+        "ci95": [
+          54.752432499981296,
+          57.36044049999123
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 512,
+        "turn_tokens": 32,
+        "condition": "gpu_hit",
+        "median": 36.23576949999574,
+        "ci95": [
+          35.56316849997643,
+          37.09313950000137
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 512,
+        "turn_tokens": 256,
+        "condition": "cpu_pinned",
+        "median": 50.59858399997097,
+        "ci95": [
+          49.939786000010145,
+          54.41476949999924
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 512,
+        "turn_tokens": 256,
+        "condition": "cpu_pageable",
+        "median": 53.32778099997881,
+        "ci95": [
+          52.24014250001119,
+          54.31312300001423
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 512,
+        "turn_tokens": 256,
+        "condition": "file",
+        "median": 65.02724699998907,
+        "ci95": [
+          63.36367700001233,
+          65.51020599999902
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 512,
+        "turn_tokens": 256,
+        "condition": "recompute",
+        "median": 122.99173049999013,
+        "ci95": [
+          121.98869399998102,
+          124.08660149998241
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 512,
+        "turn_tokens": 256,
+        "condition": "gpu_hit",
+        "median": 48.65654850001988,
+        "ci95": [
+          47.626577500011535,
+          50.911600500000986
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 2048,
+        "turn_tokens": 32,
+        "condition": "cpu_pageable",
+        "median": 48.924324500035254,
+        "ci95": [
+          48.162414500012574,
+          49.287319500024296
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 2048,
+        "turn_tokens": 32,
+        "condition": "recompute",
+        "median": 355.29814149995786,
+        "ci95": [
+          354.46835899998064,
+          357.8383975000179
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 2048,
+        "turn_tokens": 32,
+        "condition": "cpu_pinned",
+        "median": 35.62828299996568,
+        "ci95": [
+          35.28464650000274,
+          36.479406499978495
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 2048,
+        "turn_tokens": 32,
+        "condition": "gpu_hit",
+        "median": 36.04157900002747,
+        "ci95": [
+          35.1336659999788,
+          37.25014750000355
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 2048,
+        "turn_tokens": 32,
+        "condition": "file",
+        "median": 78.84580200001778,
+        "ci95": [
+          76.44617150000954,
+          79.37698300000307
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 2048,
+        "turn_tokens": 256,
+        "condition": "cpu_pinned",
+        "median": 68.80080100000896,
+        "ci95": [
+          66.60695900001201,
+          69.49310799998898
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 2048,
+        "turn_tokens": 256,
+        "condition": "cpu_pageable",
+        "median": 74.34040499998673,
+        "ci95": [
+          72.49382899999546,
+          75.7268240000144
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 2048,
+        "turn_tokens": 256,
+        "condition": "recompute",
+        "median": 392.75029299997755,
+        "ci95": [
+          390.2074279999965,
+          397.9253444999813
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 2048,
+        "turn_tokens": 256,
+        "condition": "file",
+        "median": 97.51093849999393,
+        "ci95": [
+          96.14745599998287,
+          99.40685849997521
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 2048,
+        "turn_tokens": 256,
+        "condition": "gpu_hit",
+        "median": 64.07725950001009,
+        "ci95": [
+          62.99849300000915,
+          66.8732464999664
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 8192,
+        "turn_tokens": 32,
+        "condition": "recompute",
+        "median": 1737.0260294999866,
+        "ci95": [
+          1728.186434500003,
+          1745.244715000041
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 8192,
+        "turn_tokens": 32,
+        "condition": "cpu_pinned",
+        "median": 73.72379400001705,
+        "ci95": [
+          73.44211950001522,
+          76.38275599995836
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 8192,
+        "turn_tokens": 32,
+        "condition": "cpu_pageable",
+        "median": 108.68467349999378,
+        "ci95": [
+          108.21396250000248,
+          109.4632635000039
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 8192,
+        "turn_tokens": 32,
+        "condition": "file",
+        "median": 182.90564099996232,
+        "ci95": [
+          180.11126700002933,
+          189.695456499976
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 8192,
+        "turn_tokens": 32,
+        "condition": "gpu_hit",
+        "median": 58.907478999998375,
+        "ci95": [
+          58.29254449997734,
+          60.02173449996917
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 8192,
+        "turn_tokens": 256,
+        "condition": "cpu_pageable",
+        "median": 163.9554490000421,
+        "ci95": [
+          163.66070799998056,
+          164.70713600000408
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 8192,
+        "turn_tokens": 256,
+        "condition": "recompute",
+        "median": 1869.6264804999885,
+        "ci95": [
+          1852.305403999992,
+          1875.9755440000276
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 8192,
+        "turn_tokens": 256,
+        "condition": "gpu_hit",
+        "median": 116.90082850000749,
+        "ci95": [
+          115.70998149997536,
+          117.90157750004937
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 8192,
+        "turn_tokens": 256,
+        "condition": "file",
+        "median": 240.1785805000145,
+        "ci95": [
+          236.80255900001157,
+          243.30117700003484
+        ],
+        "n": 12
+      },
+      {
+        "prefix_tokens": 8192,
+        "turn_tokens": 256,
+        "condition": "cpu_pinned",
+        "median": 131.6835130000129,
+        "ci95": [
+          130.06834700001946,
+          134.5779225000001
+        ],
+        "n": 12
+      }
+    ],
+    "largest_frozen_errors": [
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_prediction_score",
+        "run_id": "phase3-a10-controls",
+        "gpu": "A10G",
+        "model": "Qwen/Qwen2.5-3B",
+        "workload": "repeated_control",
+        "prefix_tokens": 32736,
+        "turn_tokens": 32,
+        "condition": "recompute",
+        "simulated_bandwidth": false,
+        "kv_bytes_per_token": 36864,
+        "predicted_ttft_ms": 8041.096410842086,
+        "predicted_recompute_ms": 8041.096410842086,
+        "predicted_gpu_hit_ms": 144.21510304140517,
+        "predicted_prefix_ms": 8604.922845069616,
+        "predicted_bstar_mb_s": 152.81831109666234,
+        "hypothesis_prefill_ratio_to_t4": null,
+        "calibration_region": "extrapolation",
+        "predicted_reload": null,
+        "observed_ttft_ms": 13914.555025499994,
+        "observed_ci95_ms": [
+          13913.457835499983,
+          13915.872419500005
+        ],
+        "allocated_gpu_name": "NVIDIA A10G",
+        "signed_error_ms": -5873.458614657909,
+        "absolute_error_ms": 5873.458614657909,
+        "absolute_relative_error": 0.42210897897159716,
+        "paired_path_minus_recompute_ms": null,
+        "observed_reload": null,
+        "correct": null,
+        "requested_gpu": "A10",
+        "pcie_widths": [
+          8
+        ],
+        "pcie_generations": [
+          4
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_prediction_score",
+        "run_id": "phase3-l4-controls",
+        "gpu": "L4",
+        "model": "Qwen/Qwen2.5-3B",
+        "workload": "repeated_control",
+        "prefix_tokens": 32736,
+        "turn_tokens": 32,
+        "condition": "recompute",
+        "simulated_bandwidth": false,
+        "kv_bytes_per_token": 36864,
+        "predicted_ttft_ms": 13088.360371927438,
+        "predicted_recompute_ms": 13088.360371927438,
+        "predicted_gpu_hit_ms": 135.282162302765,
+        "predicted_prefix_ms": 13980.511070972074,
+        "predicted_bstar_mb_s": 93.16599044816442,
+        "hypothesis_prefill_ratio_to_t4": null,
+        "calibration_region": "extrapolation",
+        "predicted_reload": null,
+        "observed_ttft_ms": 18022.902464000028,
+        "observed_ci95_ms": [
+          17981.87177800003,
+          18129.585398000017
+        ],
+        "allocated_gpu_name": "NVIDIA L4",
+        "signed_error_ms": -4934.54209207259,
+        "absolute_error_ms": 4934.54209207259,
+        "absolute_relative_error": 0.2737928644916725,
+        "paired_path_minus_recompute_ms": null,
+        "observed_reload": null,
+        "correct": null,
+        "requested_gpu": "L4",
+        "pcie_widths": [
+          16
+        ],
+        "pcie_generations": [
+          3
+        ]
+      },
+      {
+        "schema_version": 3,
+        "phase": "phase3",
+        "record_origin": "analysis",
+        "kind": "phase3_prediction_score",
+        "run_id": "phase3-l4-controls",
+        "gpu": "L4",
+        "model": "Qwen/Qwen2.5-3B",
+        "workload": "repeated_control",
+        "prefix_tokens": 32736,
+        "turn_tokens": 32,
+        "condition": "prefix_only",
+        "simulated_bandwidth": false,
+        "kv_bytes_per_token": 36864,
+        "predicted_ttft_ms": 13980.511070972074,
+        "predicted_recompute_ms": 13088.360371927438,
+        "predicted_gpu_hit_ms": 135.282162302765,
+        "predicted_prefix_ms": 13980.511070972074,
+        "predicted_bstar_mb_s": 93.16599044816442,
+        "hypothesis_prefill_ratio_to_t4": null,
+        "calibration_region": "extrapolation",
+        "predicted_reload": null,
+        "observed_ttft_ms": 9148.164469999983,
+        "observed_ci95_ms": [
+          9115.399758999956,
+          9197.693497999979
+        ],
+        "allocated_gpu_name": "NVIDIA L4",
+        "signed_error_ms": 4832.3466009720905,
+        "absolute_error_ms": 4832.3466009720905,
+        "absolute_relative_error": 0.5282312770850413,
+        "paired_path_minus_recompute_ms": null,
+        "observed_reload": null,
+        "correct": null,
+        "requested_gpu": "L4",
+        "pcie_widths": [
+          16
+        ],
+        "pcie_generations": [
+          3
+        ]
+      }
+    ]
+  }
+}

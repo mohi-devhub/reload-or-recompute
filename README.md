@@ -1,185 +1,52 @@
 # Reload or Recompute
 
-Phase three is complete and stopped. Frozen predictions correctly classified 574/636 resolved L4 decisions and 590/632 A10-tier decisions; the partial H100 point scored 20/21. Conservative Modal accounting is $4.839242 for the mandatory targets and $2.197600 retained for the interrupted optional H100 allocation. Read [the hardware-transfer report](docs/PHASE3_REPORT.md), [the phase-two report](docs/PHASE2_REPORT.md), [deviations](docs/NOTES.md), and [the budget](docs/BUDGET.md). The calibrated rule transfers approximately, with short-context overhead, native-length extrapolation and unverified cold file reads limiting the claim.
+Pilot: Qwen2.5-1.5B on T4 favored reload in all 18 sampled reload-path comparisons; it did not identify a crossover length.<br>
+Phase 2: seven fp16 models and 26,040 accepted timings established simulated-bandwidth crossovers and short-context overhead effects.<br>
+Phase 3: frozen decisions scored 574/636 on L4, 192/206 on A10 at PCIe x16, and 398/426 on A10G at PCIe x8.<br>
+The interrupted H100 run scored 20/21 resolved decisions; long-context extrapolation, exact throughput scaling and uniform MHA file-path transfer are not established.<br>
+The data release is complete; no more GPU spending is authorized, and no paper has been written.
 
-A small systems study of when a returning conversation's KV cache is faster to reload than to recompute on older GPUs. The pilot uses Qwen2.5-1.5B on a Kaggle T4 allocation. The original grid was replaced by the approved simulated-bandwidth study.
+[Claims and exact evidence](docs/CLAIMS.md) · [Figure captions](docs/FIGURE_CAPTIONS.md) · [File API audit](docs/FILE_API_AUDIT.md) · [Budget](docs/BUDGET.md) · [Deviations](docs/NOTES.md)
 
-The reference pilot passed with limitations. Reload won at every sampled length, so no crossover length was identified. The production install failed on the selected vLLM release's Python requirement. Read [the pilot report](docs/PILOT_REPORT.md), [the GPU ledger](docs/BUDGET.md), and [the timing figure](figures/pilot-ttft.png).
+Reload when `T_GPU_hit + fixed_overhead + transfer_bytes / effective_bandwidth + other_CPU_and_transfer_legs < T_recompute`; equivalently, use `B* = transfer_bytes / (T_recompute - T_GPU_hit - fixed_overhead - other_legs)` only for a positive denominator, counting read, deserialization and H2D costs once and treating near-zero savings as unresolved.
 
-Basic KV reuse and hardware-dependent break-even decisions are established work. Read [the literature review](docs/RELATED_WORK.md), especially py-kvcache and Cake, before interpreting this study's scope.
+The Modal tier is the **local file API path (page-cache resident; physical reads not observed)**. Kaggle's file observations have positive process physical-read counters, so they use the qualifier **positive process physical-read counters; underlying storage and host cache unidentified**. Neither platform identifies physical media or isolates GPU speed from host effects. See the [counter audit](docs/FILE_API_AUDIT.md).
 
-## Reproduce the pilot
-
-Configure Kaggle CLI credentials outside this repository. Do not copy a credential file into the project. The submitted kernel must remain private. CLI help and metadata were checked against the installed Kaggle CLI before the initial submission.
-
-```sh
-kaggle kernels push --help
-kaggle kernels status --help
-kaggle kernels output --help
-kaggle quota --format json
-```
-
-Edit `id` in `kernels/pilot/kernel-metadata.json` to use your Kaggle username. Keep the GPU, Internet, and privacy settings. Review [the budget](docs/BUDGET.md) before any submission.
+## Reproduce the released analysis without GPU work
 
 ```sh
-kaggle kernels push -p kernels/pilot --accelerator NvidiaTeslaT4 --timeout 4800
-kaggle kernels status mohiachu/reload-or-recompute-pilot
-kaggle kernels output mohiachu/reload-or-recompute-pilot \
-  -p outputs/raw/pilot-v1 \
-  --file-pattern '(^|/)pilot-output/[^/]+\.(jsonl|log|txt|json)$'
-```
-
-For another owner, substitute that owner's kernel reference in the status and output commands. Kaggle exposes completed output artifacts, so an empty download while the kernel is running does not establish a benchmark failure. The file filter deliberately excludes temporary environments and KV payloads.
-
-The kernel checks the actual GPU before timing. It logs the environment, appends JSONL samples incrementally, runs the reference path in a child process, and makes one bounded production compatibility attempt. See [the measurement protocol](docs/PROTOCOL.md) for timing boundaries, correctness checks, file-cache controls, and limitations.
-
-## Analyze completed measurements
-
-The local analysis requires Python and NumPy. Matplotlib is needed only for plots. The GPU kernel installs its reference dependencies itself. Exact runtime versions and model revision are stored with the results.
-
-The public observations are stored losslessly in `outputs/results.jsonl.gz`. Materialize the canonical JSONL and verify both checksums before rebuilding results:
-
-```sh
-python3 scripts/materialize_results.py
-```
-
-```sh
+git clone https://github.com/mohi-devhub/reload-or-recompute.git
+cd reload-or-recompute
+git checkout v0.1.0-data
+python3 -m venv .venv
+source .venv/bin/activate
 python3 -m pip install -r requirements-analysis.txt
-python3 -m unittest discover -s tests -v
-python3 scripts/analyze_pilot.py outputs/raw/pilot-v1/pilot-output/results.jsonl
-```
-
-The submitted reference source is preserved by commit `3e5262f`. Its source hash and exact Kaggle container image are recorded in the canonical `submission_metadata` record. The later source corrects production bootstrapping; reference measurement logic is unchanged. For exact historical source, read that commit rather than assuming the latest script is byte-identical.
-
-The supplemental production-only probe reproduces the package-install compatibility failure without repeating the reference grid:
-
-```sh
-python3 scripts/build_production_kernel.py
-kaggle kernels push -p kernels/production --accelerator NvidiaTeslaT4 --timeout 1500
-kaggle kernels status mohiachu/reload-or-recompute-production-pilot
-kaggle kernels output mohiachu/reload-or-recompute-production-pilot \
-  -p outputs/raw/production-v1 \
-  --file-pattern '(^|/)pilot-output/[^/]+\.(jsonl|log|txt|json)$'
-```
-
-This probe was already attempted for the study. Do not submit it again without accounting for the troubleshooting budget. The observed error and its limits are in [NOTES.md](docs/NOTES.md).
-
-Capture the quota before submission and after each completed kernel in `outputs/raw/control/quota-before.json`, `quota-after-v1.json`, and `quota-after-production.json` using `kaggle quota --format json`. Retain source metadata with `kaggle kernels pull mohiachu/reload-or-recompute-pilot -p outputs/raw/pilot-v1/source -m`.
-
-With both output directories, those quota snapshots, and the reference source metadata retained, rebuild the accepted results, profile summary, report, figures, and budget ledger:
-
-```sh
-python3 scripts/finalize_pilot.py
-```
-
-`outputs/results.jsonl` retains source observations and adds derived medians, percentile bootstrap intervals, independent microbenchmark fits, and prediction errors. Analysis refuses duplicate sample keys, malformed records, invalid timings, or pooled experimental run IDs. An incomplete grid is reported explicitly and receives no crossover analysis.
-
-Raw downloads are ignored by Git. Retain them locally for audit, including the kernel log and profiler trace. The public results include individual timing observations and derived diagnostics; they exclude credentials and raw downloaded artifacts.
-
-## Reproduce the redesigned study
-
-Derive the pilot bandwidth thresholds without using a GPU:
-
-```sh
-python3 scripts/pilot_bstar.py
-```
-
-The generic runner and controller are in `kernels/phase2/runner.py` and `scripts/phase2_control.py`. Submission builds a private standalone script from the runner, frozen inputs, and the explicit run specification. It writes the GPU reservation to BUDGET.md before calling the Kaggle CLI. It refuses full sweeps for uncalibrated models on the requested GPU.
-
-Checkpoint revisions and the actual Kaggle image are pinned in `configs/model_revisions.json` and `configs/phase2_runtime.json`. These pins come from the observed runtime, rather than a guessed package environment. Set `KAGGLE_KERNEL_OWNER` to your Kaggle username for a separately budgeted replication; the historical owner is the default. Preserve this study's final ledger and obtain a new run budget before starting another study. The commands below document the study configuration, rather than resetting its allowance.
-
-The initial T4 calibration used:
-
-```sh
-python3 scripts/phase2_control.py submit --name calibration-t4 --purpose calibration \
-  --lengths 32,512 --turns 32 --rates 50,200 --workloads repeated_control \
-  --repeats 3 --micro-repeats 3 --stabilize 3 --timeout 1500
-python3 scripts/phase2_control.py fetch --name calibration-t4
-python3 scripts/phase2_project.py
-```
-
-The accepted main-model sessions use different seeds and distinct kernel references. Their full specifications are in `outputs/phase2_ledger.json`. The remaining approved configurations are in `configs/phase2_queue.json`. The dispatcher submits at most two sessions at a time and stops if the controller rejects a submission:
-
-```sh
-python3 scripts/phase2_dispatch.py
-```
-
-Existing run names cannot be submitted again. Do not erase the ledger to bypass the budget or calibration gate. Consult NOTES.md for the corrected MHA validation, gated Llama access, and mismatched P100 allocation. The dispatcher is resumable from the ledger after an interruption.
-
-Analyze fetched artifacts and generate the report after the queue finishes:
-
-```sh
-python3 scripts/analyze_phase2.py
-python3 scripts/audit_phase2.py
-python3 scripts/report_phase2.py
-python3 scripts/consolidate_phase2.py
-```
-
-Phase-two records in the canonical JSONL keep sessions separate. It includes individual timings, independently measured file legs, rate-limiter diagnostics, within-session confidence intervals, crossover brackets, session spread, and telemetry summaries. Every rate-limited path is simulated bandwidth. It must not be described as measured physical storage throughput.
-
-After consolidation, a public checkout can rebuild the statistics and figures without the private Kaggle downloads:
-
-```sh
+python3 scripts/materialize_results.py
 python3 scripts/analyze_phase2.py --from-results outputs/results.jsonl
 python3 scripts/report_phase2.py
-```
-
-The public archive includes individual GPU telemetry samples used in clock summaries. Instrumented profile summaries are retained; the larger profiler trace remains in ignored raw artifacts. The physical-work audit additionally requires the original fetched artifacts and saved source metadata.
-
-## Rule of thumb
-
-Use `B* = transfer_bytes / (T_recompute - T_GPU_hit - overhead - deserialization - other_transfer_legs)` as a calibrated threshold: reload above it when the denominator is positive, and recompute otherwise.
-
-## Reproduce hardware transfer
-
-Modal credentials stay outside the repository. The image pins Torch 2.11.0+cu130, Transformers 4.51.3, fp16 and the observed checkpoint revisions. Platform scheduling and persistence wrap the unchanged reference functions; hashes and the scheduling diff are in `outputs/phase3_provenance.json`. Modal's Ampere API tier is named `A10`; actual allocated names are recorded.
-
-The commands below document the study. Existing run names and committed prediction registrations are immutable. Preserve the final ledger and create a separately authorized replication rather than resetting either budget.
-
-```sh
-python3 scripts/phase3_plan.py
-python3 scripts/phase3_control.py submit --name preload --prepare --timeout 1200
-python3 scripts/phase3_control.py collect --name preload
-python3 scripts/phase3_control.py submit --name calibration-l4-main --gpu L4 --timeout 420 \
-  --spec outputs/raw/phase3/control/specs/calibration-l4-main.json
-python3 scripts/phase3_control.py collect --name calibration-l4-main
-python3 scripts/phase3_control.py submit --name calibration-l4-controls --gpu L4 --timeout 600 \
-  --spec outputs/raw/phase3/control/specs/calibration-l4-controls.json
-python3 scripts/phase3_control.py collect --name calibration-l4-controls
-```
-
-After both calibration groups have completed and passed correctness checks, freeze and commit predictions **before** any sweep. Repeat with `A10` / `a10` for the second GPU. The submitter checks the prediction document and JSON against their Git commit, captures current tariffs, reserves cost before starting Modal, and refuses allocations beyond the cap.
-
-```sh
-python3 scripts/predict_phase3.py L4
-git add configs/predictions_L4.json docs/PREDICTIONS_L4.md
-git commit -m 'Preregister L4 predictions before sweep'
-python3 scripts/phase3_sweeps.py --gpu L4 --name l4-main-1 --submit
-python3 scripts/phase3_control.py collect --name l4-main-1
-python3 scripts/phase3_sweeps.py --gpu L4 --name l4-main-2 --submit
-python3 scripts/phase3_control.py collect --name l4-main-2
-python3 scripts/phase3_sweeps.py --gpu L4 --name l4-controls --submit
-python3 scripts/phase3_control.py collect --name l4-controls
-```
-
-Each bounded function appends results, backs up metadata during execution, verifies the GPU and exact runtime, and samples clocks, temperature, power, throttle reasons and PCIe link state. Cache files used for timing remain on local scratch. Named model/log volumes are temporary experiment infrastructure; remove only the study-created volumes after verified collection to stop their storage charges.
-
-Public observations can rebuild phase-three scores, crossover tables and the figure without paid GPU work:
-
-```sh
 python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl
 python3 scripts/audit_phase3.py
 python3 scripts/report_phase3.py
+python3 scripts/consolidate_study.py --check --figures
+python3 -m unittest discover -s tests
 ```
 
-The analysis preserves each session and scores every complete frozen cell without refitting. Simulated-rate brackets are observations; interpolation between them is explicitly model-assisted. Canonical records include the calibration sources, frozen prediction manifests, timing samples, telemetry and budget ledger.
+The archive has both compressed and uncompressed SHA-256 checksums. Materialization refuses to overwrite a changed local JSONL. Consolidation verifies every numeric claim, evidence table and caption against the archive. It preserves the original record bytes and appends separately labeled presentation records. No coefficients are refitted. A10 and A10G remain separate by observed name and PCIe width; their model coverage differs. Their allocation differences are the likely source of the earlier service-tier spread, with causality unproved.
 
-The optional H100 protocol uses one bounded allocation. Its host follower collects calibration, commits the prediction manifest, and only then releases the two sweeps within that same allocation:
+To regenerate the claim inventory after an intentional, reviewed data change, use:
 
 ```sh
-python3 scripts/phase3_h100.py plan
-python3 scripts/phase3_h100.py start
-python3 scripts/phase3_h100.py follow
+python3 scripts/consolidate_study.py --figures
+python3 scripts/materialize_results.py --pack
+python3 scripts/consolidate_study.py --check
 ```
 
-The controller requires completion of the mandatory targets within their cap and refuses a second H100 allocation. These commands document the completed study's workflow; they do not authorize additional spend.
+These commands use CPU only. Historical acquisition specifications and source hashes are retained in the ledgers and protocols. They document completed runs and do not authorize new paid work. Credentials remain outside the repository.
+
+## Figures and source records
+
+The [caption drafts](docs/FIGURE_CAPTIONS.md) link vector PDFs and PNGs for all four paper figures. Plot tables are `outputs/consolidated_crossovers.csv`, `outputs/consolidated_scorecard.csv`, and `outputs/consolidated_results.jsonl`. Sessions remain separate, and censored bandwidth bounds are not substituted with invented crossover points.
+
+[The pilot report](docs/PILOT_REPORT.md), [phase-two report](docs/PHASE2_REPORT.md), and [phase-three report](docs/PHASE3_REPORT.md) retain the experimental context. The preregistrations in `docs/PREDICTIONS_*.md` and `configs/predictions_*.json` remain byte-identical to their pre-sweep commits. The six protected timing/transfer functions match the historical T4 source. Platform scheduling differences and executed source hashes are in [the source comparison](outputs/phase3_provenance.json).
+
+Basic KV reuse and choosing reload versus recompute are established prior work. The [literature review](docs/RELATED_WORK.md) sets the novelty boundary. This release supports the claims in the inventory within their stated scope; it does not establish production-serving, P100, concurrency, or quantization results.

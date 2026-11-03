@@ -8,26 +8,30 @@ The optional H100 input received a cancellation signal before its sweep finished
 
 ## Frozen prediction scorecard
 
-| Requested tier / allocated name | Region or session | Correct / resolved decisions | Unresolved | Complete timing cells | Median absolute TTFT error, ms | Median absolute relative error |
+| Observed board / allocated name | Region or session | Correct / resolved decisions | Unresolved | Complete timing cells | Median absolute TTFT error, ms | Median absolute relative error |
 | --- | --- | --- | --- | --- | --- | --- |
-| L4 / NVIDIA L4 | all | 574 / 636 | 13 | 767 | 3.203 | 4.6% |
-| L4 / NVIDIA L4 | anchor | 246 / 248 | 5 | 299 | 2.822 | 3.3% |
-| L4 / NVIDIA L4 | interpolation | 231 / 289 | 8 | 351 | 2.981 | 4.5% |
-| L4 / NVIDIA L4 | extrapolation | 97 / 99 | 0 | 117 | 4.007 | 8.7% |
-| L4 / NVIDIA L4 | session: phase3-l4-controls | 193 / 201 | 8 | 247 | 1.506 | 1.5% |
-| L4 / NVIDIA L4 | session: phase3-l4-main-1 | 188 / 216 | 4 | 260 | 3.681 | 6.2% |
-| L4 / NVIDIA L4 | session: phase3-l4-main-2 | 193 / 219 | 1 | 260 | 3.654 | 6.2% |
-| A10 / NVIDIA A10, NVIDIA A10G | all | 590 / 632 | 17 | 767 | 4.794 | 6.6% |
-| A10 / NVIDIA A10, NVIDIA A10G | anchor | 237 / 250 | 3 | 299 | 4.658 | 7.4% |
-| A10 / NVIDIA A10, NVIDIA A10G | interpolation | 266 / 290 | 7 | 351 | 4.373 | 6.5% |
-| A10 / NVIDIA A10, NVIDIA A10G | extrapolation | 87 / 92 | 7 | 117 | 6.427 | 5.4% |
-| A10 / NVIDIA A10G | session: phase3-a10-controls | 193 / 209 | 0 | 247 | 5.031 | 8.2% |
-| A10 / NVIDIA A10 | session: phase3-a10-main-1 | 192 / 206 | 14 | 260 | 2.040 | 3.9% |
-| A10 / NVIDIA A10G | session: phase3-a10-main-2 | 205 / 217 | 3 | 260 | 6.433 | 13.1% |
-| H100! / NVIDIA H100 80GB HBM3 | all | 20 / 21 | 1 | 26 | 6.579 | 2.6% |
-| H100! / NVIDIA H100 80GB HBM3 | anchor | 11 / 11 | 0 | 13 | 0.332 | 1.8% |
-| H100! / NVIDIA H100 80GB HBM3 | extrapolation | 9 / 10 | 1 | 13 | 9.999 | 2.9% |
-| H100! / NVIDIA H100 80GB HBM3 | session: phase3-h100-main | 20 / 21 | 1 | 26 | 6.579 | 2.6% |
+| L4 (PCIe 3 x16) / NVIDIA L4 | all | 574 / 636 | 13 | 767 | 3.203 | 4.6% |
+| L4 (PCIe 3 x16) / NVIDIA L4 | anchor | 246 / 248 | 5 | 299 | 2.822 | 3.3% |
+| L4 (PCIe 3 x16) / NVIDIA L4 | interpolation | 231 / 289 | 8 | 351 | 2.981 | 4.5% |
+| L4 (PCIe 3 x16) / NVIDIA L4 | extrapolation | 97 / 99 | 0 | 117 | 4.007 | 8.7% |
+| L4 (PCIe 3 x16) / NVIDIA L4 | session: phase3-l4-controls | 193 / 201 | 8 | 247 | 1.506 | 1.5% |
+| L4 (PCIe 3 x16) / NVIDIA L4 | session: phase3-l4-main-1 | 188 / 216 | 4 | 260 | 3.681 | 6.2% |
+| L4 (PCIe 3 x16) / NVIDIA L4 | session: phase3-l4-main-2 | 193 / 219 | 1 | 260 | 3.654 | 6.2% |
+| A10 (PCIe 4 x16) / NVIDIA A10 | all | 192 / 206 | 14 | 260 | 2.040 | 3.9% |
+| A10 (PCIe 4 x16) / NVIDIA A10 | anchor | 59 / 63 | 3 | 78 | 2.275 | 5.0% |
+| A10 (PCIe 4 x16) / NVIDIA A10 | interpolation | 96 / 105 | 5 | 130 | 2.308 | 3.6% |
+| A10 (PCIe 4 x16) / NVIDIA A10 | extrapolation | 37 / 38 | 6 | 52 | 1.341 | 3.4% |
+| A10 (PCIe 4 x16) / NVIDIA A10 | session: phase3-a10-main-1 | 192 / 206 | 14 | 260 | 2.040 | 3.9% |
+| A10G (PCIe 4 x8) / NVIDIA A10G | all | 398 / 426 | 3 | 507 | 5.758 | 10.8% |
+| A10G (PCIe 4 x8) / NVIDIA A10G | anchor | 178 / 187 | 0 | 221 | 5.094 | 10.4% |
+| A10G (PCIe 4 x8) / NVIDIA A10G | interpolation | 170 / 185 | 2 | 221 | 5.511 | 10.5% |
+| A10G (PCIe 4 x8) / NVIDIA A10G | extrapolation | 50 / 54 | 1 | 65 | 8.371 | 22.0% |
+| A10G (PCIe 4 x8) / NVIDIA A10G | session: phase3-a10-controls | 193 / 209 | 0 | 247 | 5.031 | 8.2% |
+| A10G (PCIe 4 x8) / NVIDIA A10G | session: phase3-a10-main-2 | 205 / 217 | 3 | 260 | 6.433 | 13.1% |
+| H100 (PCIe 5 x16) / NVIDIA H100 80GB HBM3 | all | 20 / 21 | 1 | 26 | 6.579 | 2.6% |
+| H100 (PCIe 5 x16) / NVIDIA H100 80GB HBM3 | anchor | 11 / 11 | 0 | 13 | 0.332 | 1.8% |
+| H100 (PCIe 5 x16) / NVIDIA H100 80GB HBM3 | extrapolation | 9 / 10 | 1 | 13 | 9.999 | 2.9% |
+| H100 (PCIe 5 x16) / NVIDIA H100 80GB HBM3 | session: phase3-h100-main | 20 / 21 | 1 | 26 | 6.579 | 2.6% |
 
 The calibrated rule transfers imperfectly: most resolved decisions are correct, but median errors conceal large native-context extrapolation failures. The throughput-ratio hypothesis has counterexamples among resolved brackets; broad compatibility below is evidence of approximate transfer, not a universal scaling law.
 
@@ -37,11 +41,11 @@ Largest absolute TTFT prediction errors (all conditions, without refitting):
 
 | Requested GPU | Model | Prefix / new turn | Condition | Predicted / observed, ms | Region |
 | --- | --- | --- | --- | --- | --- |
-| A10 | Qwen2.5-3B | 32736 / 32 | recompute | 8041.10 / 13914.56 | extrapolation |
-| L4 | Qwen2.5-3B | 32736 / 32 | recompute | 13088.36 / 18022.90 | extrapolation |
-| L4 | Qwen2.5-3B | 32736 / 32 | prefix_only | 13980.51 / 9148.16 | extrapolation |
-| A10 | Qwen2.5-3B | 32736 / 32 | prefix_only | 8604.92 / 7395.64 | extrapolation |
-| L4 | Qwen2.5-1.5B | 16384 / 32 | prefix_only | 2452.11 / 1910.04 | extrapolation |
+| A10G (PCIe 4 x8) | Qwen2.5-3B | 32736 / 32 | recompute | 8041.10 / 13914.56 | extrapolation |
+| L4 (PCIe 3 x16) | Qwen2.5-3B | 32736 / 32 | recompute | 13088.36 / 18022.90 | extrapolation |
+| L4 (PCIe 3 x16) | Qwen2.5-3B | 32736 / 32 | prefix_only | 13980.51 / 9148.16 | extrapolation |
+| A10G (PCIe 4 x8) | Qwen2.5-3B | 32736 / 32 | prefix_only | 8604.92 / 7395.64 | extrapolation |
+| L4 (PCIe 3 x16) | Qwen2.5-1.5B | 16384 / 32 | prefix_only | 2452.11 / 1910.04 | extrapolation |
 
 ## Hardware and provenance
 
@@ -59,7 +63,7 @@ Largest absolute TTFT prediction errors (all conditions, without refitting):
 | l4-controls | NVIDIA L4 / [8, 9] | NVIDIA L4, 610.57.04, 23034 MiB, GPU-673c2d62-7e2c-f299-46e4-c19009c8b8e4, 1, 3, 16, 16 | 2.11.0+cu130 / 4.51.3 / 3.13.3 | 2292.1 |
 | h100-single-session | NVIDIA H100 80GB HBM3 / [9, 0] | NVIDIA H100 80GB HBM3, 610.57.04, 81559 MiB, GPU-46e2d0bf-ace9-06a9-bf8a-99fae347c91d, 5, 5, 16, 16 | 2.11.0+cu130 / 4.51.3 / 3.13.3 | Unavailable after cancellation |
 
-Modal names its Ampere request `A10`; the actual GPU name above is authoritative. A10 and A10G names within that service tier are retained separately in the session scorecards. GPU UUIDs, exact driver/runtime versions, clocks, CPU/RAM and disk capacity are retained per run. All measurements use fp16 and efficient/math SDPA, with FlashAttention disabled. The full scheduling difference and protected function hashes are in `outputs/phase3_provenance.json`; each executed source and adapter hash is also in the canonical records.
+Modal names its Ampere request `A10`; the actual GPU name above is authoritative. A10 and A10G names within that service tier are retained separately in the session scorecards. GPU UUIDs, exact driver/runtime versions, clocks, CPU/RAM and filesystem capacity are retained per run. The last snapshot fields are current/max PCIe generation and current/max link width; timing telemetry supplies the active-link values. All measurements use fp16 and efficient/math SDPA, with FlashAttention disabled. The full scheduling difference and protected function hashes are in `outputs/phase3_provenance.json`; each executed source and adapter hash is also in the canonical records.
 
 | Source | SHA-256 |
 | --- | --- |
@@ -85,24 +89,24 @@ The complete per-session, per-model, per-length predictions and observed bracket
 
 | GPU / session | Model | Prefix / new turn | Predicted B*, MB/s | Observed simulated-bandwidth bracket, MB/s | Prefill tokens/s | Pinned / pageable H2D, MB/s |
 | --- | --- | --- | --- | --- | --- | --- |
-| A10 / phase3-a10-controls | pythia-1.4b | 1024 / 32 | 5629.90 | [1600.0, unthrottled] target / [1594.5, 13346.0] achieved | 18622.2 | 13351.68 / 12920.97 |
-| A10 / phase3-a10-controls | Qwen2.5-3B | 1024 / 32 | 379.48 | [200.0, 400.0] target / [199.3, 396.9] achieved | 7596.3 | 13181.95 / 12117.60 |
-| A10 / phase3-a10-controls | phi-2 | 1024 / 32 | 3355.09 | [1600.0, unthrottled] target / [1596.1, 13278.8] achieved | 8223.0 | 13132.47 / 12478.47 |
-| A10 / phase3-a10-controls | Llama-3.2-3B-Instruct | 1024 / 32 | 1137.03 | [800.0, 1600.0] target / [797.6, 1588.6] achieved | 7670.8 | 13318.57 / 12654.65 |
-| A10 / phase3-a10-main-1 | Qwen2.5-1.5B | 1024 / 32 | 700.91 | [800.0, 1600.0] target / [795.2, 1544.2] achieved | 18391.1 | 24167.13 / 14624.98 |
-| A10 / phase3-a10-main-1 | Qwen2.5-1.5B | 16384 / 32 | 297.39 | [200.0, 400.0] target / [199.9, 399.7] achieved | 11436.7 | 24932.47 / 8726.93 |
-| A10 / phase3-a10-main-2 | Qwen2.5-1.5B | 1024 / 32 | 700.91 | [400.0, 800.0] target / [396.2, 791.0] achieved | 14178.2 | 13115.34 / 12217.80 |
-| A10 / phase3-a10-main-2 | Qwen2.5-1.5B | 16384 / 32 | 297.39 | [200.0, 400.0] target / [199.9, 399.7] achieved | 11058.3 | 13376.16 / 13060.92 |
-| H100! / phase3-h100-main | Qwen2.5-1.5B | 1024 / 32 | Unidentified | above tested achieved rates (bound only) | 73677.8 | 51185.32 / 16770.28 |
-| H100! / phase3-h100-main | Qwen2.5-1.5B | 16384 / 32 | 1435.63 | [1600.0, unthrottled] target / [1597.6, 53249.7] achieved | 64193.1 | 53270.42 / 10998.05 |
-| L4 / phase3-l4-controls | pythia-1.4b | 1024 / 32 | 5271.60 | [1600.0, unthrottled] target / [1590.8, 12147.3] achieved | 18924.7 | 12145.07 / 4524.08 |
-| L4 / phase3-l4-controls | Qwen2.5-3B | 1024 / 32 | 370.73 | [400.0, 800.0] target / [396.5, 788.7] achieved (median only) | 7715.9 | 11903.21 / 4412.34 |
-| L4 / phase3-l4-controls | phi-2 | 1024 / 32 | 3047.89 | [1600.0, unthrottled] target / [1595.8, 12131.6] achieved | 7658.6 | 12155.13 / 4543.25 |
-| L4 / phase3-l4-controls | Llama-3.2-3B-Instruct | 1024 / 32 | 1123.78 | [800.0, 1600.0] target / [795.6, 1586.6] achieved | 7380.7 | 12112.89 / 4560.67 |
-| L4 / phase3-l4-main-1 | Qwen2.5-1.5B | 1024 / 32 | 640.49 | [800.0, 1600.0] target / [787.2, 1539.1] achieved | 15213.0 | 11738.23 / 7645.97 |
-| L4 / phase3-l4-main-1 | Qwen2.5-1.5B | 16384 / 32 | 197.48 | [200.0, 400.0] target / [200.0, 399.8] achieved | 8577.8 | 12170.68 / 6950.57 |
-| L4 / phase3-l4-main-2 | Qwen2.5-1.5B | 1024 / 32 | 640.49 | [800.0, 1600.0] target / [788.6, 1552.0] achieved (median only) | 14438.4 | 11801.22 / 7698.53 |
-| L4 / phase3-l4-main-2 | Qwen2.5-1.5B | 16384 / 32 | 197.48 | [200.0, 400.0] target / [199.9, 399.9] achieved | 8127.0 | 12158.73 / 7661.94 |
+| A10G (PCIe 4 x8) / phase3-a10-controls | pythia-1.4b | 1024 / 32 | 5629.90 | [1600.0, unthrottled] target / [1594.5, 13346.0] achieved | 18622.2 | 13351.68 / 12920.97 |
+| A10G (PCIe 4 x8) / phase3-a10-controls | Qwen2.5-3B | 1024 / 32 | 379.48 | [200.0, 400.0] target / [199.3, 396.9] achieved | 7596.3 | 13181.95 / 12117.60 |
+| A10G (PCIe 4 x8) / phase3-a10-controls | phi-2 | 1024 / 32 | 3355.09 | [1600.0, unthrottled] target / [1596.1, 13278.8] achieved | 8223.0 | 13132.47 / 12478.47 |
+| A10G (PCIe 4 x8) / phase3-a10-controls | Llama-3.2-3B-Instruct | 1024 / 32 | 1137.03 | [800.0, 1600.0] target / [797.6, 1588.6] achieved | 7670.8 | 13318.57 / 12654.65 |
+| A10 (PCIe 4 x16) / phase3-a10-main-1 | Qwen2.5-1.5B | 1024 / 32 | 700.91 | [800.0, 1600.0] target / [795.2, 1544.2] achieved | 18391.1 | 24167.13 / 14624.98 |
+| A10 (PCIe 4 x16) / phase3-a10-main-1 | Qwen2.5-1.5B | 16384 / 32 | 297.39 | [200.0, 400.0] target / [199.9, 399.7] achieved | 11436.7 | 24932.47 / 8726.93 |
+| A10G (PCIe 4 x8) / phase3-a10-main-2 | Qwen2.5-1.5B | 1024 / 32 | 700.91 | [400.0, 800.0] target / [396.2, 791.0] achieved | 14178.2 | 13115.34 / 12217.80 |
+| A10G (PCIe 4 x8) / phase3-a10-main-2 | Qwen2.5-1.5B | 16384 / 32 | 297.39 | [200.0, 400.0] target / [199.9, 399.7] achieved | 11058.3 | 13376.16 / 13060.92 |
+| H100 (PCIe 5 x16) / phase3-h100-main | Qwen2.5-1.5B | 1024 / 32 | Unidentified | above tested achieved rates (bound only) | 73677.8 | 51185.32 / 16770.28 |
+| H100 (PCIe 5 x16) / phase3-h100-main | Qwen2.5-1.5B | 16384 / 32 | 1435.63 | [1600.0, unthrottled] target / [1597.6, 53249.7] achieved | 64193.1 | 53270.42 / 10998.05 |
+| L4 (PCIe 3 x16) / phase3-l4-controls | pythia-1.4b | 1024 / 32 | 5271.60 | [1600.0, unthrottled] target / [1590.8, 12147.3] achieved | 18924.7 | 12145.07 / 4524.08 |
+| L4 (PCIe 3 x16) / phase3-l4-controls | Qwen2.5-3B | 1024 / 32 | 370.73 | [400.0, 800.0] target / [396.5, 788.7] achieved (median only) | 7715.9 | 11903.21 / 4412.34 |
+| L4 (PCIe 3 x16) / phase3-l4-controls | phi-2 | 1024 / 32 | 3047.89 | [1600.0, unthrottled] target / [1595.8, 12131.6] achieved | 7658.6 | 12155.13 / 4543.25 |
+| L4 (PCIe 3 x16) / phase3-l4-controls | Llama-3.2-3B-Instruct | 1024 / 32 | 1123.78 | [800.0, 1600.0] target / [795.6, 1586.6] achieved | 7380.7 | 12112.89 / 4560.67 |
+| L4 (PCIe 3 x16) / phase3-l4-main-1 | Qwen2.5-1.5B | 1024 / 32 | 640.49 | [800.0, 1600.0] target / [787.2, 1539.1] achieved | 15213.0 | 11738.23 / 7645.97 |
+| L4 (PCIe 3 x16) / phase3-l4-main-1 | Qwen2.5-1.5B | 16384 / 32 | 197.48 | [200.0, 400.0] target / [200.0, 399.8] achieved | 8577.8 | 12170.68 / 6950.57 |
+| L4 (PCIe 3 x16) / phase3-l4-main-2 | Qwen2.5-1.5B | 1024 / 32 | 640.49 | [800.0, 1600.0] target / [788.6, 1552.0] achieved (median only) | 14438.4 | 11801.22 / 7698.53 |
+| L4 (PCIe 3 x16) / phase3-l4-main-2 | Qwen2.5-1.5B | 16384 / 32 | 197.48 | [200.0, 400.0] target / [199.9, 399.9] achieved | 8127.0 | 12158.73 / 7661.94 |
 | T4 / phase2-llama-mirror-control | Llama-3.2-3B-Instruct | 1024 / 32 | 337.52 (descriptive) | [200.0, 400.0] target / [199.9, 399.8] achieved | 2587.8 | 12054.66 / 4547.78 |
 | T4 / phase2-main-session-1 | Qwen2.5-1.5B | 1024 / 32 | 173.60 (descriptive) | [100.0, 200.0] target / [100.0, 199.8] achieved | 5581.6 | 10563.56 / 4519.71 |
 | T4 / phase2-main-session-1 | Qwen2.5-1.5B | 16384 / 32 | 86.35 (descriptive) | [50.0, 100.0] target / [50.0, 100.0] achieved | 2957.9 | 12181.77 / 4500.82 |
@@ -118,9 +122,10 @@ The complete per-session, per-model, per-length predictions and observed bracket
 
 | GPU | Compatible with at least one / all matched T4 sessions | Not ratio-resolved |
 | --- | --- | --- |
-| A10 | 31 / 36 at least one; 30 / 36 all | 23 |
-| H100! | 0 / 1 at least one; 0 / 1 all | 1 |
-| L4 | 25 / 27 at least one; 24 / 27 all | 32 |
+| A10 (PCIe 4 x16) | 11 / 12 at least one; 10 / 12 all | 8 |
+| A10G (PCIe 4 x8) | 20 / 24 at least one; 20 / 24 all | 15 |
+| H100 (PCIe 5 x16) | 0 / 1 at least one; 0 / 1 all | 1 |
+| L4 (PCIe 3 x16) | 25 / 27 at least one; 24 / 27 all | 32 |
 
 At the complete H100 main-model prefix 16384, measured prefill is 21.70 times the matched T4 median; the frozen calibration expected 15.96 times. Its predicted B* is 1435.63 MB/s, versus [1600.0, unthrottled] target / [1597.6, 53249.7] achieved. The large gap to the unthrottled endpoint and incomplete second-model sweep make this a limited fast-GPU point.
 
@@ -132,32 +137,34 @@ The frozen hypothesis ratio is calibration-predicted new-GPU prefill throughput 
 
 | GPU | Model | Real path | Reload wins / resolved cells | Unresolved | Median signed / absolute prediction error, ms |
 | --- | --- | --- | --- | --- | --- |
-| A10 | Qwen2.5-1.5B | file_raw_staged | 29 / 38 | 2 | 1.914 / 4.946 |
-| A10 | Qwen2.5-1.5B | file_torch_direct | 29 / 39 | 1 | 1.748 / 5.518 |
-| A10 | Qwen2.5-3B | file_raw_staged | 4 / 5 | 0 | -1.837 / 5.031 |
-| A10 | Qwen2.5-3B | file_torch_direct | 4 / 5 | 0 | -1.819 / 4.661 |
-| A10 | Llama-3.2-3B-Instruct | file_raw_staged | 3 / 4 | 0 | 5.859 / 6.679 |
-| A10 | Llama-3.2-3B-Instruct | file_torch_direct | 3 / 4 | 0 | 3.378 / 5.041 |
-| A10 | pythia-1.4b | file_raw_staged | 0 / 5 | 0 | 14.347 / 14.347 |
-| A10 | pythia-1.4b | file_torch_direct | 2 / 5 | 0 | 13.952 / 13.952 |
-| A10 | phi-2 | file_raw_staged | 4 / 5 | 0 | 25.102 / 25.102 |
-| A10 | phi-2 | file_torch_direct | 4 / 5 | 0 | 5.094 / 5.094 |
-| H100! | Qwen2.5-1.5B | file_raw_staged | 0 / 1 | 1 | -15.439 / 21.639 |
-| H100! | Qwen2.5-1.5B | file_torch_direct | 1 / 2 | 0 | 5.905 / 5.905 |
-| L4 | Qwen2.5-1.5B | file_raw_staged | 21 / 39 | 1 | 1.091 / 3.667 |
-| L4 | Qwen2.5-1.5B | file_torch_direct | 21 / 39 | 1 | 1.498 / 4.477 |
-| L4 | Qwen2.5-3B | file_raw_staged | 3 / 5 | 0 | 0.954 / 2.562 |
-| L4 | Qwen2.5-3B | file_torch_direct | 3 / 5 | 0 | 0.816 / 3.876 |
-| L4 | Llama-3.2-3B-Instruct | file_raw_staged | 1 / 3 | 1 | 1.126 / 1.126 |
-| L4 | Llama-3.2-3B-Instruct | file_torch_direct | 2 / 3 | 1 | 0.498 / 0.622 |
-| L4 | pythia-1.4b | file_raw_staged | 0 / 5 | 0 | -12.536 / 12.536 |
-| L4 | pythia-1.4b | file_torch_direct | 0 / 5 | 0 | -16.485 / 16.485 |
-| L4 | phi-2 | file_raw_staged | 0 / 5 | 0 | -21.251 / 21.251 |
-| L4 | phi-2 | file_torch_direct | 0 / 5 | 0 | -37.937 / 37.937 |
+| A10 (PCIe 4 x16) | Qwen2.5-1.5B | file_raw_staged | 14 / 19 | 1 | 2.225 / 2.225 |
+| A10 (PCIe 4 x16) | Qwen2.5-1.5B | file_torch_direct | 14 / 19 | 1 | 2.903 / 2.991 |
+| A10G (PCIe 4 x8) | Qwen2.5-1.5B | file_raw_staged | 15 / 19 | 1 | -0.132 / 7.074 |
+| A10G (PCIe 4 x8) | Qwen2.5-1.5B | file_torch_direct | 15 / 20 | 0 | -1.031 / 7.050 |
+| A10G (PCIe 4 x8) | Qwen2.5-3B | file_raw_staged | 4 / 5 | 0 | -1.837 / 5.031 |
+| A10G (PCIe 4 x8) | Qwen2.5-3B | file_torch_direct | 4 / 5 | 0 | -1.819 / 4.661 |
+| A10G (PCIe 4 x8) | Llama-3.2-3B-Instruct | file_raw_staged | 3 / 4 | 0 | 5.859 / 6.679 |
+| A10G (PCIe 4 x8) | Llama-3.2-3B-Instruct | file_torch_direct | 3 / 4 | 0 | 3.378 / 5.041 |
+| A10G (PCIe 4 x8) | pythia-1.4b | file_raw_staged | 0 / 5 | 0 | 14.347 / 14.347 |
+| A10G (PCIe 4 x8) | pythia-1.4b | file_torch_direct | 2 / 5 | 0 | 13.952 / 13.952 |
+| A10G (PCIe 4 x8) | phi-2 | file_raw_staged | 4 / 5 | 0 | 25.102 / 25.102 |
+| A10G (PCIe 4 x8) | phi-2 | file_torch_direct | 4 / 5 | 0 | 5.094 / 5.094 |
+| H100 (PCIe 5 x16) | Qwen2.5-1.5B | file_raw_staged | 0 / 1 | 1 | -15.439 / 21.639 |
+| H100 (PCIe 5 x16) | Qwen2.5-1.5B | file_torch_direct | 1 / 2 | 0 | 5.905 / 5.905 |
+| L4 (PCIe 3 x16) | Qwen2.5-1.5B | file_raw_staged | 21 / 39 | 1 | 1.091 / 3.667 |
+| L4 (PCIe 3 x16) | Qwen2.5-1.5B | file_torch_direct | 21 / 39 | 1 | 1.498 / 4.477 |
+| L4 (PCIe 3 x16) | Qwen2.5-3B | file_raw_staged | 3 / 5 | 0 | 0.954 / 2.562 |
+| L4 (PCIe 3 x16) | Qwen2.5-3B | file_torch_direct | 3 / 5 | 0 | 0.816 / 3.876 |
+| L4 (PCIe 3 x16) | Llama-3.2-3B-Instruct | file_raw_staged | 1 / 3 | 1 | 1.126 / 1.126 |
+| L4 (PCIe 3 x16) | Llama-3.2-3B-Instruct | file_torch_direct | 2 / 3 | 1 | 0.498 / 0.622 |
+| L4 (PCIe 3 x16) | pythia-1.4b | file_raw_staged | 0 / 5 | 0 | -12.536 / 12.536 |
+| L4 (PCIe 3 x16) | pythia-1.4b | file_torch_direct | 0 / 5 | 0 | -16.485 / 16.485 |
+| L4 (PCIe 3 x16) | phi-2 | file_raw_staged | 0 / 5 | 0 | -21.251 / 21.251 |
+| L4 (PCIe 3 x16) | phi-2 | file_torch_direct | 0 / 5 | 0 | -37.937 / 37.937 |
 
-Both measured MHA models lose on both L4 file paths. On the A10 tier, Phi-2 has file-reload wins and Pythia has direct-torch wins, so the T4 outcome does not transfer uniformly. A file-path win here concerns the full measured API TTFT, including CPU work and H2D transfer.
+Both measured MHA models lose on both L4 file paths. On A10G (PCIe 4 x8), Phi-2 has file-reload wins and Pythia has direct-torch wins, so the T4 outcome does not transfer uniformly. A file-path win here concerns the full measured API TTFT, including CPU work and H2D transfer.
 
-File predictions include independent read/deserialization/H2D legs, or the direct torch-load CPU leg plus H2D. These are **local-file API results; cold physical-disk access is unverified**. Files are on local container scratch. The virtualized filesystem reports zero physical-read bytes in all summarized observations. Upstream [gVisor ignores fadvise advice](https://github.com/google/gvisor/blob/master/pkg/sentry/syscalls/linux/sys_file.go); the deployed runtime revision is not identified, so successful advisory calls cannot establish eviction. These host/storage paths differ from Kaggle, so changes in file wins cannot be assigned solely to GPU speed.
+File predictions include independent read/deserialization/H2D legs, or the direct torch-load CPU leg plus H2D. These use the **local file API path (page-cache resident; physical reads not observed)**. Files are on local container scratch. The virtualized filesystem reports zero physical-read bytes in all summarized observations. Upstream [gVisor ignores fadvise advice](https://github.com/google/gvisor/blob/master/pkg/sentry/syscalls/linux/sys_file.go); the deployed runtime revision is not identified, so successful advisory calls cannot establish eviction. These host/storage paths differ from Kaggle, so changes in file wins cannot be assigned solely to GPU speed.
 
 | Run | File observations | Nonzero physical-read counters | Median physical-read / file-byte ratio |
 | --- | --- | --- | --- |
@@ -177,20 +184,21 @@ File predictions include independent read/deserialization/H2D legs, or the direc
 
 | GPU | Main model, prefixes through 128 | Recompute wins / resolved pinned-path cells | Unresolved |
 | --- | --- | --- | --- |
-| A10 | Separate turns and sessions | 6 / 10 | 2 |
-| H100! | Separate turns and sessions | 0 / 0 | 0 |
-| L4 | Separate turns and sessions | 12 / 12 | 0 |
+| A10 (PCIe 4 x16) | Separate turns and sessions | 3 / 4 | 2 |
+| A10G (PCIe 4 x8) | Separate turns and sessions | 3 / 6 | 0 |
+| H100 (PCIe 5 x16) | Separate turns and sessions | 0 / 0 | 0 |
+| L4 (PCIe 3 x16) | Separate turns and sessions | 12 / 12 | 0 |
 
 | GPU / session | New turn | Recompute wins at matched short prefixes | Reload wins | Unresolved |
 | --- | --- | --- | --- | --- |
-| L4 / phase3-l4-main-1 | 32 | [16, 64, 128, 256] | [] | [] |
-| L4 / phase3-l4-main-1 | 256 | [16, 64, 128, 256] | [] | [] |
-| L4 / phase3-l4-main-2 | 32 | [16, 64, 128, 256] | [] | [] |
-| L4 / phase3-l4-main-2 | 256 | [16, 64, 128, 256] | [] | [] |
-| A10 / phase3-a10-main-1 | 32 | [16, 64, 128] | [] | [256] |
-| A10 / phase3-a10-main-1 | 256 | [] | [128, 256] | [16, 64] |
-| A10 / phase3-a10-main-2 | 32 | [16, 64, 128] | [256] | [] |
-| A10 / phase3-a10-main-2 | 256 | [] | [16, 64, 128, 256] | [] |
+| L4 (PCIe 3 x16) / phase3-l4-main-1 | 32 | [16, 64, 128, 256] | [] | [] |
+| L4 (PCIe 3 x16) / phase3-l4-main-1 | 256 | [16, 64, 128, 256] | [] | [] |
+| L4 (PCIe 3 x16) / phase3-l4-main-2 | 32 | [16, 64, 128, 256] | [] | [] |
+| L4 (PCIe 3 x16) / phase3-l4-main-2 | 256 | [16, 64, 128, 256] | [] | [] |
+| A10 (PCIe 4 x16) / phase3-a10-main-1 | 32 | [16, 64, 128] | [] | [256] |
+| A10 (PCIe 4 x16) / phase3-a10-main-1 | 256 | [] | [128, 256] | [16, 64] |
+| A10G (PCIe 4 x8) / phase3-a10-main-2 | 32 | [16, 64, 128] | [256] | [] |
+| A10G (PCIe 4 x8) / phase3-a10-main-2 | 256 | [] | [16, 64, 128, 256] | [] |
 | T4 / phase2-main-session-1 | 32 | [16, 64, 128] | [256] | [] |
 | T4 / phase2-main-session-1 | 256 | [] | [16, 64, 128, 256] | [] |
 | T4 / phase2-main-session-2 | 32 | [16, 64, 128] | [256] | [] |
@@ -198,38 +206,38 @@ File predictions include independent read/deserialization/H2D legs, or the direc
 | T4 / phase2-main-session-3 | 32 | [16] | [256] | [64, 128] |
 | T4 / phase2-main-session-3 | 256 | [] | [16, 64, 128, 256] | [] |
 
-The regime table compares the main model at common prefixes through 256 tokens, using the real unthrottled pinned path. On L4, recomputation wins throughout those sampled short prefixes for both new-turn sizes; the T4 reference already favors reload at 256 tokens for a 32-token turn and across these prefixes for a 256-token turn. Thus L4 extends the observed recompute-favored regime. The A10 tier has session- and turn-dependent boundaries rather than the same uniform shift. Short-prefix decisions can be dominated by host dispatch, allocation and the resident-hit baseline. The full score records retain every short-length decision and its paired interval; the sparse length grid cannot establish a continuous crossover length.
+The regime table compares the main model at common prefixes through 256 tokens, using the real unthrottled pinned path. On L4, recomputation wins throughout those sampled short prefixes for both new-turn sizes; the T4 reference already favors reload at 256 tokens for a 32-token turn and across these prefixes for a 256-token turn. Thus L4 extends the observed recompute-favored regime. A10 and A10G have session- and turn-dependent boundaries rather than the same uniform shift. Short-prefix decisions can be dominated by host dispatch, allocation and the resident-hit baseline. The full score records retain every short-length decision and its paired interval; the sparse length grid cannot establish a continuous crossover length.
 
 ## Session spread and clock drift
 
 | GPU | New turn | Median / maximum relative range of recompute session medians |
 | --- | --- | --- |
-| A10 | 32 | 23.6% / 29.7% |
-| A10 | 256 | 22.7% / 27.9% |
-| L4 | 32 | 5.0% / 8.8% |
-| L4 | 256 | 4.4% / 7.3% |
+| L4 (PCIe 3 x16) | 32 | 5.0% / 8.8% |
+| L4 (PCIe 3 x16) | 256 | 4.4% / 7.3% |
+| A10 (PCIe 4 x16) | Both turn sizes | One main session; within-board session spread is unidentified |
+| A10G (PCIe 4 x8) | Both turn sizes | One main session; within-board session spread is unidentified |
 
 T4 new turn 32: median recompute session range 12.3%, maximum 17.3%.
 T4 new turn 256: median recompute session range 14.8%, maximum 21.0%.
 
-| GPU / session | Prefix / new turn | Recompute median and within-session 95% CI, ms | Across-session range / median |
+| GPU / session | Prefix / new turn | Recompute median and within-session 95% CI, ms | Relative range: sessions on L4; A10 vs A10G allocation comparison |
 | --- | --- | --- | --- |
-| A10 / phase3-a10-main-1 | 8192 / 256 | 601.105 [600.198, 603.250] | 5.5% |
-| A10 / phase3-a10-main-1 | 8192 / 32 | 583.895 [581.914, 589.018] | 6.6% |
-| A10 / phase3-a10-main-1 | 1024 / 32 | 57.128 [56.856, 57.296] | 26.0% |
-| A10 / phase3-a10-main-1 | 1024 / 256 | 77.307 [75.547, 80.526] | 22.0% |
-| A10 / phase3-a10-main-2 | 8192 / 256 | 634.850 [634.789, 634.913] | 5.5% |
-| A10 / phase3-a10-main-2 | 8192 / 32 | 623.803 [623.700, 623.861] | 6.6% |
-| A10 / phase3-a10-main-2 | 1024 / 256 | 96.388 [96.355, 96.627] | 22.0% |
-| A10 / phase3-a10-main-2 | 1024 / 32 | 74.176 [74.131, 74.363] | 26.0% |
-| L4 / phase3-l4-main-1 | 8192 / 256 | 785.423 [784.709, 792.838] | 7.0% |
-| L4 / phase3-l4-main-1 | 8192 / 32 | 760.407 [759.673, 766.897] | 6.9% |
-| L4 / phase3-l4-main-1 | 1024 / 32 | 70.224 [69.609, 70.711] | 4.4% |
-| L4 / phase3-l4-main-1 | 1024 / 256 | 92.021 [90.833, 102.130] | 6.0% |
-| L4 / phase3-l4-main-2 | 8192 / 256 | 842.538 [839.844, 847.195] | 7.0% |
-| L4 / phase3-l4-main-2 | 8192 / 32 | 814.803 [811.700, 820.760] | 6.9% |
-| L4 / phase3-l4-main-2 | 1024 / 256 | 97.752 [95.226, 103.637] | 6.0% |
-| L4 / phase3-l4-main-2 | 1024 / 32 | 73.406 [73.034, 79.484] | 4.4% |
+| A10 (PCIe 4 x16) / phase3-a10-main-1 | 8192 / 256 | 601.105 [600.198, 603.250] | 5.5% |
+| A10 (PCIe 4 x16) / phase3-a10-main-1 | 8192 / 32 | 583.895 [581.914, 589.018] | 6.6% |
+| A10 (PCIe 4 x16) / phase3-a10-main-1 | 1024 / 32 | 57.128 [56.856, 57.296] | 26.0% |
+| A10 (PCIe 4 x16) / phase3-a10-main-1 | 1024 / 256 | 77.307 [75.547, 80.526] | 22.0% |
+| A10G (PCIe 4 x8) / phase3-a10-main-2 | 8192 / 256 | 634.850 [634.789, 634.913] | 5.5% |
+| A10G (PCIe 4 x8) / phase3-a10-main-2 | 8192 / 32 | 623.803 [623.700, 623.861] | 6.6% |
+| A10G (PCIe 4 x8) / phase3-a10-main-2 | 1024 / 256 | 96.388 [96.355, 96.627] | 22.0% |
+| A10G (PCIe 4 x8) / phase3-a10-main-2 | 1024 / 32 | 74.176 [74.131, 74.363] | 26.0% |
+| L4 (PCIe 3 x16) / phase3-l4-main-1 | 8192 / 256 | 785.423 [784.709, 792.838] | 7.0% |
+| L4 (PCIe 3 x16) / phase3-l4-main-1 | 8192 / 32 | 760.407 [759.673, 766.897] | 6.9% |
+| L4 (PCIe 3 x16) / phase3-l4-main-1 | 1024 / 32 | 70.224 [69.609, 70.711] | 4.4% |
+| L4 (PCIe 3 x16) / phase3-l4-main-1 | 1024 / 256 | 92.021 [90.833, 102.130] | 6.0% |
+| L4 (PCIe 3 x16) / phase3-l4-main-2 | 8192 / 256 | 842.538 [839.844, 847.195] | 7.0% |
+| L4 (PCIe 3 x16) / phase3-l4-main-2 | 8192 / 32 | 814.803 [811.700, 820.760] | 6.9% |
+| L4 (PCIe 3 x16) / phase3-l4-main-2 | 1024 / 256 | 97.752 [95.226, 103.637] | 6.0% |
+| L4 (PCIe 3 x16) / phase3-l4-main-2 | 1024 / 32 | 73.406 [73.034, 79.484] | 4.4% |
 
 | Run | Samples during timed intervals | SM MHz | Memory MHz | Temperature C | Power W | PCIe gen / width | Throttle reason bitmasks |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -251,7 +259,7 @@ Telemetry is sampled at approximately one-second intervals and can miss brief sh
 
 Bitmask `0x4` denotes software power-cap limiting, per the [NVIDIA NVML definitions](https://docs.nvidia.com/deploy/archive/R535/nvml-api/group__nvmlClocksEventReasons.html). Per-condition clock sample counts and medians are archived separately, since pooled timed intervals include rate-limiter sleeps.
 
-The Ampere main sessions use distinct A10/A10G allocations and different active PCIe widths. The slower session does not show lower sampled SM clocks, so clock frequency alone does not explain its recompute spread; host and allocation differences remain confounded.
+A10 and A10G have only one main-model session each. The Ampere main sessions use A10 at PCIe 4 x16 and A10G at PCIe 4 x8. These allocation differences are the likely source of the previously reported service-tier spread. The slower session does not show lower sampled SM clocks, so clock frequency alone does not explain the recompute difference. This is a likely explanation, not a controlled attribution: host and allocation differences remain confounded.
 
 ## Rule of thumb and limits
 

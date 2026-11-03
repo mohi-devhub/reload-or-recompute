@@ -42,7 +42,7 @@ No exact match to that experiment was found in the sources below. Proceed with t
 
 ### Storage semantics and hidden cache hits
 
-[Characterizing Predictability–Throughput Trade-offs of KV-Cache SSD Offloading in LMCache for LLM Serving Systems](https://arxiv.org/html/2610.21249v1) traces buffered versus direct storage paths. It warns that apparent file reads can be page-cache hits and that partial chunks amplify I/O. Consequently, report cache-eviction permissions and per-process physical read counters. An eviction hint without evidence cannot establish a cold-disk result. The work compares deployment snapshots, which should not be treated as a controlled version ablation.
+[Characterizing Predictability–Throughput Trade-offs of KV-Cache SSD Offloading in LMCache for LLM Serving Systems](https://arxiv.org/html/2610.21249v1) traces buffered versus direct storage paths. It warns that apparent file reads can be page-cache hits and that partial chunks amplify I/O. Consequently, report cache-eviction permissions and per-process physical read counters. An eviction hint without evidence cannot establish a cold physical-storage result. The work compares deployment snapshots, which should not be treated as a controlled version ablation.
 
 ### Other adjacent work
 
@@ -50,6 +50,6 @@ No exact match to that experiment was found in the sources below. Proceed with t
 
 ## Implications for measurement
 
-Measure end-to-end resumed-turn latency through first-token selection, including file loading, host staging, synchronization, and the new turn. Also measure prefix prefill and isolated transfer separately. A reload estimate must add the resumed-turn cost when compared with end-to-end recompute. Disk-to-GPU has a disk-read leg and a host-to-device leg unless the implementation demonstrably overlaps them.
+Measure end-to-end resumed-turn latency through first-token selection, including file loading, host staging, synchronization, and the new turn. Also measure prefix prefill and isolated transfer separately. A reload estimate must add the resumed-turn cost when compared with end-to-end recompute. File-to-GPU has a file-read leg and a host-to-device leg unless the implementation demonstrably overlaps them.
 
 Calibrate bandwidth and fixed overhead from microbenchmarks, not the TTFT outcomes being predicted. Report prediction error and observed sign of the advantage. With only a sparse pilot grid, a crossing is an interval; all observed points favouring one side gives a bound, not an invented crossover. A one-GPU pilot cannot validate the cross-hardware hypothesis.

@@ -57,20 +57,20 @@ Main targets share a hard cap of $6. Optional H100 has a separate $4 cap and at 
 | preload | CPU | prepare | failed_reservation_retained | Pending | 0.046420 |
 | preload-retry | CPU | prepare | failed_reservation_retained | Pending | 0.046420 |
 | preload-fixed | CPU | prepare | collected | 175.49629664421082 | 0.010392 |
-| calibration-l4-main | L4 | calibration | collected | 63.39398431777954 | 0.063434 |
-| calibration-a10-main | A10 | calibration | collected | 42.53546738624573 | 0.069836 |
-| calibration-a10-controls | A10 | calibration | collected | 132.464763879776 | 0.108476 |
-| calibration-l4-controls | L4 | calibration | collected | 169.17563199996948 | 0.100023 |
-| a10-main-1 | A10 | sweep | collected | 1097.433132648468 | 0.523090 |
-| a10-controls | A10 | sweep | collected | 2094.978818655014 | 0.951703 |
-| a10-main-2 | A10 | sweep | collected | 1097.770673274994 | 0.523235 |
+| calibration-l4-main | NVIDIA L4 / PCIe x16 | calibration | collected | 63.39398431777954 | 0.063434 |
+| calibration-a10-main | NVIDIA A10 / PCIe x16 | calibration | collected | 42.53546738624573 | 0.069836 |
+| calibration-a10-controls | NVIDIA A10 / PCIe x16 | calibration | collected | 132.464763879776 | 0.108476 |
+| calibration-l4-controls | NVIDIA L4 / PCIe x16 | calibration | collected | 169.17563199996948 | 0.100023 |
+| a10-main-1 | NVIDIA A10 / PCIe x16 | sweep | collected | 1097.433132648468 | 0.523090 |
+| a10-controls | NVIDIA A10G / PCIe x8 | sweep | collected | 2094.978818655014 | 0.951703 |
+| a10-main-2 | NVIDIA A10G / PCIe x8 | sweep | collected | 1097.770673274994 | 0.523235 |
 | calibration-l4-main-smallhost | L4 | calibration | cancelled_queued_reservation_retained | Pending | 0.153390 |
 | l4-sandbox-probe | L4 | allocation_probe | cancelled_queued_reservation_retained | Pending | 0.048296 |
 | calibration-l4-controls-retry | L4 | calibration | cancelled_duplicate_reservation_retained | Pending | 0.249040 |
-| l4-main-1 | L4 | sweep | collected | 1191.5753726959229 | 0.453659 |
-| l4-main-2 | L4 | sweep | collected | 1202.7443361282349 | 0.457523 |
-| l4-controls | L4 | sweep | collected | 2292.0625472068787 | 0.834306 |
-| h100-single-session | H100! | h100_combined | cancelled_input_reservation_retained | Pending | 2.197600 |
+| l4-main-1 | NVIDIA L4 / PCIe x16 | sweep | collected | 1191.5753726959229 | 0.453659 |
+| l4-main-2 | NVIDIA L4 / PCIe x16 | sweep | collected | 1202.7443361282349 | 0.457523 |
+| l4-controls | NVIDIA L4 / PCIe x16 | sweep | collected | 2292.0625472068787 | 0.834306 |
+| h100-single-session | NVIDIA H100 80GB HBM3 / PCIe x16 | h100_combined | cancelled_input_reservation_retained | Pending | 2.197600 |
 
 Main usage plus reservations: $4.839242 / $6. H100: $2.197600 / $4. Infrastructure reservation: $0.200000.
 

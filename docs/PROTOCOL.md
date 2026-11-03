@@ -1,5 +1,7 @@
 # Pilot measurement protocol
 
+The measured file tier is a local file API path. Kaggle records positive process physical-read counters; underlying storage and host cache are unidentified. See [the counter audit](FILE_API_AUDIT.md).
+
 The pilot requests Qwen2.5-1.5B on T4 in fp16. Prefix lengths are 512, 2048, and 8192 tokens. New turns contain 32 or 256 tokens. These values, the repeat counts, and timeout values are prescribed settings, not measured results.
 
 ## Measurement boundary
@@ -8,7 +10,7 @@ Input token IDs are already on the GPU. TTFT begins before prefix recomputation 
 
 `model.model` computes the full transformer with its cache. The language-model head operates on the final hidden state only. This avoids materializing unused full-prefix vocabulary logits. Every condition uses that same implementation. Torch SDPA enables its efficient and math backends and explicitly excludes the flash backend. No FlashAttention-2 package is installed for the reference path.
 
-Each shape has two warmups and twelve measured rounds. The condition order is shuffled within each round using a fixed seed. CUDA synchronization encloses each operation. Wall time is the main metric; CUDA-event elapsed time is supplemental and can include GPU idle time during host or disk work. Errors are recorded and stop reference measurements. A separate profile is excluded from timing summaries.
+Each shape has two warmups and twelve measured rounds. The condition order is shuffled within each round using a fixed seed. CUDA synchronization encloses each operation. Wall time is the main metric; CUDA-event elapsed time is supplemental and can include GPU idle time during host or file work. Errors are recorded and stop reference measurements. A separate profile is excluded from timing summaries.
 
 ## Correctness
 
@@ -18,7 +20,7 @@ A GPU prefix remains allocated to supply the GPU-hit control and tensor verifica
 
 ## File semantics
 
-The file backend uses uncompressed `torch.save` and `torch.load`. File writeback is synchronized before reads. The script attempts global page-cache eviction and logs any permission error. Before each measured read it requests per-file eviction with `POSIX_FADV_DONTNEED`. This is advisory. Per-process `read_bytes` and serialized file sizes accompany observations. File results are not called cold disk unless physical read evidence supports that description. The storage device behind Kaggle's filesystem is not assumed to be a local NVMe SSD.
+The file backend uses uncompressed `torch.save` and `torch.load`. File writeback is synchronized before reads. The script attempts global page-cache eviction and logs any permission error. Before each measured read it requests per-file eviction with `POSIX_FADV_DONTNEED`. This is advisory. Per-process `read_bytes` and serialized file sizes accompany observations. File results are not called cold physical-storage unless physical read evidence supports that description. The storage device behind Kaggle's filesystem is not assumed to be a local NVMe SSD.
 
 ## Inference and prediction
 

@@ -1,0 +1,13 @@
+phase,kind,condition,samples,positive,zero,minimum_bytes,maximum_bytes,median_physical_to_file_ratio,min_prefix,max_prefix
+pilot,bandwidth,file_read,36,36,0,14696448,234897408,1.000005533203777,512,8192
+pilot,ttft,file,72,72,0,14696448,234897408,,512,8192
+phase2,microbenchmark,file_legs_torch,1028,1028,0,200704,1879052288,1.0001375830842631,16,16384
+phase2,microbenchmark,file_legs_raw,1028,1028,0,196608,1879048192,1.0,16,16384
+phase2,measurement,file_raw_staged,1902,1902,0,196608,1879048192,1.0,16,16384
+phase2,measurement,file_torch_direct,1902,1902,0,200704,1879052288,1.0001238257591814,16,16384
+phase2,measurement,file_torch_staged,1902,1902,0,200704,1879052288,1.0001238257591814,16,16384
+phase3,microbenchmark,file_legs_torch,990,0,990,0,0,0.0,16,32736
+phase3,microbenchmark,file_legs_raw,990,0,990,0,0,0.0,16,32736
+phase3,microbenchmark,file_legs_direct,180,0,180,0,0,0.0,64,8192
+phase3,measurement,file_raw_staged,1208,0,1208,0,0,0.0,16,32736
+phase3,measurement,file_torch_direct,1207,0,1207,0,0,0.0,16,32736

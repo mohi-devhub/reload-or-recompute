@@ -1,0 +1,307 @@
+gpu,hardware,run_id,model,workload,prefix_tokens,turn_tokens,prediction_kind,predicted_bstar_mb_s,measured_prefill_tokens_s,observed
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,16,32,descriptive same-session T4 rule,1865.275692318124,446.6661868704316,"[1600.0, unthrottled] target / [1456.8, 6225.2] achieved (median only)"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,16,256,descriptive same-session T4 rule,67.141686052325,394.40235096550606,<= 50.0 (bound only)
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,32,32,descriptive same-session T4 rule,1935.601119140527,797.1425329836615,"[1600.0, unthrottled] target / [1524.2, 7743.0] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,32,256,descriptive same-session T4 rule,127.70647121268594,729.8933096699569,"[50.0, 100.0] target / [49.8, 99.4] achieved (median only)"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,64,32,descriptive same-session T4 rule,1239.9302617705816,1447.5176412495564,"[800.0, 1600.0] target / [790.0, 1562.1] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,64,256,descriptive same-session T4 rule,252.3158985938639,1324.7256113068127,"[100.0, 200.0] target / [99.7, 198.8] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,128,32,descriptive same-session T4 rule,614.8646935942052,2522.35739759764,"[400.0, 800.0] target / [398.1, 795.3] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,128,256,descriptive same-session T4 rule,368.3867195770775,2088.657182481449,"[200.0, 400.0] target / [199.4, 398.4] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,256,32,descriptive same-session T4 rule,363.5069011184619,2733.772377891365,"[200.0, 400.0] target / [199.8, 398.9] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,256,256,descriptive same-session T4 rule,345.8534277743798,2558.0356204909226,"[200.0, 400.0] target / [199.8, 398.8] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,512,32,descriptive same-session T4 rule,336.3615361592461,2663.466393883431,"[200.0, 400.0] target / [199.9, 399.5] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,512,256,descriptive same-session T4 rule,328.3694915071788,2631.379064799929,"[200.0, 400.0] target / [199.9, 399.5] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,1024,32,descriptive same-session T4 rule,337.52135269933325,2587.829479403644,"[200.0, 400.0] target / [199.9, 399.8] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,1024,256,descriptive same-session T4 rule,366.93889808481646,2548.659795586764,"[200.0, 400.0] target / [199.9, 399.7] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,2048,32,descriptive same-session T4 rule,312.5810126851307,2813.208495759426,"[200.0, 400.0] target / [200.0, 399.9] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,2048,256,descriptive same-session T4 rule,323.7833957611307,2862.615270592843,"[200.0, 400.0] target / [200.0, 399.8] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,4096,32,descriptive same-session T4 rule,291.97356667750205,2517.4083256948857,"[200.0, 400.0] target / [200.0, 399.9] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,4096,256,descriptive same-session T4 rule,304.2831372366196,2578.522462367212,"[200.0, 400.0] target / [200.0, 399.9] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,8192,32,descriptive same-session T4 rule,249.8391093307442,2127.6542258236764,"[200.0, 400.0] target / [200.0, 400.0] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,8192,256,descriptive same-session T4 rule,252.3173647721752,2159.716387383278,"[200.0, 400.0] target / [200.0, 400.0] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,16384,32,descriptive same-session T4 rule,188.73960924333795,1631.884085934726,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-llama-mirror-control,unsloth/Llama-3.2-3B-Instruct,repeated_control,16384,256,descriptive same-session T4 rule,187.51076287404825,1625.4248616375148,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-repeated-control,Qwen/Qwen2.5-1.5B,repeated_control,16,32,descriptive same-session T4 rule,,494.1237720133789,above tested achieved rates (bound only)
+T4,T4,phase2-main-repeated-control,Qwen/Qwen2.5-1.5B,repeated_control,32,32,descriptive same-session T4 rule,,935.1453606017874,above tested achieved rates (bound only)
+T4,T4,phase2-main-repeated-control,Qwen/Qwen2.5-1.5B,repeated_control,64,32,descriptive same-session T4 rule,,1857.3649096776958,above tested achieved rates (bound only)
+T4,T4,phase2-main-repeated-control,Qwen/Qwen2.5-1.5B,repeated_control,128,32,descriptive same-session T4 rule,,3846.4797798339546,above tested achieved rates (bound only)
+T4,T4,phase2-main-repeated-control,Qwen/Qwen2.5-1.5B,repeated_control,256,32,descriptive same-session T4 rule,564.4473005141464,7129.497093900453,"[400.0, 800.0] target / [395.1, 790.5] achieved (median only)"
+T4,T4,phase2-main-repeated-control,Qwen/Qwen2.5-1.5B,repeated_control,512,32,descriptive same-session T4 rule,223.2937761873416,6612.707746379363,"[200.0, 400.0] target / [199.5, 398.4] achieved"
+T4,T4,phase2-main-repeated-control,Qwen/Qwen2.5-1.5B,repeated_control,1024,32,descriptive same-session T4 rule,222.3648494959201,6746.788691652698,"[200.0, 400.0] target / [199.7, 399.1] achieved"
+T4,T4,phase2-main-repeated-control,Qwen/Qwen2.5-1.5B,repeated_control,1792,32,descriptive same-session T4 rule,162.01367532291553,5264.125081862548,"[100.0, 200.0] target / [100.0, 199.8] achieved"
+T4,T4,phase2-main-repeated-control,Qwen/Qwen2.5-1.5B,repeated_control,2048,32,descriptive same-session T4 rule,172.44223169898987,5713.6912448852645,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-main-repeated-control,Qwen/Qwen2.5-1.5B,repeated_control,8192,32,descriptive same-session T4 rule,129.50370358040777,4400.849093012298,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,16,32,descriptive same-session T4 rule,,535.7851755947622,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,16,256,descriptive same-session T4 rule,36.855136620483464,527.1068224964199,<= 50.0 (bound only)
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,32,32,descriptive same-session T4 rule,,1045.1849285702883,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,32,256,descriptive same-session T4 rule,60.59829813955383,1051.5360789759932,<= 50.0 (bound only)
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,64,32,descriptive same-session T4 rule,,2089.5240243865237,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,64,256,descriptive same-session T4 rule,114.77749963112417,2064.2903888881665,"[50.0, 100.0] target / [49.8, 99.3] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,128,32,descriptive same-session T4 rule,,4133.400195389145,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,128,256,descriptive same-session T4 rule,205.77348843956827,3747.245481823825,"[100.0, 200.0] target / [99.4, 198.4] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,256,32,descriptive same-session T4 rule,318.82579160621935,6645.828446584983,"[200.0, 400.0] target / [199.2, 395.5] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,256,256,descriptive same-session T4 rule,152.6803853398491,4972.1363228512855,"[100.0, 200.0] target / [99.8, 199.2] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,512,32,descriptive same-session T4 rule,208.63374033500202,6362.6074333136185,"[200.0, 400.0] target / [199.6, 398.8] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,512,256,descriptive same-session T4 rule,167.1931467478194,5690.589047205909,"[100.0, 200.0] target / [99.9, 199.6] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,1024,32,descriptive same-session T4 rule,173.6034413243291,5581.628866583,"[100.0, 200.0] target / [100.0, 199.8] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,1024,256,descriptive same-session T4 rule,150.42234739724904,5105.71719014564,"[100.0, 200.0] target / [100.0, 199.8] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,2048,32,descriptive same-session T4 rule,152.3840608525672,5127.507542718924,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,2048,256,descriptive same-session T4 rule,157.18930483790007,5012.0896104452495,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,4096,32,descriptive same-session T4 rule,142.48434305237035,4886.394139724442,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,4096,256,descriptive same-session T4 rule,133.817571673138,4838.30945930899,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,8192,32,descriptive same-session T4 rule,121.50071055531836,4137.201893051511,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,8192,256,descriptive same-session T4 rule,123.29543927357481,4172.482499207845,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,16384,32,descriptive same-session T4 rule,86.34618118694922,2957.8760503004046,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-main-session-1,Qwen/Qwen2.5-1.5B,ultrachat,16384,256,descriptive same-session T4 rule,85.35663355782033,2976.3046060262836,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,16,32,descriptive same-session T4 rule,,517.2168644578022,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,16,256,descriptive same-session T4 rule,37.405990782668404,509.0599871669899,<= 50.0 (bound only)
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,32,32,descriptive same-session T4 rule,,1014.1542337172826,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,32,256,descriptive same-session T4 rule,87.26120978939711,1004.0014005196163,"[50.0, 100.0] target / [49.6, 98.7] achieved (median only)"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,64,32,descriptive same-session T4 rule,,2064.6679487317397,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,64,256,descriptive same-session T4 rule,153.2908613706287,2065.1601259027293,"[50.0, 100.0] target / [49.7, 98.9] achieved (median only)"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,128,32,descriptive same-session T4 rule,,4115.5656625439915,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,128,256,descriptive same-session T4 rule,261.0586343420208,4010.612582203517,"[100.0, 200.0] target / [99.5, 197.8] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,256,32,descriptive same-session T4 rule,382.7976838086874,6982.459869887574,"[200.0, 400.0] target / [199.2, 397.1] achieved (median only)"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,256,256,descriptive same-session T4 rule,204.08802224184066,5439.816205604229,"[100.0, 200.0] target / [99.7, 198.8] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,512,32,descriptive same-session T4 rule,266.16497919211406,7597.141904767223,"[200.0, 400.0] target / [199.4, 397.7] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,512,256,descriptive same-session T4 rule,203.13551931155632,6701.594890581064,"[100.0, 200.0] target / [99.9, 199.5] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,1024,32,descriptive same-session T4 rule,200.55073577871283,6285.0920966698495,"[200.0, 400.0] target / [199.8, 399.0] achieved (median only)"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,1024,256,descriptive same-session T4 rule,188.27448452680366,6349.028727568981,"[100.0, 200.0] target / [99.9, 199.7] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,2048,32,descriptive same-session T4 rule,178.48234292943707,5896.1299713058,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,2048,256,descriptive same-session T4 rule,185.37617676217073,5873.575070830629,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,4096,32,descriptive same-session T4 rule,166.77337740715834,5625.614662953389,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,4096,256,descriptive same-session T4 rule,157.8485220306548,5687.056242913011,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,8192,32,descriptive same-session T4 rule,140.99696951046434,4815.925288575703,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,8192,256,descriptive same-session T4 rule,139.31194798018052,4798.45130499593,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,16384,32,descriptive same-session T4 rule,97.17727450279715,3346.344403344035,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-main-session-2,Qwen/Qwen2.5-1.5B,ultrachat,16384,256,descriptive same-session T4 rule,97.78849808382554,3343.7355424261696,"[50.0, 100.0] target / [50.0, 100.0] achieved (median only)"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,16,32,descriptive same-session T4 rule,,519.2275393502102,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,16,256,descriptive same-session T4 rule,28.50736932473679,518.6488206333838,<= 50.0 (bound only)
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,32,32,descriptive same-session T4 rule,,1027.4735345699423,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,32,256,descriptive same-session T4 rule,67.17076195916731,1016.5827358500436,<= 50.0 (bound only)
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,64,32,descriptive same-session T4 rule,,2030.602641296282,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,64,256,descriptive same-session T4 rule,136.34555540961833,2021.0872666342996,"[50.0, 100.0] target / [49.8, 99.3] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,128,32,descriptive same-session T4 rule,,4090.6171405387136,above tested achieved rates (bound only)
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,128,256,descriptive same-session T4 rule,222.798550298235,3822.9346871652365,"[100.0, 200.0] target / [99.5, 197.7] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,256,32,descriptive same-session T4 rule,323.2927606927902,6785.884765922558,"[200.0, 400.0] target / [198.9, 396.9] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,256,256,descriptive same-session T4 rule,165.42303997977132,4922.412397401465,"[100.0, 200.0] target / [99.8, 198.9] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,512,32,descriptive same-session T4 rule,202.85526005402062,6244.178858160655,"[200.0, 400.0] target / [199.6, 398.0] achieved (median only)"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,512,256,descriptive same-session T4 rule,163.99294383418703,5350.280318374611,"[100.0, 200.0] target / [99.9, 199.5] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,1024,32,descriptive same-session T4 rule,208.03416161074423,6469.744778740339,"[200.0, 400.0] target / [199.7, 399.0] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,1024,256,descriptive same-session T4 rule,177.4446363573936,5936.484589021532,"[100.0, 200.0] target / [99.9, 199.8] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,2048,32,descriptive same-session T4 rule,149.71226343214173,4976.3078421011005,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,2048,256,descriptive same-session T4 rule,153.42492938534534,4954.279679146201,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,4096,32,descriptive same-session T4 rule,137.71748324675556,4747.3988302332455,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,4096,256,descriptive same-session T4 rule,136.0585183756257,4916.908543114862,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,8192,32,descriptive same-session T4 rule,120.94526205952859,4084.0598365357523,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,8192,256,descriptive same-session T4 rule,119.06769044160886,4109.002533781465,"[100.0, 200.0] target / [100.0, 200.0] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,16384,32,descriptive same-session T4 rule,85.17279956936046,2880.2092940929992,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-main-session-3,Qwen/Qwen2.5-1.5B,ultrachat,16384,256,descriptive same-session T4 rule,83.87782736771177,2888.933084573056,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,16,32,descriptive same-session T4 rule,,1126.9579397507862,above tested achieved rates (bound only)
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,16,256,descriptive same-session T4 rule,800.2455910372431,1066.7081616128723,"[400.0, 800.0] target / [394.3, 777.9] achieved (median only)"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,32,32,descriptive same-session T4 rule,1253217.811625022,2125.3692206300448,above tested achieved rates (bound only)
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,32,256,descriptive same-session T4 rule,4200.938005211134,1968.413241782224,"[1600.0, unthrottled] target / [1559.1, 10838.5] achieved (median only)"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,64,32,descriptive same-session T4 rule,10407.480642419208,3948.3091073136343,above tested achieved rates (bound only)
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,64,256,descriptive same-session T4 rule,8067.29701779063,3631.9465908506227,"[1600.0, unthrottled] target / [1579.2, 9586.6] achieved (median only)"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,128,32,descriptive same-session T4 rule,6321.778820848966,7117.720309846398,"[1600.0, unthrottled] target / [1589.3, 9999.8] achieved"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,128,256,descriptive same-session T4 rule,2738.17801504561,6841.614956798999,"[1600.0, unthrottled] target / [1588.9, 10037.9] achieved"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,256,32,descriptive same-session T4 rule,1778.9861312943033,6713.623568173186,"[1600.0, unthrottled] target / [1594.6, 11779.0] achieved"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,256,256,descriptive same-session T4 rule,1796.816114876822,9226.500976002997,"[800.0, 1600.0] target / [798.1, 1594.4] achieved"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,512,32,descriptive same-session T4 rule,1840.2502226143527,5956.865118057487,"[1600.0, unthrottled] target / [1597.3, 11541.0] achieved (median only)"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,512,256,descriptive same-session T4 rule,2232.5460460539853,8575.072714141435,"[1600.0, unthrottled] target / [1597.2, 11554.9] achieved (median only)"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,1024,32,descriptive same-session T4 rule,1602.7543450068088,6755.117341941318,"[800.0, 1600.0] target / [799.6, 1598.6] achieved (median only)"
+T4,T4,phase2-opt-control,facebook/opt-1.3b,repeated_control,1024,256,descriptive same-session T4 rule,1657.0774768980557,7635.919905631298,"[800.0, 1600.0] target / [799.5, 1598.6] achieved (median only)"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,16,32,descriptive same-session T4 rule,2501.7108194699254,491.87771551173665,"[1600.0, unthrottled] target / [1550.9, 9331.9] achieved (median only)"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,16,256,descriptive same-session T4 rule,198.4271527879364,427.12140859351877,"[100.0, 200.0] target / [99.6, 198.6] achieved (median only)"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,32,32,descriptive same-session T4 rule,3434.187929100769,979.2429864168926,"[1600.0, unthrottled] target / [1574.9, 10098.2] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,32,256,descriptive same-session T4 rule,401.14431130927045,859.2739639829069,"[200.0, 400.0] target / [199.2, 397.4] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,64,32,descriptive same-session T4 rule,3084.882770725562,1681.3795919241225,"[1600.0, unthrottled] target / [1587.3, 10420.6] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,64,256,descriptive same-session T4 rule,499.7985835916693,1386.3649555308043,"[200.0, 400.0] target / [199.7, 398.6] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,128,32,descriptive same-session T4 rule,1362.9463430168776,2797.459251352286,"[800.0, 1600.0] target / [797.9, 1593.8] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,128,256,descriptive same-session T4 rule,991.5437344943617,2403.7598183869186,"[400.0, 800.0] target / [399.2, 796.9] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,256,32,descriptive same-session T4 rule,923.0229171447611,3138.3307609748513,"[800.0, 1600.0] target / [799.0, 1596.7] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,256,256,descriptive same-session T4 rule,1051.1028796750618,2562.601219621151,"[800.0, 1600.0] target / [798.7, 1596.7] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,512,32,descriptive same-session T4 rule,898.6759628421846,2738.468424459021,"[800.0, 1600.0] target / [799.2, 1598.4] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,512,256,descriptive same-session T4 rule,873.3618673744606,3044.5252300756106,"[800.0, 1600.0] target / [799.3, 1598.3] achieved (median only)"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,1024,32,descriptive same-session T4 rule,825.1203557087532,2636.3300121552643,"[800.0, 1600.0] target / [799.8, 1599.2] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,1024,256,descriptive same-session T4 rule,914.3936761961362,2666.338113401439,"[800.0, 1600.0] target / [799.7, 1599.2] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,1792,32,descriptive same-session T4 rule,836.0534830821017,2481.2553825208356,"[800.0, 1600.0] target / [799.8, 1599.5] achieved"
+T4,T4,phase2-phi2-control,microsoft/phi-2,repeated_control,1792,256,descriptive same-session T4 rule,896.9671791380991,2494.9611791174584,"[800.0, 1600.0] target / [799.8, 1599.5] achieved"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,16,32,descriptive same-session T4 rule,,907.3030323739011,above tested achieved rates (bound only)
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,16,256,descriptive same-session T4 rule,513.5043301775194,910.6496463563433,"[200.0, 400.0] target / [197.6, 394.3] achieved (median only)"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,32,32,descriptive same-session T4 rule,,1824.6792313706205,above tested achieved rates (bound only)
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,32,256,descriptive same-session T4 rule,862.1249637664547,1648.2529342953865,"[400.0, 800.0] target / [396.3, 789.1] achieved (median only)"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,64,32,descriptive same-session T4 rule,,3566.406843715227,above tested achieved rates (bound only)
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,64,256,descriptive same-session T4 rule,1427.279214742077,2985.4025476998577,"[400.0, 800.0] target / [397.3, 793.3] achieved (median only)"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,128,32,descriptive same-session T4 rule,5313.299570206922,6238.893064412207,"[1600.0, unthrottled] target / [1588.5, 11596.9] achieved"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,128,256,descriptive same-session T4 rule,1667.8561285138687,5679.7099727142795,"[800.0, 1600.0] target / [795.5, 1588.8] achieved"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,256,32,descriptive same-session T4 rule,1969.1143265737585,6157.515055907902,"[1600.0, unthrottled] target / [1594.4, 12080.5] achieved (median only)"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,256,256,descriptive same-session T4 rule,1481.365714304859,7079.793154443149,"[800.0, 1600.0] target / [797.7, 1594.4] achieved (median only)"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,512,32,descriptive same-session T4 rule,1543.6963300731445,5977.79530420882,"[800.0, 1600.0] target / [798.9, 1597.2] achieved (median only)"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,512,256,descriptive same-session T4 rule,1410.2306602215415,6151.678537452052,"[800.0, 1600.0] target / [799.2, 1597.2] achieved (median only)"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,1024,32,descriptive same-session T4 rule,1369.7460685204242,6139.9382343821435,"[800.0, 1600.0] target / [799.4, 1598.7] achieved"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,1024,256,descriptive same-session T4 rule,1613.7336979814659,6551.150498622009,"[800.0, 1600.0] target / [799.5, 1598.6] achieved"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,1792,32,descriptive same-session T4 rule,1591.570776358154,7139.236018083528,"[1600.0, unthrottled] target / [1599.2, 12107.8] achieved (median only)"
+T4,T4,phase2-pythia-control,EleutherAI/pythia-1.4b,repeated_control,1792,256,descriptive same-session T4 rule,1590.4153414582531,6957.30797434896,"[1600.0, unthrottled] target / [1599.2, 12107.2] achieved (median only)"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,16,32,descriptive same-session T4 rule,2323.4508493791864,420.952195707464,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,16,256,descriptive same-session T4 rule,25.284345265577645,375.88106963235674,<= 50.0 (bound only)
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,32,32,descriptive same-session T4 rule,1072.1763774930014,737.0515927830675,"[800.0, 1600.0] target / [745.0, 1393.9] achieved (median only)"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,32,256,descriptive same-session T4 rule,44.07089420338669,644.2382826015292,<= 50.0 (bound only)
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,64,32,descriptive same-session T4 rule,413.1944772204478,1382.2931039592866,"[200.0, 400.0] target / [198.0, 392.6] achieved (median only)"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,64,256,descriptive same-session T4 rule,86.86243360380858,1194.9341885300128,<= 50.0 (bound only)
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,128,32,descriptive same-session T4 rule,125.08167398631063,2153.772671883852,"[100.0, 200.0] target / [99.7, 199.1] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,128,256,descriptive same-session T4 rule,101.5955675151799,1831.414726097591,"[50.0, 100.0] target / [49.9, 99.7] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,256,32,descriptive same-session T4 rule,103.35864822430351,2359.0816948273277,"[100.0, 200.0] target / [99.9, 199.4] achieved (median only)"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,256,256,descriptive same-session T4 rule,93.5320147420428,2005.4634307545118,"[50.0, 100.0] target / [49.9, 99.8] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,512,32,descriptive same-session T4 rule,104.86984507650504,2485.761097993908,"[100.0, 200.0] target / [99.9, 199.7] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,512,256,descriptive same-session T4 rule,95.98397343425503,2289.416824632912,"[50.0, 100.0] target / [50.0, 99.9] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,1024,32,descriptive same-session T4 rule,106.87162504882319,2552.2417211387833,"[100.0, 200.0] target / [99.9, 199.8] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,1024,256,descriptive same-session T4 rule,101.74868452128142,2414.1008574090292,"[50.0, 100.0] target / [50.0, 99.9] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,2048,32,descriptive same-session T4 rule,96.71098857338349,2637.149233849421,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,2048,256,descriptive same-session T4 rule,119.41713970561476,2856.744527001611,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,4096,32,descriptive same-session T4 rule,86.922358587246,2225.9996616464855,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,4096,256,descriptive same-session T4 rule,87.63143205153486,2203.429585269301,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,8192,32,descriptive same-session T4 rule,75.92822767220247,2025.076548860738,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,8192,256,descriptive same-session T4 rule,75.80014126505785,2028.8481846602,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,16384,32,descriptive same-session T4 rule,56.066557799918286,1468.7929776224444,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-qwen-3b-control,Qwen/Qwen2.5-3B,repeated_control,16384,256,descriptive same-session T4 rule,55.94358247451502,1490.0639701041719,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,16,32,descriptive same-session T4 rule,,642.4764898767539,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,16,256,descriptive same-session T4 rule,,644.2951290486379,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,32,32,descriptive same-session T4 rule,,1255.495169946281,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,32,256,descriptive same-session T4 rule,,1252.1651451645298,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,64,32,descriptive same-session T4 rule,,2488.2553859808772,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,64,256,descriptive same-session T4 rule,,2472.789558918561,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,128,32,descriptive same-session T4 rule,,5018.039558177972,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,128,256,descriptive same-session T4 rule,,5024.582573965288,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,256,32,descriptive same-session T4 rule,,9983.408238477272,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,256,256,descriptive same-session T4 rule,,10014.772963726688,above tested achieved rates (bound only)
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,512,32,descriptive same-session T4 rule,2442.26512627994,18442.896173687273,"[1600.0, unthrottled] target / [1558.1, 9531.0] achieved"
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,512,256,descriptive same-session T4 rule,694.7390293428211,19155.94886028427,"[400.0, 800.0] target / [396.9, 789.0] achieved"
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,1024,32,descriptive same-session T4 rule,473.18249401671846,20950.53390716134,"[400.0, 800.0] target / [397.4, 792.0] achieved"
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,1024,256,descriptive same-session T4 rule,310.64208551150386,19238.689726482567,"[200.0, 400.0] target / [199.4, 397.3] achieved"
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,2048,32,descriptive same-session T4 rule,259.0164049014819,16794.93215218337,"[200.0, 400.0] target / [199.8, 398.7] achieved"
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,2048,256,descriptive same-session T4 rule,242.1606901624762,17607.566335784682,"[200.0, 400.0] target / [199.7, 399.1] achieved"
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,4096,32,descriptive same-session T4 rule,188.49732662876306,14129.875951848811,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,4096,256,descriptive same-session T4 rule,181.23525138303134,14166.691154012517,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,8192,32,descriptive same-session T4 rule,147.268089306559,11321.696258547738,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+T4,T4,phase2-qwen-half-control,Qwen/Qwen2.5-0.5B,repeated_control,8192,256,descriptive same-session T4 rule,143.5273016425312,11324.197212841074,"[100.0, 200.0] target / [100.0, 199.9] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,EleutherAI/pythia-1.4b,repeated_control,64,32,frozen calibration-only prediction,,4656.6905802340725,above tested achieved rates (bound only)
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,EleutherAI/pythia-1.4b,repeated_control,256,32,frozen calibration-only prediction,9299.937595752646,12676.100309621163,"[1600.0, unthrottled] target / [1562.8, 13195.1] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,EleutherAI/pythia-1.4b,repeated_control,512,32,frozen calibration-only prediction,6899.703975613176,15455.906449780332,"[1600.0, unthrottled] target / [1585.9, 13277.7] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,EleutherAI/pythia-1.4b,repeated_control,1024,32,frozen calibration-only prediction,5629.8997628211555,18622.210140809686,"[1600.0, unthrottled] target / [1594.5, 13346.0] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,EleutherAI/pythia-1.4b,repeated_control,2016,32,frozen calibration-only prediction,4531.793172944935,19082.186399423277,"[1600.0, unthrottled] target / [1595.6, 13372.8] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,Qwen/Qwen2.5-3B,repeated_control,64,32,frozen calibration-only prediction,,2025.0681925903268,above tested achieved rates (bound only)
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,Qwen/Qwen2.5-3B,repeated_control,256,32,frozen calibration-only prediction,503.3222044078792,5534.650239947487,"[400.0, 800.0] target / [389.1, 776.8] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,Qwen/Qwen2.5-3B,repeated_control,512,32,frozen calibration-only prediction,418.59181964760296,6733.055160399032,"[400.0, 800.0] target / [393.9, 788.6] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,Qwen/Qwen2.5-3B,repeated_control,1024,32,frozen calibration-only prediction,379.4793040653548,7596.323899995471,"[200.0, 400.0] target / [199.3, 396.9] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,Qwen/Qwen2.5-3B,repeated_control,32736,32,frozen calibration-only prediction,152.81831109666234,4426.39311740371,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,microsoft/phi-2,repeated_control,64,32,frozen calibration-only prediction,8519.184914828978,2894.5352779465607,above tested achieved rates (bound only)
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,microsoft/phi-2,repeated_control,256,32,frozen calibration-only prediction,4456.658588445759,7312.199961475924,"[1600.0, unthrottled] target / [1583.4, 13293.7] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,microsoft/phi-2,repeated_control,512,32,frozen calibration-only prediction,3893.8589405366474,8404.6111110977,"[1600.0, unthrottled] target / [1592.2, 13324.4] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,microsoft/phi-2,repeated_control,1024,32,frozen calibration-only prediction,3355.085376137423,8223.010551603817,"[1600.0, unthrottled] target / [1596.1, 13278.8] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,microsoft/phi-2,repeated_control,2016,32,frozen calibration-only prediction,2727.941759489982,7891.725603017128,"[1600.0, unthrottled] target / [1598.6, 13013.3] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,unsloth/Llama-3.2-3B-Instruct,repeated_control,64,32,frozen calibration-only prediction,6020.80546012083,2539.129926270329,above tested achieved rates (bound only)
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,unsloth/Llama-3.2-3B-Instruct,repeated_control,256,32,frozen calibration-only prediction,1598.5585858959969,6979.582050631868,"[1600.0, unthrottled] target / [1535.3, 13069.2] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,unsloth/Llama-3.2-3B-Instruct,repeated_control,512,32,frozen calibration-only prediction,1341.5560209430112,7054.620599778507,"[800.0, 1600.0] target / [794.6, 1572.7] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-controls,unsloth/Llama-3.2-3B-Instruct,repeated_control,1024,32,frozen calibration-only prediction,1137.0302323795256,7670.770069203611,"[800.0, 1600.0] target / [797.6, 1588.6] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,16,32,frozen calibration-only prediction,,859.5215446466907,above tested achieved rates (bound only)
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,16,256,frozen calibration-only prediction,,856.2965074383443,"[1600.0, unthrottled] target / [380.0, 6864.7] achieved (median only)"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,64,32,frozen calibration-only prediction,,3091.5440738832535,above tested achieved rates (bound only)
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,64,256,frozen calibration-only prediction,839.8256402003907,3063.114468545491,"[1600.0, unthrottled] target / [1433.7, 14264.2] achieved (median only)"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,128,32,frozen calibration-only prediction,2090.8636236125653,6893.367255849292,above tested achieved rates (bound only)
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,128,256,frozen calibration-only prediction,648.9626141208594,6816.093360862038,"[1600.0, unthrottled] target / [1112.3, 18717.2] achieved (median only)"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,256,32,frozen calibration-only prediction,1025.9935866836834,13501.457063032209,"[1600.0, unthrottled] target / [1434.7, 21469.0] achieved (median only)"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,256,256,frozen calibration-only prediction,580.538597997772,13564.531589989165,"[800.0, 1600.0] target / [763.1, 1499.9] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,512,32,frozen calibration-only prediction,802.793341707641,18826.070931299517,"[800.0, 1600.0] target / [767.9, 1523.8] achieved (median only)"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,512,256,frozen calibration-only prediction,547.5297632913174,18370.886966444938,"[400.0, 800.0] target / [394.4, 768.9] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,1024,32,frozen calibration-only prediction,700.9079010202189,18391.129283051287,"[800.0, 1600.0] target / [795.2, 1544.2] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,1024,256,frozen calibration-only prediction,525.1044167352409,17888.63795302326,"[400.0, 800.0] target / [397.3, 790.2] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,2048,32,frozen calibration-only prediction,621.7315229545682,16512.26835738825,"[400.0, 800.0] target / [398.4, 797.2] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,2048,256,frozen calibration-only prediction,501.1193016508171,16292.383820097604,"[400.0, 800.0] target / [397.8, 791.8] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,4096,32,frozen calibration-only prediction,531.4719887375758,15857.900052236966,"[400.0, 800.0] target / [399.4, 795.5] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,4096,256,frozen calibration-only prediction,466.11169714321346,15748.054352587853,"[400.0, 800.0] target / [398.9, 796.5] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,8192,32,frozen calibration-only prediction,419.68050856528885,14213.526579135416,"[400.0, 800.0] target / [399.7, 798.6] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,8192,256,frozen calibration-only prediction,411.70084456476036,14254.317290052291,"[400.0, 800.0] target / [399.6, 798.8] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,16384,32,frozen calibration-only prediction,297.38847533286435,11436.658788120702,"[200.0, 400.0] target / [199.9, 399.7] achieved"
+A10,A10 (PCIe 4 x16),phase3-a10-main-1,Qwen/Qwen2.5-1.5B,ultrachat,16384,256,frozen calibration-only prediction,334.6808134303925,11422.873839973692,"[200.0, 400.0] target / [199.9, 399.8] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,16,32,frozen calibration-only prediction,,645.3832449081901,above tested achieved rates (bound only)
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,16,256,frozen calibration-only prediction,,646.9559539642133,"[1600.0, unthrottled] target / [365.6, 5287.5] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,64,32,frozen calibration-only prediction,,2546.297709985075,above tested achieved rates (bound only)
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,64,256,frozen calibration-only prediction,839.8256402003907,2554.9065383243465,"[800.0, 1600.0] target / [707.1, 1358.0] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,128,32,frozen calibration-only prediction,2090.8636236125653,5134.848235259296,above tested achieved rates (bound only)
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,128,256,frozen calibration-only prediction,648.9626141208594,5159.460274492691,"[800.0, 1600.0] target / [660.1, 1440.9] achieved (median only)"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,256,32,frozen calibration-only prediction,1025.9935866836834,10193.139487553974,"[1600.0, unthrottled] target / [1463.3, 12217.8] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,256,256,frozen calibration-only prediction,580.538597997772,10232.653159691483,"[800.0, 1600.0] target / [743.0, 1467.2] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,512,32,frozen calibration-only prediction,802.793341707641,14185.473374303008,"[800.0, 1600.0] target / [779.7, 1532.8] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,512,256,frozen calibration-only prediction,547.5297632913174,14199.118678451714,"[400.0, 800.0] target / [393.2, 785.4] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,1024,32,frozen calibration-only prediction,700.9079010202189,14178.196853333264,"[400.0, 800.0] target / [396.2, 791.0] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,1024,256,frozen calibration-only prediction,525.1044167352409,14172.045014258814,"[400.0, 800.0] target / [395.1, 785.3] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,2048,32,frozen calibration-only prediction,621.7315229545682,15519.414298520169,"[400.0, 800.0] target / [397.5, 796.0] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,2048,256,frozen calibration-only prediction,501.1193016508171,15513.222939477537,"[400.0, 800.0] target / [398.8, 795.7] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,4096,32,frozen calibration-only prediction,531.4719887375758,14315.073541951602,"[400.0, 800.0] target / [398.8, 797.2] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,4096,256,frozen calibration-only prediction,466.11169714321346,14315.741443547275,"[400.0, 800.0] target / [398.7, 795.7] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,8192,32,frozen calibration-only prediction,419.68050856528885,13321.890742030262,"[400.0, 800.0] target / [399.4, 798.7] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,8192,256,frozen calibration-only prediction,411.70084456476036,13321.738618058167,"[400.0, 800.0] target / [399.5, 798.2] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,16384,32,frozen calibration-only prediction,297.38847533286435,11058.34384269963,"[200.0, 400.0] target / [199.9, 399.7] achieved"
+A10G,A10G (PCIe 4 x8),phase3-a10-main-2,Qwen/Qwen2.5-1.5B,ultrachat,16384,256,frozen calibration-only prediction,334.6808134303925,11057.875269998829,"[200.0, 400.0] target / [200.0, 399.7] achieved"
+H100!,H100 (PCIe 5 x16),phase3-h100-main,Qwen/Qwen2.5-1.5B,ultrachat,1024,32,frozen calibration-only prediction,,73677.7815188075,above tested achieved rates (bound only)
+H100!,H100 (PCIe 5 x16),phase3-h100-main,Qwen/Qwen2.5-1.5B,ultrachat,16384,32,frozen calibration-only prediction,1435.631882360005,64193.08100220059,"[1600.0, unthrottled] target / [1597.6, 53249.7] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,EleutherAI/pythia-1.4b,repeated_control,64,32,frozen calibration-only prediction,,3483.126361695769,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-controls,EleutherAI/pythia-1.4b,repeated_control,256,32,frozen calibration-only prediction,9937.113260101656,12983.116471341253,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-controls,EleutherAI/pythia-1.4b,repeated_control,512,32,frozen calibration-only prediction,6961.727685086381,19091.479377629097,"[1600.0, unthrottled] target / [1579.3, 12073.0] achieved (median only)"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,EleutherAI/pythia-1.4b,repeated_control,1024,32,frozen calibration-only prediction,5271.604838576499,18924.74006965529,"[1600.0, unthrottled] target / [1590.8, 12147.3] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,EleutherAI/pythia-1.4b,repeated_control,2016,32,frozen calibration-only prediction,3851.084649911499,17567.023378903225,"[1600.0, unthrottled] target / [1594.1, 12164.9] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,Qwen/Qwen2.5-3B,repeated_control,64,32,frozen calibration-only prediction,,1507.0113881455095,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-controls,Qwen/Qwen2.5-3B,repeated_control,256,32,frozen calibration-only prediction,555.0913522986764,5802.445914562047,"[1600.0, unthrottled] target / [1468.0, 10990.4] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,Qwen/Qwen2.5-3B,repeated_control,512,32,frozen calibration-only prediction,428.13536817878423,8129.759020204873,"[400.0, 800.0] target / [395.7, 777.1] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,Qwen/Qwen2.5-3B,repeated_control,1024,32,frozen calibration-only prediction,370.73306823751307,7715.917867730415,"[400.0, 800.0] target / [396.5, 788.7] achieved (median only)"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,Qwen/Qwen2.5-3B,repeated_control,32736,32,frozen calibration-only prediction,93.16599044816442,3578.422765282887,"[50.0, 100.0] target / [50.0, 100.0] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,microsoft/phi-2,repeated_control,64,32,frozen calibration-only prediction,,2088.6728091593936,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-controls,microsoft/phi-2,repeated_control,256,32,frozen calibration-only prediction,5373.509629706133,6984.820416384429,"[1600.0, unthrottled] target / [1578.2, 12052.6] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,microsoft/phi-2,repeated_control,512,32,frozen calibration-only prediction,3895.462963865671,8554.217957496436,"[1600.0, unthrottled] target / [1588.1, 12041.3] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,microsoft/phi-2,repeated_control,1024,32,frozen calibration-only prediction,3047.887399763466,7658.593914092163,"[1600.0, unthrottled] target / [1595.8, 12131.6] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,microsoft/phi-2,repeated_control,2016,32,frozen calibration-only prediction,2310.7400289233706,6409.591954359893,"[1600.0, unthrottled] target / [1596.8, 12202.6] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,unsloth/Llama-3.2-3B-Instruct,repeated_control,64,32,frozen calibration-only prediction,,1813.905715815268,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-controls,unsloth/Llama-3.2-3B-Instruct,repeated_control,256,32,frozen calibration-only prediction,1485.2747499656302,5873.118973047261,"[1600.0, unthrottled] target / [1548.3, 11836.6] achieved (median only)"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,unsloth/Llama-3.2-3B-Instruct,repeated_control,512,32,frozen calibration-only prediction,1237.5952684035258,7751.4938884892945,"[800.0, 1600.0] target / [789.9, 1566.6] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-controls,unsloth/Llama-3.2-3B-Instruct,repeated_control,1024,32,frozen calibration-only prediction,1123.7844408074898,7380.6633144141315,"[800.0, 1600.0] target / [795.6, 1586.6] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,16,32,frozen calibration-only prediction,,470.8160548740341,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,16,256,frozen calibration-only prediction,,474.8307502894864,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,64,32,frozen calibration-only prediction,,1894.0134348919955,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,64,256,frozen calibration-only prediction,,1847.9958715804134,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,128,32,frozen calibration-only prediction,4946.719708315563,3725.003805761374,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,128,256,frozen calibration-only prediction,1432.8230512722098,3694.6979309583107,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,256,32,frozen calibration-only prediction,1117.1346094463288,7133.899461206256,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,256,256,frozen calibration-only prediction,661.0323162044605,7235.101660936514,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,512,32,frozen calibration-only prediction,779.1347181772757,14820.821621750336,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,512,256,frozen calibration-only prediction,513.966306503351,15070.336379860837,"[1600.0, unthrottled] target / [1486.4, 11452.4] achieved (median only)"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,1024,32,frozen calibration-only prediction,640.4912774032234,15212.967016073704,"[800.0, 1600.0] target / [787.2, 1539.1] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,1024,256,frozen calibration-only prediction,451.8836349617677,14904.837271777618,"[400.0, 800.0] target / [395.7, 787.8] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,2048,32,frozen calibration-only prediction,535.4638331199437,14979.057953145482,"[400.0, 800.0] target / [398.0, 790.1] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,2048,256,frozen calibration-only prediction,408.4371241727954,14833.01261651978,"[400.0, 800.0] target / [397.9, 791.4] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,4096,32,frozen calibration-only prediction,424.57274826516294,13540.195476856927,"[400.0, 800.0] target / [399.4, 796.0] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,4096,256,frozen calibration-only prediction,361.0699540153103,13417.094854531957,"[400.0, 800.0] target / [399.2, 796.8] achieved (median only)"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,8192,32,frozen calibration-only prediction,305.9513300645055,10918.98418829412,"[200.0, 400.0] target / [199.9, 399.6] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,8192,256,frozen calibration-only prediction,299.65948304307005,10846.433161973326,"[200.0, 400.0] target / [199.9, 399.5] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,16384,32,frozen calibration-only prediction,197.48458367781777,8577.845808001775,"[200.0, 400.0] target / [200.0, 399.8] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-1,Qwen/Qwen2.5-1.5B,ultrachat,16384,256,frozen calibration-only prediction,225.4858126492518,8719.76999997209,"[200.0, 400.0] target / [199.9, 399.8] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,16,32,frozen calibration-only prediction,,470.6020626894564,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,16,256,frozen calibration-only prediction,,469.923680282907,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,64,32,frozen calibration-only prediction,,1825.0387011567877,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,64,256,frozen calibration-only prediction,,1838.6055659156375,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,128,32,frozen calibration-only prediction,4946.719708315563,3747.027242520098,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,128,256,frozen calibration-only prediction,1432.8230512722098,3734.9019688151893,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,256,32,frozen calibration-only prediction,1117.1346094463288,7232.489665770149,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,256,256,frozen calibration-only prediction,661.0323162044605,7174.764425292505,above tested achieved rates (bound only)
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,512,32,frozen calibration-only prediction,779.1347181772757,14605.294345032353,"[1600.0, unthrottled] target / [1568.2, 11370.3] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,512,256,frozen calibration-only prediction,513.966306503351,14606.173279167782,"[1600.0, unthrottled] target / [1488.7, 11429.7] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,1024,32,frozen calibration-only prediction,640.4912774032234,14438.36229999087,"[800.0, 1600.0] target / [788.6, 1552.0] achieved (median only)"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,1024,256,frozen calibration-only prediction,451.8836349617677,14058.168665710942,"[400.0, 800.0] target / [395.5, 783.2] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,2048,32,frozen calibration-only prediction,535.4638331199437,13972.347550734536,"[400.0, 800.0] target / [398.4, 791.3] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,2048,256,frozen calibration-only prediction,408.4371241727954,13824.824241202592,"[400.0, 800.0] target / [398.9, 793.0] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,4096,32,frozen calibration-only prediction,424.57274826516294,12910.342335772079,"[400.0, 800.0] target / [399.1, 796.2] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,4096,256,frozen calibration-only prediction,361.0699540153103,12755.937523772609,"[200.0, 400.0] target / [199.7, 399.3] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,8192,32,frozen calibration-only prediction,305.9513300645055,10216.544614231314,"[200.0, 400.0] target / [199.9, 399.4] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,8192,256,frozen calibration-only prediction,299.65948304307005,10206.953393551614,"[200.0, 400.0] target / [199.9, 399.5] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,16384,32,frozen calibration-only prediction,197.48458367781777,8127.005563170988,"[200.0, 400.0] target / [199.9, 399.9] achieved"
+L4,L4 (PCIe 3 x16),phase3-l4-main-2,Qwen/Qwen2.5-1.5B,ultrachat,16384,256,frozen calibration-only prediction,225.4858126492518,8137.170170812264,"[200.0, 400.0] target / [199.9, 399.7] achieved"

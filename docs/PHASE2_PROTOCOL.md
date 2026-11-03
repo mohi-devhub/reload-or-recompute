@@ -1,5 +1,7 @@
 # Redesigned bandwidth study
 
+The measured file tier is a local file API path. Kaggle records positive process physical-read counters; underlying storage and host cache are unidentified. See [the counter audit](FILE_API_AUDIT.md).
+
 The user authorizes this phase with a cap of 10 GPU-hours. This protocol replaces the original full-grid plan. Settings below are requested configurations, not observations.
 
 ## Scientific target
@@ -10,7 +12,7 @@ The prefix lengths are 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, and 16
 
 ## Rate-limited copies are simulated bandwidth
 
-Test decimal rates of 50, 100, 200, 400, 800, and 1600 MB/s, plus an unthrottled transport control. Pack the cache into a contiguous fp16 buffer and copy it in chunks. Synchronize each throttled chunk and sleep until the cumulative byte deadline. This emulates a serialized, blocking transport path; it does not emulate physical disk, packetization, queueing, or asynchronous storage overlap.
+Test decimal rates of 50, 100, 200, 400, 800, and 1600 MB/s, plus an unthrottled transport control. Pack the cache into a contiguous fp16 buffer and copy it in chunks. Synchronize each throttled chunk and sleep until the cumulative byte deadline. This emulates a serialized, blocking transport path; it does not emulate physical storage, packetization, queueing, or asynchronous storage overlap.
 
 Record target rate, achieved transport rate, transfer duration, cumulative sleep time, payload bytes, and chunk size. Include GPU allocation in the measured transport cost. The resumed transformer must consume the copied tensors, with output logits and first token checked against full recomputation. Keep all simulated conditions explicitly labelled in data, figures, and reports.
 

@@ -27,11 +27,11 @@ ERROR: Could not find a version that satisfies the requirement vllm==0.9.0
 ERROR: No matching distribution found for vllm==0.9.0
 ```
 
-The ellipses shorten pip's list of other releases; the version-specific requirement and terminal error are copied exactly. Kaggle supplied Python 3.13, so the selected historical release cannot install there. Its Python requirement was not checked against the observed interpreter before the supplemental submission. No native build or LMCache CPU/disk runtime was reached. This is a failed production-path attempt, not evidence of an sm_75 failure. Stop production work at this point and retain the valid reference path.
+The ellipses shorten pip's list of other releases; the version-specific requirement and terminal error are copied exactly. Kaggle supplied Python 3.13, so the selected historical release cannot install there. Its Python requirement was not checked against the observed interpreter before the supplemental submission. No native build or LMCache CPU/file runtime was reached. This is a failed production-path attempt, not evidence of an sm_75 failure. Stop production work at this point and retain the valid reference path.
 
 ## Measurement limitations
 
-- Global page-cache eviction failed because `/proc/sys/vm/drop_caches` is read-only. Per-file eviction hints succeeded, and physical-read accounting supports reads beyond the process's page cache. The physical disk type and any host or storage cache remain unknown.
+- Global page-cache eviction failed because `/proc/sys/vm/drop_caches` is read-only. Per-file eviction hints succeeded, and physical-read accounting supports reads beyond the kernel page cache. The physical storage type and any host or storage cache remain unknown.
 - Every observed length favours reload. The pilot therefore establishes no exact crossing and cannot score a predicted crossover length. The report gives pointwise latency and decision errors instead.
 - The simple file model overestimates the longest-context TTFT and its overhead fit reaches a nonnegative constraint. These residuals are retained, not tuned away.
 - Synthetic text controls token count but does not establish application quality or trace-level cache hit rates. Offload writes and cache creation are outside returning-turn TTFT.
@@ -150,7 +150,7 @@ After uploads, the reproduction startup guard and offline audit were tightened t
 
 ### File-tier observability on Modal
 
-The completed Ampere sweep reports zero physical-read bytes for both file paths despite real file I/O. Its `df -T` output identifies a virtualized overlay filesystem with a virtual capacity value, which is not a measured physical SSD capacity. Successful per-file advice does not validate cold reads. Upstream [gVisor's Fadvise64 implementation ignores the supplied advice](https://github.com/google/gvisor/blob/master/pkg/sentry/syscalls/linux/sys_file.go); the deployed Modal runtime revision was not identified, so this is a plausible limitation rather than proof of the exact deployed implementation. The same eviction/timing function is retained for comparability. File conclusions are restricted to measured local-file APIs with unverified host cache state; they do not establish cold physical-disk performance. This matters because some MHA file reloads now beat recomputation.
+The completed Ampere sweep reports zero physical-read bytes for both file paths despite real file I/O. Its `df -T` output identifies a virtualized overlay filesystem with a virtual capacity value, which is not a measured physical SSD capacity. Successful per-file advice does not validate cold reads. Upstream [gVisor's Fadvise64 implementation ignores the supplied advice](https://github.com/google/gvisor/blob/master/pkg/sentry/syscalls/linux/sys_file.go); the deployed Modal runtime revision was not identified, so this is a plausible limitation rather than proof of the exact deployed implementation. The same eviction/timing function is retained for comparability. File conclusions are restricted to measured local-file APIs with unverified host cache state; they do not establish cold physical-storage performance. This matters because some MHA file reloads now beat recomputation.
 
 ### Optional H100 orchestration
 
@@ -159,3 +159,11 @@ The optional H100 point uses one allocation for calibration, a host-side Git reg
 The H100 input subsequently received a cancellation signal. The host log reports `RemoteError: Function call was cancelled by user or a failure.` The initiating actor and root cause could not be established. Both calibrations and their preregistration completed; the Qwen sweep has complete and partial cells, while the Pythia sweep never started. All recovered observations are archived, only complete cells are scored, and every unfinished registered cell is listed in `outputs/phase3_dropped_cells.json` and the canonical ledger. No second allocation was requested. With no completed parent duration, the full reservation remains charged conservatively rather than inferring an actual bill from the partial timings. The final audit distinguishes these disclosed optional omissions from mandatory coverage failures.
 
 The optional Kaggle P100 retry was not requested during this phase. The final canonical JSONL is distributed as a lossless gzip archive to fit GitHub's file-size limit; `scripts/materialize_results.py` verifies checksums and restores `outputs/results.jsonl` without discarding records.
+
+## Data-release consolidation
+
+No additional GPU work or provider spend was performed. A CPU-only pass separates observed A10 at PCIe x16 from A10G at x8 in all current presentation aggregates. This board/link allocation difference is the likely source of the earlier service-tier spread; recompute differences cannot be causally assigned to PCIe width from these confounded runs. Historical raw observations and frozen preregistrations are preserved.
+
+The requested Modal qualifier is local file API path (page-cache resident; physical reads not observed). Rechecking Kaggle counters found positive process physical-read bytes in every recorded file observation, so applying that same parenthetical there would be false. Kaggle is labeled local file API path (positive process physical-read counters; underlying storage and host cache unidentified). Exact counts and ranges are generated in FILE_API_AUDIT.md and CLAIMS.md. Zero Modal counters make page-cache residency an operational interpretation, not proof of host cache state.
+
+CLAIMS.md, the evidence tables and print figures are derived from the checksum-verified canonical archive. Consolidation records are appended with their own phase label while the original canonical record bytes remain unchanged. The data release contains no paper draft.

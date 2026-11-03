@@ -1,5 +1,7 @@
 # Pilot report: Reload or Recompute
 
+The measured file tier is a local file API path. Kaggle records positive process physical-read counters; underlying storage and host cache are unidentified. See [the counter audit](FILE_API_AUDIT.md).
+
 Reference pilot passes with limitations. Reload wins throughout the sampled grid; the crossover is not identified. The production installation failed on the Python version. The full grid awaits approval.
 
 This report is generated from `outputs/results.jsonl`. Configuration values describe the requested experiment; all observed values below come from its records. The full grid has not been started.
@@ -11,7 +13,7 @@ This report is generated from `outputs/results.jsonl`. Configuration values desc
 - Torch: `2.11.0+cu128`. CUDA runtime: `12.8`. Transformers: `4.51.3`. vLLM in the reference environment: `not installed`.
 - GPU and driver query: Tesla T4, 580.178.04, 15360 MiB, GPU-2430a3c1-4db4-3a00-f33a-8e1a5df7fead; Tesla T4, 580.178.04, 15360 MiB, GPU-856fd157-d44b-a076-f238-7bf880cc0086.
 - CPU cores: 4. Load average at process startup: `[0.43408203125, 0.27099609375, 0.126953125]`.
-- CPU memory and initial free disk bytes are preserved verbatim in each source environment record.
+- CPU memory and initial free filesystem bytes are preserved verbatim in each source environment record.
 
 ## Raw timing summaries
 
@@ -82,7 +84,7 @@ The interval is a percentile bootstrap of the median over measured rounds. It me
 KV bytes per token from configuration: 28672. The script requires exact agreement with the observed tensor byte count.
 Model revision: `8faed761d45a263340a0528343f099c05c9a4323`.
 
-CPU RAM: 31.347 GiB. Initial free disk, bytes: `/kaggle/working` = 20940488704, `/tmp` = 1126014296064.
+CPU RAM: 31.347 GiB. Initial free filesystem, bytes: `/kaggle/working` = 20940488704, `/tmp` = 1126014296064.
 
 Page-cache control: `OSError: [Errno 30] Read-only file system: '/proc/sys/vm/drop_caches'`. Per-file DONTNEED is advisory. File timings include deserialization and pageable H2D.
 
@@ -134,7 +136,7 @@ Status: `failed`. Exit code: `1`.
 
 Allocated-device time for this attempt: 0.000827 GPU-hours.
 
-Exact install and runtime logs are retained under `outputs/raw`. The reviewed error and implications belong in NOTES.md. The first setup failed in ensurepip. The supplemental install reached pip and rejected `vllm==0.9.0`: `Requires-Python >=3.9,<3.13`; Kaggle provided Python 3.13. LMCache native kernels, CPU reuse, and disk reuse were not reached. No sm_75 compatibility claim or production performance result is made. Both setup failures and the package choice are recorded in NOTES.md.
+Exact install and runtime logs are retained under `outputs/raw`. The reviewed error and implications belong in NOTES.md. The first setup failed in ensurepip. The supplemental install reached pip and rejected `vllm==0.9.0`: `Requires-Python >=3.9,<3.13`; Kaggle provided Python 3.13. LMCache native kernels, CPU reuse, and file reuse were not reached. No sm_75 compatibility claim or production performance result is made. Both setup failures and the package choice are recorded in NOTES.md.
 
 ## GPU budget and full-grid projection
 
@@ -168,7 +170,7 @@ The separate profile shows recompute dominated by GPU kernel execution, chiefly 
 
 ## Provisional rule of thumb
 
-Reload when measured prefix prefill exceeds `fixed_overhead + L × kv_bytes_per_token / effective_bandwidth`, adding the disk-read leg for files. Recompute when that cost is larger; include the new-turn baseline for TTFT and recalibrate for each model, GPU, and storage path.
+Reload when measured prefix prefill exceeds `fixed_overhead + L × kv_bytes_per_token / effective_bandwidth`, adding the file-read leg for files. Recompute when that cost is larger; include the new-turn baseline for TTFT and recalibrate for each model, GPU, and storage path.
 
 This pilot favours reload at every sampled length, so it cannot locate the threshold or validate the rule on a different model or GPU.
 

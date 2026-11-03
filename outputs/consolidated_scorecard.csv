@@ -1,0 +1,5 @@
+gpu,hardware,scope,correct_decisions,resolved_decisions,unresolved_decisions,complete_cells,median_absolute_ttft_error_ms,median_absolute_relative_ttft_error
+L4,L4 (PCIe 3 x16),all,574,636,13,767,3.2030901104188203,0.045990508997566903
+A10,A10 (PCIe 4 x16),all,192,206,14,260,2.040422598566767,0.038741249344548465
+A10G,A10G (PCIe 4 x8),all,398,426,3,507,5.75844767161767,0.10813963628450796
+H100!,H100 (PCIe 5 x16),all,20,21,1,26,6.579464545951296,0.026460268718223448

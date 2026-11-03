@@ -1,6 +1,7 @@
 # Phase two: simulated bandwidth crossovers
 
 Redesigned run queue finished.
+The local file API path has positive process physical-read counters on Kaggle; underlying storage and host cache are unidentified. See [the counter audit](FILE_API_AUDIT.md).
 All bandwidth-sweep rates and crossover intervals below are **simulated transport bandwidth**. They do not measure a physical storage device at those rates.
 
 Accepted full-sweep timing samples: 26040. Invalid full-sweep samples: 0. Conservative phase usage: 9.900916 GPU-hours against the authorized cap of 10. Incomplete sweep sessions: 0. Unsubmitted queued runs: 0.
