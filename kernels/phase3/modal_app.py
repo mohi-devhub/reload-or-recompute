@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import modal
 
-ROOT=Path(__file__).resolve().parents[2]
+ROOT=Path(__file__).resolve().parents[2] if modal.is_local() else Path('/study')
 GPU=os.environ.get('PHASE3_GPU','L4')
 LIMIT=int(os.environ.get('PHASE3_TIMEOUT','600'))
 NAME=os.environ.get('PHASE3_RUN_NAME','reload-recompute-phase3')
@@ -17,10 +17,12 @@ image=(modal.Image.debian_slim(python_version='3.13')
        .pip_install('transformers==4.51.3','safetensors','accelerate','numpy==2.4.6')
        .env({'HF_HOME':'/cache/hf','HF_HUB_DISABLE_PROGRESS_BARS':'1','HF_HUB_DISABLE_TELEMETRY':'1',
              'PHASE3_GPU':GPU,'PHASE3_TIMEOUT':str(LIMIT),'PHASE3_RUN_NAME':NAME})
-       .add_local_file(ROOT/'kernels/phase2/runner.py','/study/reference.py')
-       .add_local_file(ROOT/'kernels/phase3/adapter.py','/study/adapter.py')
-       .add_local_file(ROOT/'kernels/phase3/provenance.py','/study/provenance.py')
-       .add_local_file(ROOT/'configs/model_revisions.json','/study/revisions.json'))
+)
+if modal.is_local():
+    image=(image.add_local_file(ROOT/'kernels/phase2/runner.py','/study/reference.py')
+           .add_local_file(ROOT/'kernels/phase3/adapter.py','/study/adapter.py')
+           .add_local_file(ROOT/'kernels/phase3/provenance.py','/study/provenance.py')
+           .add_local_file(ROOT/'configs/model_revisions.json','/study/revisions.json'))
 app=modal.App(NAME)
 
 @app.function(image=image,cpu=(2,2),memory=(4096,4096),volumes={'/cache':cache,'/persist':outputs},
