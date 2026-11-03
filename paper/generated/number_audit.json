@@ -1,0 +1,1204 @@
+{
+  "passed": true,
+  "release": "v0.1.0-data",
+  "used_values": 289,
+  "empirical_occurrences": 321,
+  "registered_values": 306,
+  "unclassified_literals": [],
+  "classified_layout_or_definition_literals": [
+    {
+      "file": "main.tex",
+      "line": 1,
+      "token": "10",
+      "category": "typesetting parameter",
+      "context": "\\documentclass[10pt]{article}"
+    },
+    {
+      "file": "main.tex",
+      "line": 2,
+      "token": "0.75",
+      "category": "typesetting parameter",
+      "context": "\\usepackage[letterpaper,margin=0.75in]{geometry}"
+    },
+    {
+      "file": "main.tex",
+      "line": 3,
+      "token": "1",
+      "category": "typesetting parameter",
+      "context": "\\usepackage[T1]{fontenc}"
+    },
+    {
+      "file": "main.tex",
+      "line": 8,
+      "token": "9",
+      "category": "typesetting parameter",
+      "context": "\\setlength{\\textfloatsep}{9pt plus 2pt minus 2pt}"
+    },
+    {
+      "file": "main.tex",
+      "line": 8,
+      "token": "2",
+      "category": "typesetting parameter",
+      "context": "\\setlength{\\textfloatsep}{9pt plus 2pt minus 2pt}"
+    },
+    {
+      "file": "main.tex",
+      "line": 8,
+      "token": "2",
+      "category": "typesetting parameter",
+      "context": "\\setlength{\\textfloatsep}{9pt plus 2pt minus 2pt}"
+    },
+    {
+      "file": "main.tex",
+      "line": 9,
+      "token": "7",
+      "category": "typesetting parameter",
+      "context": "\\setlength{\\floatsep}{7pt plus 2pt minus 2pt}"
+    },
+    {
+      "file": "main.tex",
+      "line": 9,
+      "token": "2",
+      "category": "typesetting parameter",
+      "context": "\\setlength{\\floatsep}{7pt plus 2pt minus 2pt}"
+    },
+    {
+      "file": "main.tex",
+      "line": 9,
+      "token": "2",
+      "category": "typesetting parameter",
+      "context": "\\setlength{\\floatsep}{7pt plus 2pt minus 2pt}"
+    },
+    {
+      "file": "main.tex",
+      "line": 10,
+      "token": "5",
+      "category": "typesetting parameter",
+      "context": "\\setlength{\\abovecaptionskip}{5pt}"
+    },
+    {
+      "file": "main.tex",
+      "line": 11,
+      "token": "1.5",
+      "category": "typesetting parameter",
+      "context": "\\setlength{\\emergencystretch}{1.5em}"
+    },
+    {
+      "file": "main.tex",
+      "line": 12,
+      "token": "0.9",
+      "category": "typesetting parameter",
+      "context": "\\renewcommand{\\topfraction}{0.9}"
+    },
+    {
+      "file": "main.tex",
+      "line": 13,
+      "token": "0.07",
+      "category": "typesetting parameter",
+      "context": "\\renewcommand{\\textfraction}{0.07}"
+    },
+    {
+      "file": "main.tex",
+      "line": 14,
+      "token": "0.7",
+      "category": "typesetting parameter",
+      "context": "\\renewcommand{\\floatpagefraction}{0.7}"
+    },
+    {
+      "file": "main.tex",
+      "line": 60,
+      "token": "0",
+      "category": "mathematical boundary definition",
+      "context": "-\\widehat h-\\widehat T_{\\mathrm{other}}(L,N)},\\qquad D>0."
+    },
+    {
+      "file": "main.tex",
+      "line": 175,
+      "token": "96",
+      "category": "typesetting parameter",
+      "context": "\\noindent\\fbox{\\begin{minipage}{.96\\linewidth}"
+    },
+    {
+      "file": "main.tex",
+      "line": 213,
+      "token": "3",
+      "category": "typesetting parameter",
+      "context": "{\\footnotesize\\setlength{\\tabcolsep}{3pt}\\input{generated/coverage.tex}}"
+    },
+    {
+      "file": "main.tex",
+      "line": 217,
+      "token": "3",
+      "category": "typesetting parameter",
+      "context": "{\\footnotesize\\setlength{\\tabcolsep}{3pt}\\input{generated/scorecards.tex}}"
+    },
+    {
+      "file": "main.tex",
+      "line": 225,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 -m venv .venv"
+    },
+    {
+      "file": "main.tex",
+      "line": 227,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 -m pip install -r requirements-analysis.txt"
+    },
+    {
+      "file": "main.tex",
+      "line": 228,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/materialize_results.py"
+    },
+    {
+      "file": "main.tex",
+      "line": 229,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/analyze_phase2.py --from-results outputs/results.jsonl"
+    },
+    {
+      "file": "main.tex",
+      "line": 229,
+      "token": "2",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/analyze_phase2.py --from-results outputs/results.jsonl"
+    },
+    {
+      "file": "main.tex",
+      "line": 230,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/report_phase2.py"
+    },
+    {
+      "file": "main.tex",
+      "line": 230,
+      "token": "2",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/report_phase2.py"
+    },
+    {
+      "file": "main.tex",
+      "line": 231,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl"
+    },
+    {
+      "file": "main.tex",
+      "line": 231,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl"
+    },
+    {
+      "file": "main.tex",
+      "line": 232,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/audit_phase3.py"
+    },
+    {
+      "file": "main.tex",
+      "line": 232,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/audit_phase3.py"
+    },
+    {
+      "file": "main.tex",
+      "line": 233,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/report_phase3.py"
+    },
+    {
+      "file": "main.tex",
+      "line": 233,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/report_phase3.py"
+    },
+    {
+      "file": "main.tex",
+      "line": 234,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/consolidate_study.py --check --figures"
+    },
+    {
+      "file": "generated/coverage.tex",
+      "line": 1,
+      "token": "78",
+      "category": "typesetting parameter",
+      "context": "\\begin{longtable}{p{.78in}p{1.43in}crp{2.55in}r}"
+    },
+    {
+      "file": "generated/coverage.tex",
+      "line": 1,
+      "token": "1.43",
+      "category": "typesetting parameter",
+      "context": "\\begin{longtable}{p{.78in}p{1.43in}crp{2.55in}r}"
+    },
+    {
+      "file": "generated/coverage.tex",
+      "line": 1,
+      "token": "2.55",
+      "category": "typesetting parameter",
+      "context": "\\begin{longtable}{p{.78in}p{1.43in}crp{2.55in}r}"
+    },
+    {
+      "file": "generated/scorecards.tex",
+      "line": 1,
+      "token": "1.1",
+      "category": "typesetting parameter",
+      "context": "\\begin{longtable}{p{1.1in}p{1.8in}rrrr}"
+    },
+    {
+      "file": "generated/scorecards.tex",
+      "line": 1,
+      "token": "1.8",
+      "category": "typesetting parameter",
+      "context": "\\begin{longtable}{p{1.1in}p{1.8in}rrrr}"
+    }
+  ],
+  "uses": {
+    "T4Timings": [
+      "main.tex:27",
+      "main.tex:78"
+    ],
+    "ModelCount": [
+      "main.tex:27",
+      "main.tex:78"
+    ],
+    "L4Correct": [
+      "main.tex:27",
+      "main.tex:117"
+    ],
+    "L4Resolved": [
+      "main.tex:27",
+      "main.tex:117"
+    ],
+    "A10Correct": [
+      "main.tex:27",
+      "main.tex:117"
+    ],
+    "A10Resolved": [
+      "main.tex:27",
+      "main.tex:117"
+    ],
+    "A10GCorrect": [
+      "main.tex:27",
+      "main.tex:117"
+    ],
+    "A10GResolved": [
+      "main.tex:27",
+      "main.tex:117"
+    ],
+    "H100Correct": [
+      "main.tex:27",
+      "main.tex:117"
+    ],
+    "H100Resolved": [
+      "main.tex:27",
+      "main.tex:117"
+    ],
+    "Example": [
+      "main.tex:78",
+      "main.tex:137",
+      "main.tex:151"
+    ],
+    "PilotMid": [
+      "main.tex:78"
+    ],
+    "LongPrefix": [
+      "main.tex:78"
+    ],
+    "Short": [
+      "main.tex:78",
+      "main.tex:94",
+      "main.tex:94",
+      "main.tex:126",
+      "main.tex:129",
+      "main.tex:137",
+      "main.tex:142",
+      "main.tex:151",
+      "main.tex:159",
+      "main.tex:165",
+      "main.tex:169"
+    ],
+    "Long": [
+      "main.tex:78",
+      "main.tex:94"
+    ],
+    "PilotRepeats": [
+      "main.tex:78"
+    ],
+    "FullRepeats": [
+      "main.tex:78",
+      "main.tex:102"
+    ],
+    "T4Invalid": [
+      "main.tex:78"
+    ],
+    "T4Sessions": [
+      "main.tex:78"
+    ],
+    "AmpereGeneration": [
+      "main.tex:80",
+      "main.tex:80"
+    ],
+    "SessionsL4": [
+      "main.tex:80"
+    ],
+    "SessionsT4": [
+      "main.tex:80"
+    ],
+    "MainGrid": [
+      "main.tex:94"
+    ],
+    "Rates": [
+      "main.tex:99"
+    ],
+    "Bootstraps": [
+      "main.tex:104"
+    ],
+    "CI": [
+      "main.tex:104"
+    ],
+    "CalRepeats": [
+      "main.tex:106"
+    ],
+    "MicroRepeats": [
+      "main.tex:106"
+    ],
+    "KaggleReads": [
+      "main.tex:111"
+    ],
+    "KaggleFileSamples": [
+      "main.tex:111"
+    ],
+    "KaggleMinBytes": [
+      "main.tex:111"
+    ],
+    "KaggleMaxBytes": [
+      "main.tex:111"
+    ],
+    "ModalReads": [
+      "main.tex:113"
+    ],
+    "ModalFileSamples": [
+      "main.tex:113"
+    ],
+    "L4MAE": [
+      "main.tex:117"
+    ],
+    "A10MAE": [
+      "main.tex:117"
+    ],
+    "A10GMAE": [
+      "main.tex:117"
+    ],
+    "L4Unresolved": [
+      "main.tex:117"
+    ],
+    "A10Unresolved": [
+      "main.tex:117"
+    ],
+    "A10GUnresolved": [
+      "main.tex:117"
+    ],
+    "H100Unresolved": [
+      "main.tex:117"
+    ],
+    "Matched": [
+      "main.tex:126",
+      "main.tex:198"
+    ],
+    "Rate100": [
+      "main.tex:126"
+    ],
+    "Rate200": [
+      "main.tex:126",
+      "main.tex:126"
+    ],
+    "Rate400": [
+      "main.tex:126",
+      "main.tex:126"
+    ],
+    "Rate800": [
+      "main.tex:126",
+      "main.tex:126",
+      "main.tex:126"
+    ],
+    "Rate1600": [
+      "main.tex:126",
+      "main.tex:126"
+    ],
+    "AdjustedCorrect": [
+      "main.tex:135"
+    ],
+    "T4Resolved": [
+      "main.tex:135",
+      "main.tex:135"
+    ],
+    "PrefixCorrect": [
+      "main.tex:135"
+    ],
+    "HalfPrefix": [
+      "main.tex:137"
+    ],
+    "HalfAdjusted": [
+      "main.tex:137"
+    ],
+    "T4Held2Correct": [
+      "main.tex:139"
+    ],
+    "T4Held2Resolved": [
+      "main.tex:139"
+    ],
+    "T4Held3Correct": [
+      "main.tex:139"
+    ],
+    "T4Held3Resolved": [
+      "main.tex:139"
+    ],
+    "ShortGrid": [
+      "main.tex:142"
+    ],
+    "Boundary": [
+      "main.tex:142"
+    ],
+    "PythiaLow": [
+      "main.tex:151"
+    ],
+    "PythiaHigh": [
+      "main.tex:151"
+    ],
+    "QwenMainLow": [
+      "main.tex:151"
+    ],
+    "QwenMainHigh": [
+      "main.tex:151"
+    ],
+    "PhiLow": [
+      "main.tex:151"
+    ],
+    "PhiHigh": [
+      "main.tex:151"
+    ],
+    "QwenThreeLow": [
+      "main.tex:151"
+    ],
+    "QwenThreeHigh": [
+      "main.tex:151"
+    ],
+    "TorchOldError": [
+      "main.tex:153"
+    ],
+    "TorchNewError": [
+      "main.tex:153"
+    ],
+    "RawOldError": [
+      "main.tex:153"
+    ],
+    "RawNewError": [
+      "main.tex:153"
+    ],
+    "T4SpreadShort": [
+      "main.tex:155"
+    ],
+    "T4SpreadLong": [
+      "main.tex:155"
+    ],
+    "L4SpreadShort": [
+      "main.tex:155"
+    ],
+    "L4SpreadLong": [
+      "main.tex:155"
+    ],
+    "AmpereSpreadShort": [
+      "main.tex:155"
+    ],
+    "AmpereSpreadLong": [
+      "main.tex:155"
+    ],
+    "ExtrapLength": [
+      "main.tex:159"
+    ],
+    "A10GExtrapPred": [
+      "main.tex:159"
+    ],
+    "A10GExtrapObs": [
+      "main.tex:159"
+    ],
+    "A10GExtrapError": [
+      "main.tex:159"
+    ],
+    "L4ExtrapPred": [
+      "main.tex:159"
+    ],
+    "L4ExtrapObs": [
+      "main.tex:159"
+    ],
+    "L4ExtrapError": [
+      "main.tex:159"
+    ],
+    "L4RatioYes": [
+      "main.tex:162"
+    ],
+    "L4RatioTotal": [
+      "main.tex:162"
+    ],
+    "A10RatioYes": [
+      "main.tex:162"
+    ],
+    "A10RatioTotal": [
+      "main.tex:162"
+    ],
+    "A10GRatioYes": [
+      "main.tex:162"
+    ],
+    "A10GRatioTotal": [
+      "main.tex:162"
+    ],
+    "H100RatioYes": [
+      "main.tex:162"
+    ],
+    "H100RatioTotal": [
+      "main.tex:162"
+    ],
+    "MhaGrid": [
+      "main.tex:169"
+    ],
+    "AnomalyPairs": [
+      "main.tex:172"
+    ],
+    "CalA10Seconds": [
+      "main.tex:179"
+    ],
+    "CalL4Seconds": [
+      "main.tex:179"
+    ],
+    "H100Cells": [
+      "main.tex:198"
+    ],
+    "H100Missing": [
+      "main.tex:198"
+    ],
+    "MaxMain": [
+      "main.tex:198"
+    ],
+    "Cov0Turn": [
+      "generated/coverage.tex:5"
+    ],
+    "Cov0Prefixes": [
+      "generated/coverage.tex:5"
+    ],
+    "Cov0Sessions": [
+      "generated/coverage.tex:5"
+    ],
+    "Cov1Turn": [
+      "generated/coverage.tex:6"
+    ],
+    "Cov1Prefixes": [
+      "generated/coverage.tex:6"
+    ],
+    "Cov1Sessions": [
+      "generated/coverage.tex:6"
+    ],
+    "Cov2Turn": [
+      "generated/coverage.tex:7"
+    ],
+    "Cov2Prefixes": [
+      "generated/coverage.tex:7"
+    ],
+    "Cov2Sessions": [
+      "generated/coverage.tex:7"
+    ],
+    "Cov3Turn": [
+      "generated/coverage.tex:8"
+    ],
+    "Cov3Prefixes": [
+      "generated/coverage.tex:8"
+    ],
+    "Cov3Sessions": [
+      "generated/coverage.tex:8"
+    ],
+    "Cov4Turn": [
+      "generated/coverage.tex:9"
+    ],
+    "Cov4Prefixes": [
+      "generated/coverage.tex:9"
+    ],
+    "Cov4Sessions": [
+      "generated/coverage.tex:9"
+    ],
+    "Cov5Turn": [
+      "generated/coverage.tex:10"
+    ],
+    "Cov5Prefixes": [
+      "generated/coverage.tex:10"
+    ],
+    "Cov5Sessions": [
+      "generated/coverage.tex:10"
+    ],
+    "Cov6Turn": [
+      "generated/coverage.tex:11"
+    ],
+    "Cov6Prefixes": [
+      "generated/coverage.tex:11"
+    ],
+    "Cov6Sessions": [
+      "generated/coverage.tex:11"
+    ],
+    "Cov7Turn": [
+      "generated/coverage.tex:12"
+    ],
+    "Cov7Prefixes": [
+      "generated/coverage.tex:12"
+    ],
+    "Cov7Sessions": [
+      "generated/coverage.tex:12"
+    ],
+    "Cov8Turn": [
+      "generated/coverage.tex:13"
+    ],
+    "Cov8Prefixes": [
+      "generated/coverage.tex:13"
+    ],
+    "Cov8Sessions": [
+      "generated/coverage.tex:13"
+    ],
+    "Cov9Turn": [
+      "generated/coverage.tex:14"
+    ],
+    "Cov9Prefixes": [
+      "generated/coverage.tex:14"
+    ],
+    "Cov9Sessions": [
+      "generated/coverage.tex:14"
+    ],
+    "Cov10Turn": [
+      "generated/coverage.tex:15"
+    ],
+    "Cov10Prefixes": [
+      "generated/coverage.tex:15"
+    ],
+    "Cov10Sessions": [
+      "generated/coverage.tex:15"
+    ],
+    "Cov11Turn": [
+      "generated/coverage.tex:16"
+    ],
+    "Cov11Prefixes": [
+      "generated/coverage.tex:16"
+    ],
+    "Cov11Sessions": [
+      "generated/coverage.tex:16"
+    ],
+    "Cov12Turn": [
+      "generated/coverage.tex:17"
+    ],
+    "Cov12Prefixes": [
+      "generated/coverage.tex:17"
+    ],
+    "Cov12Sessions": [
+      "generated/coverage.tex:17"
+    ],
+    "Cov13Turn": [
+      "generated/coverage.tex:18"
+    ],
+    "Cov13Prefixes": [
+      "generated/coverage.tex:18"
+    ],
+    "Cov13Sessions": [
+      "generated/coverage.tex:18"
+    ],
+    "Cov14Turn": [
+      "generated/coverage.tex:19"
+    ],
+    "Cov14Prefixes": [
+      "generated/coverage.tex:19"
+    ],
+    "Cov14Sessions": [
+      "generated/coverage.tex:19"
+    ],
+    "Cov15Turn": [
+      "generated/coverage.tex:20"
+    ],
+    "Cov15Prefixes": [
+      "generated/coverage.tex:20"
+    ],
+    "Cov15Sessions": [
+      "generated/coverage.tex:20"
+    ],
+    "Cov16Turn": [
+      "generated/coverage.tex:21"
+    ],
+    "Cov16Prefixes": [
+      "generated/coverage.tex:21"
+    ],
+    "Cov16Sessions": [
+      "generated/coverage.tex:21"
+    ],
+    "Cov17Turn": [
+      "generated/coverage.tex:22"
+    ],
+    "Cov17Prefixes": [
+      "generated/coverage.tex:22"
+    ],
+    "Cov17Sessions": [
+      "generated/coverage.tex:22"
+    ],
+    "Cov18Turn": [
+      "generated/coverage.tex:23"
+    ],
+    "Cov18Prefixes": [
+      "generated/coverage.tex:23"
+    ],
+    "Cov18Sessions": [
+      "generated/coverage.tex:23"
+    ],
+    "Cov19Turn": [
+      "generated/coverage.tex:24"
+    ],
+    "Cov19Prefixes": [
+      "generated/coverage.tex:24"
+    ],
+    "Cov19Sessions": [
+      "generated/coverage.tex:24"
+    ],
+    "Cov20Turn": [
+      "generated/coverage.tex:25"
+    ],
+    "Cov20Prefixes": [
+      "generated/coverage.tex:25"
+    ],
+    "Cov20Sessions": [
+      "generated/coverage.tex:25"
+    ],
+    "Cov21Turn": [
+      "generated/coverage.tex:26"
+    ],
+    "Cov21Prefixes": [
+      "generated/coverage.tex:26"
+    ],
+    "Cov21Sessions": [
+      "generated/coverage.tex:26"
+    ],
+    "Cov22Turn": [
+      "generated/coverage.tex:27"
+    ],
+    "Cov22Prefixes": [
+      "generated/coverage.tex:27"
+    ],
+    "Cov22Sessions": [
+      "generated/coverage.tex:27"
+    ],
+    "Cov23Turn": [
+      "generated/coverage.tex:28"
+    ],
+    "Cov23Prefixes": [
+      "generated/coverage.tex:28"
+    ],
+    "Cov23Sessions": [
+      "generated/coverage.tex:28"
+    ],
+    "Cov24Turn": [
+      "generated/coverage.tex:29"
+    ],
+    "Cov24Prefixes": [
+      "generated/coverage.tex:29"
+    ],
+    "Cov24Sessions": [
+      "generated/coverage.tex:29"
+    ],
+    "Cov25Turn": [
+      "generated/coverage.tex:30"
+    ],
+    "Cov25Prefixes": [
+      "generated/coverage.tex:30"
+    ],
+    "Cov25Sessions": [
+      "generated/coverage.tex:30"
+    ],
+    "Cov26Turn": [
+      "generated/coverage.tex:31"
+    ],
+    "Cov26Prefixes": [
+      "generated/coverage.tex:31"
+    ],
+    "Cov26Sessions": [
+      "generated/coverage.tex:31"
+    ],
+    "Cov27Turn": [
+      "generated/coverage.tex:32"
+    ],
+    "Cov27Prefixes": [
+      "generated/coverage.tex:32"
+    ],
+    "Cov27Sessions": [
+      "generated/coverage.tex:32"
+    ],
+    "Cov28Turn": [
+      "generated/coverage.tex:33"
+    ],
+    "Cov28Prefixes": [
+      "generated/coverage.tex:33"
+    ],
+    "Cov28Sessions": [
+      "generated/coverage.tex:33"
+    ],
+    "Cov29Turn": [
+      "generated/coverage.tex:34"
+    ],
+    "Cov29Prefixes": [
+      "generated/coverage.tex:34"
+    ],
+    "Cov29Sessions": [
+      "generated/coverage.tex:34"
+    ],
+    "Cov30Turn": [
+      "generated/coverage.tex:35"
+    ],
+    "Cov30Prefixes": [
+      "generated/coverage.tex:35"
+    ],
+    "Cov30Sessions": [
+      "generated/coverage.tex:35"
+    ],
+    "Cov31Turn": [
+      "generated/coverage.tex:36"
+    ],
+    "Cov31Prefixes": [
+      "generated/coverage.tex:36"
+    ],
+    "Cov31Sessions": [
+      "generated/coverage.tex:36"
+    ],
+    "KV0": [
+      "generated/models.tex:3"
+    ],
+    "KV1": [
+      "generated/models.tex:4"
+    ],
+    "KV2": [
+      "generated/models.tex:5"
+    ],
+    "KV3": [
+      "generated/models.tex:6"
+    ],
+    "KV4": [
+      "generated/models.tex:7"
+    ],
+    "KV5": [
+      "generated/models.tex:8"
+    ],
+    "KV6": [
+      "generated/models.tex:9"
+    ],
+    "Score12Col2": [
+      "generated/scorecards.tex:5"
+    ],
+    "Score12Col3": [
+      "generated/scorecards.tex:5"
+    ],
+    "Score12Col4": [
+      "generated/scorecards.tex:5"
+    ],
+    "Score12Col5": [
+      "generated/scorecards.tex:5"
+    ],
+    "Score13Col2": [
+      "generated/scorecards.tex:6"
+    ],
+    "Score13Col3": [
+      "generated/scorecards.tex:6"
+    ],
+    "Score13Col4": [
+      "generated/scorecards.tex:6"
+    ],
+    "Score13Col5": [
+      "generated/scorecards.tex:6"
+    ],
+    "Score14Col2": [
+      "generated/scorecards.tex:7"
+    ],
+    "Score14Col3": [
+      "generated/scorecards.tex:7"
+    ],
+    "Score14Col4": [
+      "generated/scorecards.tex:7"
+    ],
+    "Score14Col5": [
+      "generated/scorecards.tex:7"
+    ],
+    "Score15Col2": [
+      "generated/scorecards.tex:8"
+    ],
+    "Score15Col3": [
+      "generated/scorecards.tex:8"
+    ],
+    "Score15Col4": [
+      "generated/scorecards.tex:8"
+    ],
+    "Score15Col5": [
+      "generated/scorecards.tex:8"
+    ],
+    "Score16Col2": [
+      "generated/scorecards.tex:9"
+    ],
+    "Score16Col3": [
+      "generated/scorecards.tex:9"
+    ],
+    "Score16Col4": [
+      "generated/scorecards.tex:9"
+    ],
+    "Score16Col5": [
+      "generated/scorecards.tex:9"
+    ],
+    "Score17Col2": [
+      "generated/scorecards.tex:10"
+    ],
+    "Score17Col3": [
+      "generated/scorecards.tex:10"
+    ],
+    "Score17Col4": [
+      "generated/scorecards.tex:10"
+    ],
+    "Score17Col5": [
+      "generated/scorecards.tex:10"
+    ],
+    "Score18Col2": [
+      "generated/scorecards.tex:11"
+    ],
+    "Score18Col3": [
+      "generated/scorecards.tex:11"
+    ],
+    "Score18Col4": [
+      "generated/scorecards.tex:11"
+    ],
+    "Score18Col5": [
+      "generated/scorecards.tex:11"
+    ],
+    "Score19Col2": [
+      "generated/scorecards.tex:12"
+    ],
+    "Score19Col3": [
+      "generated/scorecards.tex:12"
+    ],
+    "Score19Col4": [
+      "generated/scorecards.tex:12"
+    ],
+    "Score19Col5": [
+      "generated/scorecards.tex:12"
+    ],
+    "Score20Col2": [
+      "generated/scorecards.tex:13"
+    ],
+    "Score20Col3": [
+      "generated/scorecards.tex:13"
+    ],
+    "Score20Col4": [
+      "generated/scorecards.tex:13"
+    ],
+    "Score20Col5": [
+      "generated/scorecards.tex:13"
+    ],
+    "Score21Col2": [
+      "generated/scorecards.tex:14"
+    ],
+    "Score21Col3": [
+      "generated/scorecards.tex:14"
+    ],
+    "Score21Col4": [
+      "generated/scorecards.tex:14"
+    ],
+    "Score21Col5": [
+      "generated/scorecards.tex:14"
+    ],
+    "Score22Col2": [
+      "generated/scorecards.tex:15"
+    ],
+    "Score22Col3": [
+      "generated/scorecards.tex:15"
+    ],
+    "Score22Col4": [
+      "generated/scorecards.tex:15"
+    ],
+    "Score22Col5": [
+      "generated/scorecards.tex:15"
+    ],
+    "Score23Col2": [
+      "generated/scorecards.tex:16"
+    ],
+    "Score23Col3": [
+      "generated/scorecards.tex:16"
+    ],
+    "Score23Col4": [
+      "generated/scorecards.tex:16"
+    ],
+    "Score23Col5": [
+      "generated/scorecards.tex:16"
+    ],
+    "Score24Col2": [
+      "generated/scorecards.tex:17"
+    ],
+    "Score24Col3": [
+      "generated/scorecards.tex:17"
+    ],
+    "Score24Col4": [
+      "generated/scorecards.tex:17"
+    ],
+    "Score24Col5": [
+      "generated/scorecards.tex:17"
+    ],
+    "Score25Col2": [
+      "generated/scorecards.tex:18"
+    ],
+    "Score25Col3": [
+      "generated/scorecards.tex:18"
+    ],
+    "Score25Col4": [
+      "generated/scorecards.tex:18"
+    ],
+    "Score25Col5": [
+      "generated/scorecards.tex:18"
+    ],
+    "Score26Col2": [
+      "generated/scorecards.tex:19"
+    ],
+    "Score26Col3": [
+      "generated/scorecards.tex:19"
+    ],
+    "Score26Col4": [
+      "generated/scorecards.tex:19"
+    ],
+    "Score26Col5": [
+      "generated/scorecards.tex:19"
+    ],
+    "Score27Col2": [
+      "generated/scorecards.tex:20"
+    ],
+    "Score27Col3": [
+      "generated/scorecards.tex:20"
+    ],
+    "Score27Col4": [
+      "generated/scorecards.tex:20"
+    ],
+    "Score27Col5": [
+      "generated/scorecards.tex:20"
+    ],
+    "Score28Col2": [
+      "generated/scorecards.tex:21"
+    ],
+    "Score28Col3": [
+      "generated/scorecards.tex:21"
+    ],
+    "Score28Col4": [
+      "generated/scorecards.tex:21"
+    ],
+    "Score28Col5": [
+      "generated/scorecards.tex:21"
+    ],
+    "Score29Col2": [
+      "generated/scorecards.tex:22"
+    ],
+    "Score29Col3": [
+      "generated/scorecards.tex:22"
+    ],
+    "Score29Col4": [
+      "generated/scorecards.tex:22"
+    ],
+    "Score29Col5": [
+      "generated/scorecards.tex:22"
+    ],
+    "Score30Col2": [
+      "generated/scorecards.tex:23"
+    ],
+    "Score30Col3": [
+      "generated/scorecards.tex:23"
+    ],
+    "Score30Col4": [
+      "generated/scorecards.tex:23"
+    ],
+    "Score30Col5": [
+      "generated/scorecards.tex:23"
+    ],
+    "Score31Col2": [
+      "generated/scorecards.tex:24"
+    ],
+    "Score31Col3": [
+      "generated/scorecards.tex:24"
+    ],
+    "Score31Col4": [
+      "generated/scorecards.tex:24"
+    ],
+    "Score31Col5": [
+      "generated/scorecards.tex:24"
+    ],
+    "Score32Col2": [
+      "generated/scorecards.tex:25"
+    ],
+    "Score32Col3": [
+      "generated/scorecards.tex:25"
+    ],
+    "Score32Col4": [
+      "generated/scorecards.tex:25"
+    ],
+    "Score32Col5": [
+      "generated/scorecards.tex:25"
+    ],
+    "Score33Col2": [
+      "generated/scorecards.tex:26"
+    ],
+    "Score33Col3": [
+      "generated/scorecards.tex:26"
+    ],
+    "Score33Col4": [
+      "generated/scorecards.tex:26"
+    ],
+    "Score33Col5": [
+      "generated/scorecards.tex:26"
+    ]
+  },
+  "figures": [
+    {
+      "name": "bstar-vs-gpu",
+      "released_sha256": "21a7f79e7948a0c0cb7643abc4da0d8f787a8f1223e9009849ca06725a41f9b9",
+      "draft_sha256": "21a7f79e7948a0c0cb7643abc4da0d8f787a8f1223e9009849ca06725a41f9b9",
+      "unchanged": true,
+      "source": "v0.1.0-data:figures/paper/bstar-vs-gpu.pdf",
+      "data_source": "outputs/consolidated_crossovers.csv"
+    },
+    {
+      "name": "frozen-scorecard",
+      "released_sha256": "9506433a11a187e783e1f0c99d65fbcc98adeaf50a6045726325e03b2e1389e8",
+      "draft_sha256": "9506433a11a187e783e1f0c99d65fbcc98adeaf50a6045726325e03b2e1389e8",
+      "unchanged": true,
+      "source": "v0.1.0-data:figures/paper/frozen-scorecard.pdf",
+      "data_source": "outputs/consolidated_scorecard.csv"
+    },
+    {
+      "name": "short-context-regime",
+      "released_sha256": "170b0911874db62f0449d076cc9cccd52818dd8c6dcf5e13212fc2063bba9ae3",
+      "draft_sha256": "170b0911874db62f0449d076cc9cccd52818dd8c6dcf5e13212fc2063bba9ae3",
+      "unchanged": true,
+      "source": "v0.1.0-data:figures/paper/short-context-regime.pdf",
+      "data_source": "outputs/consolidated_results.jsonl"
+    },
+    {
+      "name": "bstar-vs-prefill",
+      "released_sha256": "b56f7692e14e3bca52419456b7829939522a8ab3411089e5bcfa2264704bb6b5",
+      "draft_sha256": "158b220192db58c2b46d07224d0c3810efe3e7f861f36b34bce646e9306d6788",
+      "unchanged": false,
+      "source": "v0.1.0-data:figures/paper/bstar-vs-prefill.pdf",
+      "data_source": "outputs/consolidated_crossovers.csv"
+    }
+  ]
+}

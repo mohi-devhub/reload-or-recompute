@@ -1,0 +1,40 @@
+{
+  "pdf": "paper/main.pdf",
+  "pages": 11,
+  "body_pages": 8,
+  "references_and_appendix_pages": 3,
+  "reference_pages": 1,
+  "appendix_pages": 2,
+  "pdf_sha256": "60ef0c5e3fcafac77e03569988b2d92738425ddc15e76b31e961241468fc6edd",
+  "commands": [
+    [
+      "pdflatex",
+      "-interaction=nonstopmode",
+      "-halt-on-error",
+      "-no-shell-escape",
+      "main.tex"
+    ],
+    [
+      "bibtex",
+      "main"
+    ],
+    [
+      "pdflatex",
+      "-interaction=nonstopmode",
+      "-halt-on-error",
+      "-no-shell-escape",
+      "main.tex"
+    ],
+    [
+      "pdflatex",
+      "-interaction=nonstopmode",
+      "-halt-on-error",
+      "-no-shell-escape",
+      "main.tex"
+    ]
+  ],
+  "engine": "pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026)",
+  "warnings": [
+    "Package epstopdf Warning: Shell escape feature is not enabled."
+  ]
+}

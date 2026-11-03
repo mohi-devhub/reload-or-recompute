@@ -1,0 +1,13 @@
+{
+  "reason": "Original three-column plot scales its tick labels below comfortable single-column print size; reflowed to two columns. No observations, predictions, fits or brackets changed. Legend wording is shortened without changing meaning.",
+  "original_sha256": "b56f7692e14e3bca52419456b7829939522a8ab3411089e5bcfa2264704bb6b5",
+  "print_sha256": "158b220192db58c2b46d07224d0c3810efe3e7f861f36b34bce646e9306d6788",
+  "renderer_source": "v0.1.0-data:scripts/report_phase3.py",
+  "changes": [
+    "subplot grid 2x3 to 3x2",
+    "canvas 11x7 to 7x5.5 inches",
+    "font defaults for actual print size",
+    "compact legend; explanatory note moved to caption",
+    "local output directory"
+  ]
+}
