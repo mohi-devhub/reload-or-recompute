@@ -242,6 +242,8 @@ def analyze(source=None):
     if projection.exists():records.extend(dict(record_origin='control',**r) for r in json.loads(projection.read_text()))
     packages=ROOT/'configs/phase3_packages.json'
     if packages.exists():records.append(json.loads(packages.read_text()))
+    h100_plan=ROOT/'configs/phase3_h100_plan.json'
+    if h100_plan.exists():records.append(dict(record_origin='control',**json.loads(h100_plan.read_text())))
     (ROOT/'outputs/phase3_audit.json').write_text(json.dumps(audit,indent=2)+'\n')
     (ROOT/'outputs/phase3_analysis.jsonl').write_text(''.join(json.dumps(r,allow_nan=False,separators=(',',':'))+'\n' for r in derived))
     return records,derived,registrations

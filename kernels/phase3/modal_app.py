@@ -94,7 +94,7 @@ def execute_reference(spec,limit):
 def execute_h100(spec):
     import hashlib,time,traceback
     start=time.time();folder=Path('/persist')/spec['run_id'];folder.mkdir(parents=True,exist_ok=True)
-    completed=[];success=False;error=None
+    completed=[];success=False;error=None;registration_wait=None;release=None
     try:
         for stage in spec['calibration_stages']:
             outcome=execute_reference(stage,240);completed.append(stage['run_id'])
@@ -102,18 +102,21 @@ def execute_h100(spec):
         (folder/'ready.json').write_text(json.dumps(dict(started_unix=start,elapsed_s=time.time()-start,
              calibration_run_ids=completed,container_id=os.environ.get('MODAL_TASK_ID'))));outputs.commit()
         deadline=min(time.time()+300,start+LIMIT-1000)
-        release=None
+        gate_start=time.time()
         while time.time()<deadline:
             outputs.reload()
             if (folder/'release.json').exists():
                 release=json.loads((folder/'release.json').read_text());break
             time.sleep(2)
+        registration_wait=time.time()-gate_start
         assert release is not None,'No committed prediction release before H100 gate deadline'
         assert len(release['prediction_commit'])==40 and all(c in '0123456789abcdef' for c in release['prediction_commit'])
         assert hashlib.sha256(release['manifest_text'].encode()).hexdigest()==release['manifest_sha256']
         manifest=json.loads(release['manifest_text']);assert manifest['gpu']=='H100!' and manifest['calibration_only']
+        assert manifest['planned_runs']==spec['planned_runs'],'Released grid differs from the predeclared H100 grid'
         allowed={r['name']:r for r in spec['planned_runs']}
         stages=release['sweep_stages']
+        assert len(stages)==len(allowed) and {s['run_id'].removeprefix('phase3-') for s in stages}==set(allowed)
         assert sum(s['_stage_timeout_s'] for s in stages)+time.time()-start+45<LIMIT,'H100 projections do not fit remaining session'
         for stage in stages:
             planned=allowed[stage['run_id'].removeprefix('phase3-')]
@@ -127,7 +130,8 @@ def execute_h100(spec):
         error=traceback.format_exc()
     result=dict(kind='phase3_modal_run',phase='phase3',run_id=spec['run_id'],duration_s=time.time()-start,
                 requested_gpu=GPU,container_id=os.environ.get('MODAL_TASK_ID'),complete=success,
-                stage_run_ids=completed,error=error,returncode=0 if success else 1)
+                stage_run_ids=completed,error=error,returncode=0 if success else 1,
+                registration_wait_s=registration_wait,prediction_commit=release['prediction_commit'] if release else None)
     (folder/'done.json').write_text(json.dumps(result));outputs.commit()
     return result
 

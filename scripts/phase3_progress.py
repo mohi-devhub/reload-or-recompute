@@ -12,6 +12,7 @@ VOLUME='reload-recompute-phase3-results-20261103'
 
 def read(run):
     path=ROOT/'outputs/raw/phase3'/run['name']/'progress.jsonl'
+    path.parent.mkdir(exist_ok=True)
     p=subprocess.run(['modal','volume','get',VOLUME,run['specification']['run_id']+'/results.jsonl',str(path),'--force'],
                      capture_output=True,text=True,timeout=30)
     if p.returncode:return dict(name=run['name'],available=False)
@@ -29,6 +30,15 @@ if __name__=='__main__':
     containers=json.loads(subprocess.check_output(['modal','container','list','--json'],text=True))
     active={c['app_name'].removeprefix('reload-recompute-p3-') for c in containers if c['app_name'].startswith('reload-recompute-p3-')}
     runs=[r for r in ledger['runs'] if r['name'] in active and r['purpose']!='prepare']
+    expanded=[]
+    for run in runs:
+        if run['purpose']=='h100_combined':
+            specs=run['specification']['calibration_stages'].copy()
+            release=ROOT/'outputs/raw/phase3'/run['name']/'release.json'
+            if release.exists():specs+=json.loads(release.read_text())['sweep_stages']
+            expanded.extend(dict(name=s['run_id'].removeprefix('phase3-'),specification=s) for s in specs)
+        else:expanded.append(run)
+    runs=expanded
     with ThreadPoolExecutor(max_workers=4) as pool:progress=list(pool.map(read,runs))
     snapshot=dict(observed_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),active=sorted(active),progress=progress)
     (ROOT/'outputs/raw/phase3/control/progress-latest.json').write_text(json.dumps(snapshot,indent=2)+'\n')

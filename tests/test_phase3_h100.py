@@ -22,7 +22,7 @@ class H100Gate(unittest.TestCase):
         planned=[dict(name='h100-test',models=['model'],lengths_by_model={'model':[256]},turns_by_model={'model':[32]},workload='ultrachat')]
         stage=dict(run_id='phase3-h100-test',models=['model'],lengths_by_model={'model':[256]},turns_by_model={'model':[32]},
                    workloads=['ultrachat'],prediction_commit=('a' if matching_commit else 'b')*40,_stage_timeout_s=100)
-        manifest=json.dumps(dict(gpu='H100!',calibration_only=True))
+        manifest=json.dumps(dict(gpu='H100!',calibration_only=True,planned_runs=planned))
         payload=dict(prediction_commit='a'*40,manifest_text=manifest,manifest_sha256=hashlib.sha256(manifest.encode()).hexdigest(),sweep_stages=[stage])
         calls=[]
         class Volume:
@@ -51,6 +51,23 @@ class H100Gate(unittest.TestCase):
 
 
 class H100Admission(unittest.TestCase):
+    def test_h100_registration_has_only_requested_models_and_turn(self):
+        import predict_phase3 as predictor
+        reference=json.loads((ROOT/'configs/predictions_A10.json').read_text())
+        selected=['Qwen/Qwen2.5-1.5B','EleutherAI/pythia-1.4b']
+        baseline={m:{'32':reference['baseline_fits'][m]['32']} for m in selected}
+        legs={m:reference['micro_fits'][m] for m in selected}
+        with tempfile.TemporaryDirectory() as folder:
+            target=Path(folder);(target/'configs').mkdir();(target/'docs').mkdir()
+            for name in ['phase3_plan.json','phase3_t4_reference.json','phase3_h100_plan.json']:
+                (target/'configs'/name).write_bytes((ROOT/'configs'/name).read_bytes())
+            with patch.object(predictor,'ROOT',target),patch.object(predictor,'calibration',return_value=(baseline,legs,[],[])),patch('subprocess.check_output',return_value='a'*40+'\n'):
+                registration=predictor.create('H100!')
+            self.assertEqual(len(registration['predictions']),78)
+            self.assertEqual({p['turn_tokens'] for p in registration['predictions']},{32})
+            self.assertEqual({p['model'] for p in registration['predictions']},set(selected))
+            self.assertTrue((target/'docs/PREDICTIONS_H100.md').exists())
+
     def test_h100_cannot_start_before_required_grids_finish(self):
         import argparse
         import phase3_control as control
