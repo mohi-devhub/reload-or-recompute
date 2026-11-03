@@ -78,12 +78,12 @@ def report():
         if not pref:continue
         h2d={s['condition']:s['bandwidth_mb_s']['median'] for s in t4 if s['kind']=='phase2_micro_summary' and s['run_id']==r['run_id'] and s['model']==r['model'] and s['prefix_tokens']==1024}
         lines.append(f"| T4 / {r['run_id']} | {short(r['model'])} | 1024 / 32 | {fmt(r['predicted_ttft_bstar_mb_s'])} (descriptive) | {label(r['measured'])} | {pref[0]['prefill_tokens_s']:.1f} | {fmt(h2d.get('h2d_pinned'))} / {fmt(h2d.get('h2d_pageable'))} |")
-    lines.extend(['','| GPU | Frozen throughput-ratio prediction compatible with resolved crossover-ratio brackets | Not ratio-resolved |',
+    lines.extend(['','| GPU | Compatible with at least one / all matched T4 sessions | Not ratio-resolved |',
                   '| --- | --- | --- |'])
     for gpu in sorted({r['gpu'] for r in crosses}):
         hs=[r for r in rows if r['kind']=='phase3_hypothesis_score' and r['gpu']==gpu]
         resolved=[r for r in hs if r['compatible'] is not None]
-        lines.append(f"| {gpu} | {sum(r['compatible'] for r in resolved)} / {len(resolved)} | {sum(r['compatible'] is None for r in hs)} |")
+        lines.append(f"| {gpu} | {sum(r['compatible'] for r in resolved)} / {len(resolved)} at least one; {sum(r['compatible_all'] for r in resolved)} / {len(resolved)} all | {sum(r['compatible'] is None for r in hs)} |")
     lines.extend(['','The frozen hypothesis ratio is calibration-predicted new-GPU prefill throughput divided by matched T4 throughput. '
                   'Compatibility compares it against resolved achieved-bandwidth crossover-ratio brackets, rather than dividing '
                   'two formula outputs. Broad brackets and censored thresholds limit this test; compatibility does not establish equality. '
@@ -143,10 +143,12 @@ def report():
                   'and deviations are in `docs/NOTES.md`. No production-path claim is made.',''])
     (ROOT/'docs/PHASE3_REPORT.md').write_text('\n'.join(lines))
     csvpath=ROOT/'outputs/phase3_crossovers.csv'
-    fields=['gpu']+['run_id','model','workload','prefix_tokens','turn_tokens','kv_bytes_per_token','predicted_bstar_mb_s','measured_prefill_tokens_s','observed_bracket']
+    fields=['gpu']+['run_id','model','workload','prefix_tokens','turn_tokens','kv_bytes_per_token','predicted_bstar_mb_s','measured_prefill_tokens_s','t4_prefill_tokens_s','measured_prefill_ratio_to_t4','hypothesis_prefill_ratio_to_t4','observed_bracket','observed_harmonic_estimate_mb_s']
     with csvpath.open('w') as f:
         writer=csv.DictWriter(f,fieldnames=fields);writer.writeheader()
-        for r in crosses:writer.writerow({**{k:r[k] for k in fields if k!='observed_bracket'},'observed_bracket':label(r['measured'])})
+        for r in crosses:writer.writerow({**{k:r[k] for k in fields if k not in ['observed_bracket','observed_harmonic_estimate_mb_s']},
+                                         'observed_bracket':label(r['measured']),
+                                         'observed_harmonic_estimate_mb_s':';'.join(str(b['interpolated_mb_s']) for b in r['measured'].get('brackets',[]))})
     figure(crosses,t4)
 
 

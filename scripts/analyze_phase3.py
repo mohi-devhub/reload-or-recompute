@@ -121,21 +121,31 @@ def analyze(source=None):
                                delta_ms=summaries[shape+(condition,)]['median']-rec['median'],paired_delta=delta))
         p=prediction[shape+('recompute',)]
         observed=crossover(points)
+        matched_prefill=[r['prefill_tokens_s'] for r in t4 if r['kind']=='phase2_summary' and r['purpose']=='sweep'
+                         and r['model']==shape[1] and r['workload']==shape[2] and r['prefix_tokens']==shape[3]
+                         and r['turn_tokens']==shape[4] and r['condition']=='prefix_only']
+        t4_tps=statistics.median(matched_prefill) if matched_prefill else None
         row=emit('phase3_bandwidth_crossover',**fields,gpu=p['gpu'],kv_bytes_per_token=p['kv_bytes_per_token'],
                  predicted_bstar_mb_s=p['predicted_bstar_mb_s'],predicted_prefill_tokens_s=shape[3]*1000/p['predicted_prefix_ms'],
                  measured_prefill_tokens_s=pref['prefill_tokens_s'],measured=observed,points=points,
+                 t4_prefill_tokens_s=t4_tps,measured_prefill_ratio_to_t4=pref['prefill_tokens_s']/t4_tps if t4_tps else None,
                  calibration_region=p['calibration_region'],hypothesis_prefill_ratio_to_t4=p['hypothesis_prefill_ratio_to_t4'])
         crosses.append(row)
         old=[r for r in t4 if r['kind']=='bandwidth_crossover' and r['model']==shape[1] and r['workload']==shape[2] and r['prefix_tokens']==shape[3] and r['turn_tokens']==shape[4]]
-        bounds=[]
+        bounds=[];comparisons=[]
+        ratio=p['hypothesis_prefill_ratio_to_t4']
         for old_row in old:
             for a in observed.get('brackets',[]):
                 for b in old_row['measured'].get('brackets',[]):
                     if a['paired_ci_resolved'] and b['paired_ci_resolved']:
-                        bounds.append([min(a['achieved_mb_s'])/max(b['achieved_mb_s']),max(a['achieved_mb_s'])/min(b['achieved_mb_s'])])
-        ratio=p['hypothesis_prefill_ratio_to_t4']
+                        bound=[min(a['achieved_mb_s'])/max(b['achieved_mb_s']),max(a['achieved_mb_s'])/min(b['achieved_mb_s'])]
+                        bounds.append(bound)
+                        comparisons.append(dict(t4_run_id=old_row['run_id'],observed_ratio_interval=bound,
+                                                compatible=bound[0]<=ratio<=bound[1] if ratio is not None else None))
         emit('phase3_hypothesis_score',**fields,gpu=p['gpu'],frozen_expected_ratio=ratio,
              observed_ratio_intervals=bounds,compatible=any(lo<=ratio<=hi for lo,hi in bounds) if bounds and ratio is not None else None,
+             compatible_all=all(lo<=ratio<=hi for lo,hi in bounds) if bounds and ratio is not None else None,
+             comparisons=comparisons,measured_prefill_ratio_to_t4=pref['prefill_tokens_s']/t4_tps if t4_tps else None,
              interpretation='resolved achieved-bandwidth brackets; no ratio inferred from censored thresholds')
     # Aggregate only score summaries; observations keep run and session identity.
     for gpu in registrations:
