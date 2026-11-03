@@ -198,7 +198,7 @@ def figure(crosses,t4):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     colors={'T4':'#707070','L4':'#0072b2','A10':'#d55e00','H100!':'#009e73'}
-    fig,axes=plt.subplots(2,3,figsize=(15,9),layout='constrained')
+    fig,axes=plt.subplots(2,3,figsize=(15,9),layout='constrained',sharey=True)
     for ax,model in zip(axes.flat,MODELS):
         plotted=[]
         for r in crosses:
@@ -225,7 +225,8 @@ def figure(crosses,t4):
             config=json.loads((ROOT/'configs/phase3_t4_reference.json').read_text())['configs'][model]
             xs=[min(r['x'] for r in plotted),max(r['x'] for r in plotted)]
             ax.plot(xs,[config['kv_bytes_per_token']*x/1e6 for x in xs],color='#777777',linestyle=':',linewidth=1)
-        ax.set_title(short(model));ax.set_xlabel('Prefix-only prefill tokens/s');ax.set_ylabel('Break-even bandwidth, MB/s')
+        family=json.loads((ROOT/'configs/phase3_t4_reference.json').read_text())['configs'][model]['attention_family']
+        ax.set_title(short(model)+' ('+family+')');ax.set_xlabel('Prefix-only prefill tokens/s');ax.set_ylabel('Break-even bandwidth, MB/s')
         ax.set_xscale('log');ax.set_yscale('log');ax.grid(alpha=.2)
     axes.flat[-1].axis('off')
     from matplotlib.lines import Line2D
