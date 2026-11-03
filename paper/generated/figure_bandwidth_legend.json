@@ -1,0 +1,9 @@
+{
+  "reason": "Clarity revision: replace technical boundary jargon with above highest tested rate; no new measurements, data or fits.",
+  "original_sha256": "21a7f79e7948a0c0cb7643abc4da0d8f787a8f1223e9009849ca06725a41f9b9",
+  "print_sha256": "58407431bdab3eb52ddf501f6478d22b0b8959280c94fe6f0a62d4c33847391b",
+  "renderer_source": "v0.1.0-data:scripts/consolidate_study.py",
+  "changes": [
+    "legend text only"
+  ]
+}

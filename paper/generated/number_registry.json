@@ -1,4 +1,18 @@
 {
+  "PilotPinnedLongShort": {
+    "value": 73.724,
+    "rendered": "73.724",
+    "source": "docs/PILOT_REPORT.md",
+    "selector": "Raw timing summaries; new turn 32, prefix 8192, cpu_pinned median TTFT (ms)",
+    "claim": 1
+  },
+  "PilotRecomputeLongShort": {
+    "value": 1737.026,
+    "rendered": "1,737.026",
+    "source": "docs/PILOT_REPORT.md",
+    "selector": "Raw timing summaries; new turn 32, prefix 8192, recompute median TTFT (ms)",
+    "claim": 1
+  },
   "ModelCount": {
     "value": 7,
     "rendered": "7",

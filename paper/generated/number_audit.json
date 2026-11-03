@@ -1,9 +1,9 @@
 {
   "passed": true,
   "release": "v0.1.0-data",
-  "used_values": 289,
-  "empirical_occurrences": 321,
-  "registered_values": 306,
+  "used_values": 291,
+  "empirical_occurrences": 325,
+  "registered_values": 308,
   "unclassified_literals": [],
   "classified_layout_or_definition_literals": [
     {
@@ -106,126 +106,126 @@
     },
     {
       "file": "main.tex",
-      "line": 60,
+      "line": 65,
       "token": "0",
       "category": "mathematical boundary definition",
       "context": "-\\widehat h-\\widehat T_{\\mathrm{other}}(L,N)},\\qquad D>0."
     },
     {
       "file": "main.tex",
-      "line": 175,
+      "line": 178,
       "token": "96",
       "category": "typesetting parameter",
       "context": "\\noindent\\fbox{\\begin{minipage}{.96\\linewidth}"
     },
     {
       "file": "main.tex",
-      "line": 213,
+      "line": 220,
       "token": "3",
       "category": "typesetting parameter",
       "context": "{\\footnotesize\\setlength{\\tabcolsep}{3pt}\\input{generated/coverage.tex}}"
     },
     {
       "file": "main.tex",
-      "line": 217,
+      "line": 224,
       "token": "3",
       "category": "typesetting parameter",
       "context": "{\\footnotesize\\setlength{\\tabcolsep}{3pt}\\input{generated/scorecards.tex}}"
     },
     {
       "file": "main.tex",
-      "line": 225,
+      "line": 232,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 -m venv .venv"
     },
     {
       "file": "main.tex",
-      "line": 227,
+      "line": 234,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 -m pip install -r requirements-analysis.txt"
     },
     {
       "file": "main.tex",
-      "line": 228,
+      "line": 235,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/materialize_results.py"
     },
     {
       "file": "main.tex",
-      "line": 229,
+      "line": 236,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase2.py --from-results outputs/results.jsonl"
     },
     {
       "file": "main.tex",
-      "line": 229,
+      "line": 236,
       "token": "2",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase2.py --from-results outputs/results.jsonl"
     },
     {
       "file": "main.tex",
-      "line": 230,
+      "line": 237,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase2.py"
     },
     {
       "file": "main.tex",
-      "line": 230,
+      "line": 237,
       "token": "2",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase2.py"
     },
     {
       "file": "main.tex",
-      "line": 231,
+      "line": 238,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl"
     },
     {
       "file": "main.tex",
-      "line": 231,
+      "line": 238,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl"
     },
     {
       "file": "main.tex",
-      "line": 232,
+      "line": 239,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/audit_phase3.py"
     },
     {
       "file": "main.tex",
-      "line": 232,
+      "line": 239,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/audit_phase3.py"
     },
     {
       "file": "main.tex",
-      "line": 233,
+      "line": 240,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase3.py"
     },
     {
       "file": "main.tex",
-      "line": 233,
+      "line": 240,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase3.py"
     },
     {
       "file": "main.tex",
-      "line": 234,
+      "line": 241,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/consolidate_study.py --check --figures"
@@ -267,331 +267,339 @@
     }
   ],
   "uses": {
-    "T4Timings": [
-      "main.tex:27",
-      "main.tex:78"
-    ],
-    "ModelCount": [
-      "main.tex:27",
-      "main.tex:78"
-    ],
     "L4Correct": [
       "main.tex:27",
-      "main.tex:117"
+      "main.tex:123"
     ],
     "L4Resolved": [
       "main.tex:27",
-      "main.tex:117"
+      "main.tex:123"
     ],
     "A10Correct": [
       "main.tex:27",
-      "main.tex:117"
+      "main.tex:123"
     ],
     "A10Resolved": [
       "main.tex:27",
-      "main.tex:117"
+      "main.tex:123"
     ],
     "A10GCorrect": [
       "main.tex:27",
-      "main.tex:117"
+      "main.tex:123"
     ],
     "A10GResolved": [
       "main.tex:27",
-      "main.tex:117"
-    ],
-    "H100Correct": [
-      "main.tex:27",
-      "main.tex:117"
-    ],
-    "H100Resolved": [
-      "main.tex:27",
-      "main.tex:117"
-    ],
-    "Example": [
-      "main.tex:78",
-      "main.tex:137",
-      "main.tex:151"
-    ],
-    "PilotMid": [
-      "main.tex:78"
-    ],
-    "LongPrefix": [
-      "main.tex:78"
-    ],
-    "Short": [
-      "main.tex:78",
-      "main.tex:94",
-      "main.tex:94",
-      "main.tex:126",
-      "main.tex:129",
-      "main.tex:137",
-      "main.tex:142",
-      "main.tex:151",
-      "main.tex:159",
-      "main.tex:165",
-      "main.tex:169"
-    ],
-    "Long": [
-      "main.tex:78",
-      "main.tex:94"
-    ],
-    "PilotRepeats": [
-      "main.tex:78"
-    ],
-    "FullRepeats": [
-      "main.tex:78",
-      "main.tex:102"
-    ],
-    "T4Invalid": [
-      "main.tex:78"
-    ],
-    "T4Sessions": [
-      "main.tex:78"
-    ],
-    "AmpereGeneration": [
-      "main.tex:80",
-      "main.tex:80"
-    ],
-    "SessionsL4": [
-      "main.tex:80"
-    ],
-    "SessionsT4": [
-      "main.tex:80"
-    ],
-    "MainGrid": [
-      "main.tex:94"
-    ],
-    "Rates": [
-      "main.tex:99"
-    ],
-    "Bootstraps": [
-      "main.tex:104"
-    ],
-    "CI": [
-      "main.tex:104"
-    ],
-    "CalRepeats": [
-      "main.tex:106"
-    ],
-    "MicroRepeats": [
-      "main.tex:106"
-    ],
-    "KaggleReads": [
-      "main.tex:111"
-    ],
-    "KaggleFileSamples": [
-      "main.tex:111"
-    ],
-    "KaggleMinBytes": [
-      "main.tex:111"
-    ],
-    "KaggleMaxBytes": [
-      "main.tex:111"
-    ],
-    "ModalReads": [
-      "main.tex:113"
-    ],
-    "ModalFileSamples": [
-      "main.tex:113"
-    ],
-    "L4MAE": [
-      "main.tex:117"
-    ],
-    "A10MAE": [
-      "main.tex:117"
-    ],
-    "A10GMAE": [
-      "main.tex:117"
-    ],
-    "L4Unresolved": [
-      "main.tex:117"
-    ],
-    "A10Unresolved": [
-      "main.tex:117"
-    ],
-    "A10GUnresolved": [
-      "main.tex:117"
-    ],
-    "H100Unresolved": [
-      "main.tex:117"
+      "main.tex:123"
     ],
     "Matched": [
-      "main.tex:126",
-      "main.tex:198"
+      "main.tex:27",
+      "main.tex:132",
+      "main.tex:205"
     ],
-    "Rate100": [
-      "main.tex:126"
-    ],
-    "Rate200": [
-      "main.tex:126",
-      "main.tex:126"
-    ],
-    "Rate400": [
-      "main.tex:126",
-      "main.tex:126"
-    ],
-    "Rate800": [
-      "main.tex:126",
-      "main.tex:126",
-      "main.tex:126"
-    ],
-    "Rate1600": [
-      "main.tex:126",
-      "main.tex:126"
-    ],
-    "AdjustedCorrect": [
-      "main.tex:135"
-    ],
-    "T4Resolved": [
-      "main.tex:135",
-      "main.tex:135"
-    ],
-    "PrefixCorrect": [
-      "main.tex:135"
-    ],
-    "HalfPrefix": [
-      "main.tex:137"
-    ],
-    "HalfAdjusted": [
-      "main.tex:137"
-    ],
-    "T4Held2Correct": [
-      "main.tex:139"
-    ],
-    "T4Held2Resolved": [
-      "main.tex:139"
-    ],
-    "T4Held3Correct": [
-      "main.tex:139"
-    ],
-    "T4Held3Resolved": [
-      "main.tex:139"
-    ],
-    "ShortGrid": [
-      "main.tex:142"
-    ],
-    "Boundary": [
-      "main.tex:142"
-    ],
-    "PythiaLow": [
-      "main.tex:151"
-    ],
-    "PythiaHigh": [
-      "main.tex:151"
-    ],
-    "QwenMainLow": [
-      "main.tex:151"
-    ],
-    "QwenMainHigh": [
-      "main.tex:151"
-    ],
-    "PhiLow": [
-      "main.tex:151"
-    ],
-    "PhiHigh": [
-      "main.tex:151"
-    ],
-    "QwenThreeLow": [
-      "main.tex:151"
-    ],
-    "QwenThreeHigh": [
-      "main.tex:151"
-    ],
-    "TorchOldError": [
-      "main.tex:153"
-    ],
-    "TorchNewError": [
-      "main.tex:153"
-    ],
-    "RawOldError": [
-      "main.tex:153"
-    ],
-    "RawNewError": [
-      "main.tex:153"
-    ],
-    "T4SpreadShort": [
-      "main.tex:155"
-    ],
-    "T4SpreadLong": [
-      "main.tex:155"
-    ],
-    "L4SpreadShort": [
-      "main.tex:155"
-    ],
-    "L4SpreadLong": [
-      "main.tex:155"
-    ],
-    "AmpereSpreadShort": [
-      "main.tex:155"
-    ],
-    "AmpereSpreadLong": [
-      "main.tex:155"
-    ],
-    "ExtrapLength": [
-      "main.tex:159"
-    ],
-    "A10GExtrapPred": [
-      "main.tex:159"
-    ],
-    "A10GExtrapObs": [
-      "main.tex:159"
-    ],
-    "A10GExtrapError": [
-      "main.tex:159"
-    ],
-    "L4ExtrapPred": [
-      "main.tex:159"
-    ],
-    "L4ExtrapObs": [
-      "main.tex:159"
-    ],
-    "L4ExtrapError": [
-      "main.tex:159"
-    ],
-    "L4RatioYes": [
-      "main.tex:162"
-    ],
-    "L4RatioTotal": [
-      "main.tex:162"
-    ],
-    "A10RatioYes": [
-      "main.tex:162"
-    ],
-    "A10RatioTotal": [
-      "main.tex:162"
-    ],
-    "A10GRatioYes": [
-      "main.tex:162"
-    ],
-    "A10GRatioTotal": [
-      "main.tex:162"
-    ],
-    "H100RatioYes": [
-      "main.tex:162"
-    ],
-    "H100RatioTotal": [
-      "main.tex:162"
-    ],
-    "MhaGrid": [
-      "main.tex:169"
-    ],
-    "AnomalyPairs": [
+    "Short": [
+      "main.tex:27",
+      "main.tex:32",
+      "main.tex:83",
+      "main.tex:99",
+      "main.tex:99",
+      "main.tex:132",
+      "main.tex:136",
+      "main.tex:141",
+      "main.tex:146",
+      "main.tex:154",
+      "main.tex:162",
+      "main.tex:168",
       "main.tex:172"
     ],
+    "Rate100": [
+      "main.tex:27",
+      "main.tex:132"
+    ],
+    "Rate400": [
+      "main.tex:27",
+      "main.tex:132",
+      "main.tex:132"
+    ],
+    "Rate800": [
+      "main.tex:27",
+      "main.tex:132",
+      "main.tex:132"
+    ],
+    "Rate1600": [
+      "main.tex:27",
+      "main.tex:132"
+    ],
+    "PilotPinnedLongShort": [
+      "main.tex:32"
+    ],
+    "LongPrefix": [
+      "main.tex:32",
+      "main.tex:83"
+    ],
+    "PilotRecomputeLongShort": [
+      "main.tex:32"
+    ],
+    "Example": [
+      "main.tex:83",
+      "main.tex:141",
+      "main.tex:154"
+    ],
+    "PilotMid": [
+      "main.tex:83"
+    ],
+    "Long": [
+      "main.tex:83",
+      "main.tex:99"
+    ],
+    "PilotRepeats": [
+      "main.tex:83"
+    ],
+    "FullRepeats": [
+      "main.tex:83",
+      "main.tex:107"
+    ],
+    "T4Timings": [
+      "main.tex:83"
+    ],
+    "T4Invalid": [
+      "main.tex:83"
+    ],
+    "T4Sessions": [
+      "main.tex:83"
+    ],
+    "ModelCount": [
+      "main.tex:83"
+    ],
+    "AmpereGeneration": [
+      "main.tex:85",
+      "main.tex:85"
+    ],
+    "SessionsL4": [
+      "main.tex:85"
+    ],
+    "SessionsT4": [
+      "main.tex:85"
+    ],
+    "MainGrid": [
+      "main.tex:99"
+    ],
+    "Rates": [
+      "main.tex:104"
+    ],
+    "Bootstraps": [
+      "main.tex:109"
+    ],
+    "CI": [
+      "main.tex:109"
+    ],
+    "CalRepeats": [
+      "main.tex:111"
+    ],
+    "MicroRepeats": [
+      "main.tex:111"
+    ],
+    "KaggleReads": [
+      "main.tex:116"
+    ],
+    "KaggleFileSamples": [
+      "main.tex:116"
+    ],
+    "KaggleMinBytes": [
+      "main.tex:116"
+    ],
+    "KaggleMaxBytes": [
+      "main.tex:116"
+    ],
+    "ModalReads": [
+      "main.tex:118"
+    ],
+    "ModalFileSamples": [
+      "main.tex:118"
+    ],
+    "L4MAE": [
+      "main.tex:123"
+    ],
+    "A10MAE": [
+      "main.tex:123"
+    ],
+    "A10GMAE": [
+      "main.tex:123"
+    ],
+    "L4Unresolved": [
+      "main.tex:123"
+    ],
+    "A10Unresolved": [
+      "main.tex:123"
+    ],
+    "A10GUnresolved": [
+      "main.tex:123"
+    ],
+    "H100Correct": [
+      "main.tex:123"
+    ],
+    "H100Resolved": [
+      "main.tex:123"
+    ],
+    "H100Unresolved": [
+      "main.tex:123"
+    ],
+    "Rate200": [
+      "main.tex:132",
+      "main.tex:132"
+    ],
+    "AdjustedCorrect": [
+      "main.tex:141"
+    ],
+    "T4Resolved": [
+      "main.tex:141",
+      "main.tex:141"
+    ],
+    "PrefixCorrect": [
+      "main.tex:141"
+    ],
+    "HalfPrefix": [
+      "main.tex:141"
+    ],
+    "HalfAdjusted": [
+      "main.tex:141"
+    ],
+    "T4Held2Correct": [
+      "main.tex:141"
+    ],
+    "T4Held2Resolved": [
+      "main.tex:141"
+    ],
+    "T4Held3Correct": [
+      "main.tex:141"
+    ],
+    "T4Held3Resolved": [
+      "main.tex:141"
+    ],
+    "ShortGrid": [
+      "main.tex:146"
+    ],
+    "Boundary": [
+      "main.tex:146"
+    ],
+    "PythiaLow": [
+      "main.tex:154"
+    ],
+    "PythiaHigh": [
+      "main.tex:154"
+    ],
+    "QwenMainLow": [
+      "main.tex:154"
+    ],
+    "QwenMainHigh": [
+      "main.tex:154"
+    ],
+    "PhiLow": [
+      "main.tex:154"
+    ],
+    "PhiHigh": [
+      "main.tex:154"
+    ],
+    "QwenThreeLow": [
+      "main.tex:154"
+    ],
+    "QwenThreeHigh": [
+      "main.tex:154"
+    ],
+    "TorchOldError": [
+      "main.tex:156"
+    ],
+    "TorchNewError": [
+      "main.tex:156"
+    ],
+    "RawOldError": [
+      "main.tex:156"
+    ],
+    "RawNewError": [
+      "main.tex:156"
+    ],
+    "T4SpreadShort": [
+      "main.tex:158"
+    ],
+    "T4SpreadLong": [
+      "main.tex:158"
+    ],
+    "L4SpreadShort": [
+      "main.tex:158"
+    ],
+    "L4SpreadLong": [
+      "main.tex:158"
+    ],
+    "AmpereSpreadShort": [
+      "main.tex:158"
+    ],
+    "AmpereSpreadLong": [
+      "main.tex:158"
+    ],
+    "ExtrapLength": [
+      "main.tex:162"
+    ],
+    "A10GExtrapPred": [
+      "main.tex:162"
+    ],
+    "A10GExtrapObs": [
+      "main.tex:162"
+    ],
+    "A10GExtrapError": [
+      "main.tex:162"
+    ],
+    "L4ExtrapPred": [
+      "main.tex:162"
+    ],
+    "L4ExtrapObs": [
+      "main.tex:162"
+    ],
+    "L4ExtrapError": [
+      "main.tex:162"
+    ],
+    "L4RatioYes": [
+      "main.tex:165"
+    ],
+    "L4RatioTotal": [
+      "main.tex:165"
+    ],
+    "A10RatioYes": [
+      "main.tex:165"
+    ],
+    "A10RatioTotal": [
+      "main.tex:165"
+    ],
+    "A10GRatioYes": [
+      "main.tex:165"
+    ],
+    "A10GRatioTotal": [
+      "main.tex:165"
+    ],
+    "H100RatioYes": [
+      "main.tex:165"
+    ],
+    "H100RatioTotal": [
+      "main.tex:165"
+    ],
+    "MhaGrid": [
+      "main.tex:172"
+    ],
+    "AnomalyPairs": [
+      "main.tex:175"
+    ],
     "CalA10Seconds": [
-      "main.tex:179"
+      "main.tex:182"
     ],
     "CalL4Seconds": [
-      "main.tex:179"
+      "main.tex:182"
     ],
     "H100Cells": [
-      "main.tex:198"
+      "main.tex:205"
     ],
     "H100Missing": [
-      "main.tex:198"
+      "main.tex:205"
     ],
     "MaxMain": [
-      "main.tex:198"
+      "main.tex:205"
     ],
     "Cov0Turn": [
       "generated/coverage.tex:5"
@@ -1171,8 +1179,8 @@
     {
       "name": "bstar-vs-gpu",
       "released_sha256": "21a7f79e7948a0c0cb7643abc4da0d8f787a8f1223e9009849ca06725a41f9b9",
-      "draft_sha256": "21a7f79e7948a0c0cb7643abc4da0d8f787a8f1223e9009849ca06725a41f9b9",
-      "unchanged": true,
+      "draft_sha256": "58407431bdab3eb52ddf501f6478d22b0b8959280c94fe6f0a62d4c33847391b",
+      "unchanged": false,
       "source": "v0.1.0-data:figures/paper/bstar-vs-gpu.pdf",
       "data_source": "outputs/consolidated_crossovers.csv"
     },
@@ -1195,7 +1203,7 @@
     {
       "name": "bstar-vs-prefill",
       "released_sha256": "b56f7692e14e3bca52419456b7829939522a8ab3411089e5bcfa2264704bb6b5",
-      "draft_sha256": "158b220192db58c2b46d07224d0c3810efe3e7f861f36b34bce646e9306d6788",
+      "draft_sha256": "115ecaf6ddd1ea5aac1df9ddcce92c225db75f5eff86e1886d0348468e349fc1",
       "unchanged": false,
       "source": "v0.1.0-data:figures/paper/bstar-vs-prefill.pdf",
       "data_source": "outputs/consolidated_crossovers.csv"

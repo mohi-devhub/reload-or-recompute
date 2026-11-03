@@ -4,39 +4,43 @@ This explains the draft rather than adding results. The only experimental eviden
 
 ## The explanation to give first
 
-A saved conversation cache can save prefix computation, but bringing it back and continuing the turn also costs time. Compare the complete time until the next first token, not just bytes divided by bandwidth. A short local calibration predicts most resolved decisions on the measured allocations. It fails in important cases, and this is a measurement study rather than a new serving system.
+A saved conversation cache can save prefix computation, but bringing it back and continuing the turn also costs time. Compare the complete time until the next first token, not just bytes divided by bandwidth. A short local calibration predicts most resolved decisions on the measured GPUs. It fails in important cases, and this is a measurement study rather than a new serving system.
 
-The four contributions are the released reference measurements, the complete TTFT accounting rule, frozen prediction checks on new allocations, and concrete operator-facing limits. None claims to invent KV reuse, offload, break-even thresholds, or compute-versus-load scheduling. py-kvcache is especially close prior work; Cake already overlaps compute and load.
+The distinct contributions are frozen prediction checks first, commodity/older GPUs and short contexts second, and separately measured CPU-memory/file paths with read observability third. None claims to invent KV reuse, offload, break-even thresholds, or compute-versus-load scheduling. py-kvcache already characterizes the reload-versus-recompute trade-off and its hardware dependence; Cake already overlaps compute and load.
 
 ## Introduction
 
+The opening example is the released T4 pilot with an 8,192-token prefix and a 32-token new turn: pinned reload median 73.724 ms, versus 1,737.026 ms for recomputation. These are reported medians for the same shape, not a new run or a claim that all cache hits win.
+
 The operator is serving small models and must choose what to do when a conversation returns. The experiment assumes a saved cache already exists. It does not decide whether creating or retaining that cache was worthwhile: persistence also needs write costs, capacity and return probability. This distinction prevents turning a conditional latency result into an unevaluated cache-admission policy.
 
-The title's “across commodity GPUs” means locally calibrated tests on the observed allocations. It does not mean a T4-only fit predicts arbitrary hardware with no new-hardware calibration. A10 and A10G are separately observed names, links and workloads.
+The title's “across commodity GPUs” means a fixed rule form tested beyond the T4 development GPU, with short GPU-specific calibration before each test sweep. It does not mean a T4-only fit predicts arbitrary hardware with no new-hardware calibration. A10 and A10G are separately observed names, links and workloads.
 
 ## The decision rule
 
 `KV_bytes` is the full prefix payload. `T_recompute` includes the prefix and new turn through first-token selection. `T_GPU_hit` is the returning-turn latency with the old cache already on the GPU. The difference is the time budget available to pay fixed overhead, transfer, and CPU work.
 
-`B*` is the bandwidth that just spends that saving budget. For a positive denominator, faster effective transfer favors reload. A nonpositive denominator predicts no finite threshold under this model; it is not a theorem about every implementation. Near zero, tiny baseline errors move B* greatly, so unresolved decisions should remain unresolved.
+`B*` is the bandwidth where reload uses up the time saved by reuse. For a positive denominator, faster effective transfer favors reload. A nonpositive denominator predicts no finite threshold under this model; it is not a theorem about every implementation. Near zero, tiny baseline errors move B* greatly, so unresolved decisions should remain unresolved.
 
 Read, deserialization and H2D movement must be counted once. If the bandwidth term represents H2D, file CPU work goes into the other legs. If a different transfer leg supplies the bandwidth term, H2D belongs among the other legs. Mixing the staged-read CPU path with direct torch loading gives the wrong decomposition.
 
 The prefix-only formula removes the returning-turn baseline and fixed costs. It can underprice reuse. Descriptive T4 agreement checks that accounting; the frozen transfer test additionally asks whether the baselines can be predicted from short calibration. These are different tests and must never share an accuracy label.
 
+The introduction ends with three practical takeaways: short calibration can predict most choices; faster prefill can favor recomputation and raise required reload bandwidth; compare the whole returning-turn path and check file reads.
+
 ## Setup
 
-The pilot established feasibility and found lower reload medians at its sampled contexts, but did not locate a crossover length. The redesign therefore swept simulated bandwidth and added short prefixes, model families, file-leg measurements and separate sessions. The later phase calibrated each new GPU allocation, committed predictions, and only then ran the sweep.
+The pilot established feasibility and found lower reload medians at its sampled contexts, but did not locate a crossover length. The redesign therefore swept simulated bandwidth and added short prefixes, model families, file-leg measurements and separate sessions. The later phase calibrated each new GPU, committed predictions, and only then ran the sweep.
 
 Weights and caches are fp16. The main model uses frozen synthetic UltraChat; long inputs may stitch conversations. The other model comparisons use repeated text. These inputs isolate timings; they do not measure conversation quality or a real distribution of return events. The full coverage table shows missing native limits and budget reductions.
 
 The measured endpoint is a first token available to the host. Cache creation, packing, pinning, writes, tokenization, input-ID placement and request queueing are outside this return-time measurement. A reference copy must actually be consumed by the resumed transformer and checked against a resident continuation and recomputed first token. Otherwise a fast copy could be meaningless.
 
-The rate limiter simulates blocking bandwidth. It does not emulate a real device, network tail latency or an asynchronous pipeline. Target and achieved rates differ and are both retained. Allocation participates in the pacing budget, which is why an additive fixed-cost approximation can miss short contexts.
+The rate limiter simulates blocking bandwidth. It does not emulate a real device, network tail latency or an asynchronous pipeline. Target and achieved rates differ and are both retained. Creating the transfer buffer participates in the pacing budget, which is why an additive fixed-cost approximation can miss short contexts.
 
 Paired rounds compare conditions on the same round. A resolved decision means the paired bootstrap interval for path-minus-recompute excludes zero. A cell with an interval covering zero is not silently declared a win or loss. Correct/resolved counts exclude it. They are correlated cells, not a binomial experiment. The TTFT-error median includes baselines too, so its denominator differs from decision accuracy.
 
-Within-session CIs describe repeated timing rounds. Session spread describes different session medians. A narrow CI does not imply that another allocation will reproduce that median. Telemetry is sampled too sparsely to explain every short trial and cannot establish thermal causality.
+Within-session CIs describe repeated timing rounds. Session spread describes different session medians. A narrow CI does not imply that another GPU instance will reproduce that median. Telemetry is sampled too sparsely to explain every short trial and cannot establish thermal causality.
 
 Kaggle file reads were physical according to positive process counters. This does not identify the media or rule out host/storage caches. Modal's were page-cache resident, with physical reads not observed; this is the operational interpretation of zero virtualized counters, not a cache-eviction ablation. Do not call the two platforms an equal physical-file-read comparison.
 
@@ -44,23 +48,23 @@ Kaggle file reads were physical according to positive process counters. This doe
 
 Figure 1 reports per-board correct/resolved decisions and median absolute TTFT error. A10 has the main model only; A10G and L4 include auxiliary controls. H100 has only complete recovered main-model cells. Unequal coverage means the bars are not a fair ranking of GPU prediction difficulty.
 
-Calibration did not time the combined real reload or simulated-bandwidth TTFT conditions. Later paths test whether independent baselines and cost legs compose. A good score therefore supports local calibration, but it does not isolate baseline-fit quality from overhead approximation or allocation variation. The appendix separates anchors, interpolation, extrapolation and sessions.
+Calibration did not time the combined real reload or simulated-bandwidth TTFT conditions. Later paths test whether independent baselines and cost legs compose. A good score therefore supports local calibration, but it does not isolate baseline-fit quality from overhead approximation or variation between GPU instances. The appendix separates anchors, interpolation, extrapolation and sessions.
 
 ## Bandwidth shifts and Figure 2
 
-Figure 2 compares the main model at matched prefix lengths and a fixed new turn. Each session keeps its own point. The vertical bars are adjacent achieved simulated-rate endpoints, not CIs for an exactly measured B*. Points inside them are harmonic interpolation, not an extra benchmark. Crosses have an unresolved endpoint. A triangle is only a bound.
+Figure 2 compares the main model at matched prefix lengths and a fixed new turn; its boundary legend now says above the highest tested rate, with the data unchanged. Each session keeps its own point. The vertical bars are adjacent achieved simulated-rate endpoints, not CIs for an exactly measured B*. Points inside them are harmonic interpolation, not an extra benchmark. Crosses have an unresolved endpoint. A triangle is only a bound.
 
-The directional claim is supported at the matched context in the paper. Faster allocations shift the useful reload boundary upward. CPU, driver, and link differences prevent assigning the entire shift causally to GPU compute. The H100 short-context threshold is censored rather than a known finite value. Blank panels reflect missing or incomplete observations.
+The directional claim is supported at the matched context in the paper. Faster GPUs shift the useful reload boundary upward. CPU, driver, and link differences prevent assigning the entire shift causally to GPU compute. The H100 short-context threshold is above the highest tested rate rather than a known finite value. Blank panels reflect missing or incomplete observations.
 
 ## Returning-turn costs
 
-The stronger descriptive agreement of the adjusted T4 rule does not establish out-of-sample hardware prediction. The small Qwen example shows why KV bytes alone do not determine the answer: continuation and fixed work consume much of the recompute-saving budget. The separate held-out T4 checks hold the first session's calibration fixed, but still use the same model, text and GPU type.
+The stronger descriptive agreement of the adjusted T4 rule does not establish out-of-sample hardware prediction. The small Qwen example shows why KV bytes alone do not determine the answer: continuation and fixed work consume much of the time saved by reuse. The separate held-out T4 checks hold the first session's calibration fixed, but still use the same model, text and GPU type.
 
 ## Short contexts and Figure 3
 
 The matrix compares the real unthrottled chunked pinned path with fresh recomputation. Orange is resolved recompute, blue is resolved reload, and gray is unresolved. Rows are sessions, not shuffled repeats. The turn-length panels are separate.
 
-L4 extends the sampled recompute-favored region compared with T4. This is not a universal assertion that every faster board extends it equally. A10 and A10G differ at the boundary, and turn size changes the saving budget. No continuous crossover length can be inferred from this sparse prefix grid.
+L4 extends the sampled recompute-favored region compared with T4. This is not a universal assertion that every faster board extends it equally. A10 and A10G differ at the boundary, and turn size changes the time saved by reuse. No continuous crossover length can be inferred from this sparse prefix grid.
 
 ## Supporting observations
 
@@ -68,13 +72,13 @@ The selected MHA controls have larger KV payloads and higher simulated crossover
 
 Adding the deserialization leg improves the torch-file residual on T4, but barely changes the raw-format residual. This is an accounting correction for a particular CPU path, not evidence that every file format becomes faster or that the corrected rule was independently frozen there.
 
-The former Ampere “session spread” compares A10 at x16 with A10G at x8. Allocation differences are its likely source, with host and board effects confounded. In particular, do not claim that halving PCIe width causes the observed recompute slowdown: fresh prefill is not a bulk H2D-transfer benchmark. There is only one main session per observed Ampere board.
+The former Ampere “session spread” compares A10 at x16 with A10G at x8. Allocation differences are its likely source, with host and board effects confounded. In particular, do not claim that halving PCIe width causes the observed recompute slowdown: fresh prefill is not a bulk H2D-transfer benchmark. There is only one main session per observed Ampere board; the allocation distinction is explained in the paper's setup.
 
 ## What fails and Figure 4
 
 Long native-context errors are real failures of the short calibration's time-shape extrapolation. Median error can look small while that tail is poor. Do not generalize those extrapolations from the aggregate score.
 
-Figure 4 uses the same released observations and predictions, reflowed for readable single-column print. The dotted prefix-only line is an accounting identity using KV bytes/token and throughput. The test is whether observed independent crossovers support the frozen throughput-ratio expectation. Broad bracket compatibility does not establish exact equality, and a censored threshold does not produce an exact ratio. Frozen-fit uncertainty was not propagated.
+Figure 4 uses the same released observations and predictions, reflowed for readable single-column print; its plain-language legend marks thresholds outside the tested rates. The dotted prefix-only line is an accounting identity using KV bytes/token and throughput. The test is whether observed independent crossovers support the frozen throughput-ratio expectation. Broad bracket compatibility does not establish exact equality, and a threshold above the highest tested rate does not produce an exact ratio. Frozen-fit uncertainty was not propagated.
 
 The MHA file outcome is not uniform across T4, L4 and A10G. Phi-2 already has direct-file wins on T4, so “MHA always loses on T4” would be wrong. Matched-prefix comparisons in CLAIMS.md prevent confusing changed turn coverage with a hardware effect. Different physical-read conditions remain another confound.
 
@@ -134,102 +138,102 @@ Every source-mapped number or compound table cell used by the paper appears belo
 | CalA10Seconds | 42.5 | Observed calibration function wall seconds on A10, not a recipe-duration guarantee. | 9 |
 | CalL4Seconds | 63.4 | Observed calibration function wall seconds on L4, not a recipe-duration guarantee. | 9 |
 | CalRepeats | 3 | Released token length or protocol setting for the scope indicated in NUMBERS.md: released measurement protocol / referenced canonical analysis metadata. | 3 |
-| Cov0Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792 | Exact completed coverage cell: row 0.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov0Sessions | 1 | Exact completed coverage cell: row 0.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov0Turn | 32 | Exact completed coverage cell: row 0.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov10Prefixes | 16, 32, 64, 128, 256, 512, 1,024 | Exact completed coverage cell: row 10.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov10Sessions | 1 | Exact completed coverage cell: row 10.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov10Turn | 256 | Exact completed coverage cell: row 10.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov11Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792 | Exact completed coverage cell: row 11.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov11Sessions | 1 | Exact completed coverage cell: row 11.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov11Turn | 32 | Exact completed coverage cell: row 11.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov12Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792 | Exact completed coverage cell: row 12.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov12Sessions | 1 | Exact completed coverage cell: row 12.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov12Turn | 256 | Exact completed coverage cell: row 12.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov13Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 13.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov13Sessions | 1 | Exact completed coverage cell: row 13.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov13Turn | 32 | Exact completed coverage cell: row 13.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov14Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 14.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov14Sessions | 1 | Exact completed coverage cell: row 14.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov14Turn | 256 | Exact completed coverage cell: row 14.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov15Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 15.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov15Sessions | 1 | Exact completed coverage cell: row 15.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov15Turn | 32 | Exact completed coverage cell: row 15.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov16Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 16.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov16Sessions | 1 | Exact completed coverage cell: row 16.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov16Turn | 256 | Exact completed coverage cell: row 16.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov17Prefixes | 64, 256, 512, 1,024, 2,016 | Exact completed coverage cell: row 17.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov17Sessions | 1 | Exact completed coverage cell: row 17.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov17Turn | 32 | Exact completed coverage cell: row 17.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov18Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 18.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov18Sessions | 1 | Exact completed coverage cell: row 18.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov18Turn | 32 | Exact completed coverage cell: row 18.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov19Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 19.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov19Sessions | 1 | Exact completed coverage cell: row 19.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov19Turn | 256 | Exact completed coverage cell: row 19.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov1Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792 | Exact completed coverage cell: row 1.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov1Sessions | 1 | Exact completed coverage cell: row 1.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov1Turn | 256 | Exact completed coverage cell: row 1.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov20Prefixes | 64, 256, 512, 1,024, 32,736 | Exact completed coverage cell: row 20.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov20Sessions | 1 | Exact completed coverage cell: row 20.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov20Turn | 32 | Exact completed coverage cell: row 20.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov21Prefixes | 64, 256, 512, 1,024, 2,016 | Exact completed coverage cell: row 21.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov21Sessions | 1 | Exact completed coverage cell: row 21.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov21Turn | 32 | Exact completed coverage cell: row 21.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov22Prefixes | 64, 256, 512, 1,024 | Exact completed coverage cell: row 22.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov22Sessions | 1 | Exact completed coverage cell: row 22.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov22Turn | 32 | Exact completed coverage cell: row 22.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov23Prefixes | 1,024, 16,384 | Exact completed coverage cell: row 23.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov23Sessions | 1 | Exact completed coverage cell: row 23.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov23Turn | 32 | Exact completed coverage cell: row 23.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov24Prefixes | 64, 256, 512, 1,024, 2,016 | Exact completed coverage cell: row 24.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov24Sessions | 1 | Exact completed coverage cell: row 24.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov24Turn | 32 | Exact completed coverage cell: row 24.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov25Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 25.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov25Sessions | 2 | Exact completed coverage cell: row 25.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov25Turn | 32 | Exact completed coverage cell: row 25.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov26Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 26.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov26Sessions | 2 | Exact completed coverage cell: row 26.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov26Turn | 256 | Exact completed coverage cell: row 26.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov27Prefixes | 64, 256, 512, 1,024, 32,736 | Exact completed coverage cell: row 27.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov27Sessions | 1 | Exact completed coverage cell: row 27.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov27Turn | 32 | Exact completed coverage cell: row 27.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov28Prefixes | 64, 256, 512, 1,024, 2,016 | Exact completed coverage cell: row 28.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov28Sessions | 1 | Exact completed coverage cell: row 28.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov28Turn | 32 | Exact completed coverage cell: row 28.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov29Prefixes | 64, 256, 512, 1,024 | Exact completed coverage cell: row 29.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov29Sessions | 1 | Exact completed coverage cell: row 29.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov29Turn | 32 | Exact completed coverage cell: row 29.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov2Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192 | Exact completed coverage cell: row 2.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov2Sessions | 1 | Exact completed coverage cell: row 2.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov2Turn | 32 | Exact completed coverage cell: row 2.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov30Prefixes | 512, 2,048, 8,192 | Exact completed coverage cell: row 30.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov30Sessions | 1 | Exact completed coverage cell: row 30.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov30Turn | 32 | Exact completed coverage cell: row 30.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov31Prefixes | 512, 2,048, 8,192 | Exact completed coverage cell: row 31.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov31Sessions | 1 | Exact completed coverage cell: row 31.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov31Turn | 256 | Exact completed coverage cell: row 31.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov3Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192 | Exact completed coverage cell: row 3.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov3Sessions | 1 | Exact completed coverage cell: row 3.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov3Turn | 256 | Exact completed coverage cell: row 3.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov4Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792, 2,048, 8,192 | Exact completed coverage cell: row 4.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov4Sessions | 1 | Exact completed coverage cell: row 4.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov4Turn | 32 | Exact completed coverage cell: row 4.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov5Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 5.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov5Sessions | 3 | Exact completed coverage cell: row 5.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov5Turn | 32 | Exact completed coverage cell: row 5.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov6Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 6.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov6Sessions | 3 | Exact completed coverage cell: row 6.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov6Turn | 256 | Exact completed coverage cell: row 6.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov7Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 7.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov7Sessions | 1 | Exact completed coverage cell: row 7.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov7Turn | 32 | Exact completed coverage cell: row 7.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov8Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 8.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov8Sessions | 1 | Exact completed coverage cell: row 8.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov8Turn | 256 | Exact completed coverage cell: row 8.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov9Prefixes | 16, 32, 64, 128, 256, 512, 1,024 | Exact completed coverage cell: row 9.prefixes. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov9Sessions | 1 | Exact completed coverage cell: row 9.sessions. Prefix lists are tokens; session counts are separate allocations. | 3 |
-| Cov9Turn | 32 | Exact completed coverage cell: row 9.turn_tokens. Prefix lists are tokens; session counts are separate allocations. | 3 |
+| Cov0Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792 | Exact completed coverage cell: row 0.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov0Sessions | 1 | Exact completed coverage cell: row 0.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov0Turn | 32 | Exact completed coverage cell: row 0.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov10Prefixes | 16, 32, 64, 128, 256, 512, 1,024 | Exact completed coverage cell: row 10.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov10Sessions | 1 | Exact completed coverage cell: row 10.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov10Turn | 256 | Exact completed coverage cell: row 10.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov11Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792 | Exact completed coverage cell: row 11.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov11Sessions | 1 | Exact completed coverage cell: row 11.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov11Turn | 32 | Exact completed coverage cell: row 11.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov12Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792 | Exact completed coverage cell: row 12.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov12Sessions | 1 | Exact completed coverage cell: row 12.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov12Turn | 256 | Exact completed coverage cell: row 12.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov13Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 13.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov13Sessions | 1 | Exact completed coverage cell: row 13.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov13Turn | 32 | Exact completed coverage cell: row 13.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov14Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 14.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov14Sessions | 1 | Exact completed coverage cell: row 14.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov14Turn | 256 | Exact completed coverage cell: row 14.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov15Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 15.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov15Sessions | 1 | Exact completed coverage cell: row 15.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov15Turn | 32 | Exact completed coverage cell: row 15.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov16Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 16.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov16Sessions | 1 | Exact completed coverage cell: row 16.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov16Turn | 256 | Exact completed coverage cell: row 16.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov17Prefixes | 64, 256, 512, 1,024, 2,016 | Exact completed coverage cell: row 17.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov17Sessions | 1 | Exact completed coverage cell: row 17.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov17Turn | 32 | Exact completed coverage cell: row 17.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov18Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 18.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov18Sessions | 1 | Exact completed coverage cell: row 18.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov18Turn | 32 | Exact completed coverage cell: row 18.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov19Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 19.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov19Sessions | 1 | Exact completed coverage cell: row 19.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov19Turn | 256 | Exact completed coverage cell: row 19.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov1Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792 | Exact completed coverage cell: row 1.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov1Sessions | 1 | Exact completed coverage cell: row 1.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov1Turn | 256 | Exact completed coverage cell: row 1.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov20Prefixes | 64, 256, 512, 1,024, 32,736 | Exact completed coverage cell: row 20.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov20Sessions | 1 | Exact completed coverage cell: row 20.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov20Turn | 32 | Exact completed coverage cell: row 20.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov21Prefixes | 64, 256, 512, 1,024, 2,016 | Exact completed coverage cell: row 21.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov21Sessions | 1 | Exact completed coverage cell: row 21.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov21Turn | 32 | Exact completed coverage cell: row 21.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov22Prefixes | 64, 256, 512, 1,024 | Exact completed coverage cell: row 22.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov22Sessions | 1 | Exact completed coverage cell: row 22.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov22Turn | 32 | Exact completed coverage cell: row 22.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov23Prefixes | 1,024, 16,384 | Exact completed coverage cell: row 23.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov23Sessions | 1 | Exact completed coverage cell: row 23.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov23Turn | 32 | Exact completed coverage cell: row 23.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov24Prefixes | 64, 256, 512, 1,024, 2,016 | Exact completed coverage cell: row 24.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov24Sessions | 1 | Exact completed coverage cell: row 24.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov24Turn | 32 | Exact completed coverage cell: row 24.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov25Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 25.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov25Sessions | 2 | Exact completed coverage cell: row 25.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov25Turn | 32 | Exact completed coverage cell: row 25.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov26Prefixes | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 26.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov26Sessions | 2 | Exact completed coverage cell: row 26.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov26Turn | 256 | Exact completed coverage cell: row 26.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov27Prefixes | 64, 256, 512, 1,024, 32,736 | Exact completed coverage cell: row 27.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov27Sessions | 1 | Exact completed coverage cell: row 27.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov27Turn | 32 | Exact completed coverage cell: row 27.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov28Prefixes | 64, 256, 512, 1,024, 2,016 | Exact completed coverage cell: row 28.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov28Sessions | 1 | Exact completed coverage cell: row 28.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov28Turn | 32 | Exact completed coverage cell: row 28.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov29Prefixes | 64, 256, 512, 1,024 | Exact completed coverage cell: row 29.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov29Sessions | 1 | Exact completed coverage cell: row 29.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov29Turn | 32 | Exact completed coverage cell: row 29.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov2Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192 | Exact completed coverage cell: row 2.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov2Sessions | 1 | Exact completed coverage cell: row 2.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov2Turn | 32 | Exact completed coverage cell: row 2.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov30Prefixes | 512, 2,048, 8,192 | Exact completed coverage cell: row 30.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov30Sessions | 1 | Exact completed coverage cell: row 30.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov30Turn | 32 | Exact completed coverage cell: row 30.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov31Prefixes | 512, 2,048, 8,192 | Exact completed coverage cell: row 31.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov31Sessions | 1 | Exact completed coverage cell: row 31.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov31Turn | 256 | Exact completed coverage cell: row 31.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov3Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192 | Exact completed coverage cell: row 3.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov3Sessions | 1 | Exact completed coverage cell: row 3.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov3Turn | 256 | Exact completed coverage cell: row 3.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov4Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792, 2,048, 8,192 | Exact completed coverage cell: row 4.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov4Sessions | 1 | Exact completed coverage cell: row 4.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov4Turn | 32 | Exact completed coverage cell: row 4.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov5Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 5.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov5Sessions | 3 | Exact completed coverage cell: row 5.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov5Turn | 32 | Exact completed coverage cell: row 5.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov6Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 6.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov6Sessions | 3 | Exact completed coverage cell: row 6.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov6Turn | 256 | Exact completed coverage cell: row 6.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov7Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 7.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov7Sessions | 1 | Exact completed coverage cell: row 7.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov7Turn | 32 | Exact completed coverage cell: row 7.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov8Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | Exact completed coverage cell: row 8.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov8Sessions | 1 | Exact completed coverage cell: row 8.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov8Turn | 256 | Exact completed coverage cell: row 8.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov9Prefixes | 16, 32, 64, 128, 256, 512, 1,024 | Exact completed coverage cell: row 9.prefixes. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov9Sessions | 1 | Exact completed coverage cell: row 9.sessions. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
+| Cov9Turn | 32 | Exact completed coverage cell: row 9.turn_tokens. Prefix lists are tokens; session counts are separate GPU instances. | 3 |
 | Example | 512 | Released token length or protocol setting for the scope indicated in NUMBERS.md: prefix or new-turn length present in coverage. | 3 |
 | ExtrapLength | 32,736 | Native-limit baseline prediction/observation/error in ms. These values expose a failure of extrapolation, not an optimized serving comparison. | 3 |
 | FullRepeats | 10 | Measured full-sweep rounds per condition, not independent sessions. | 3 |
@@ -277,6 +281,8 @@ Every source-mapped number or compound table cell used by the paper appears belo
 | PhiHigh | 1598.4 | Achieved simulated-bandwidth bracket endpoint in MB/s at the stated matched repeated-text shape; it is not a physical-device bandwidth. | 7 |
 | PhiLow | 799.2 | Achieved simulated-bandwidth bracket endpoint in MB/s at the stated matched repeated-text shape; it is not a physical-device bandwidth. | 7 |
 | PilotMid | 2,048 | Released token length or protocol setting for the scope indicated in NUMBERS.md: pilot prefixes. | 1 |
+| PilotPinnedLongShort | 73.724 | Pinned CPU reload median TTFT in milliseconds, T4 pilot, prefix 8192 and new turn 32; cache already exists. | 1 |
+| PilotRecomputeLongShort | 1,737.026 | Fresh recompute median TTFT for that same T4 pilot shape, in milliseconds. | 1 |
 | PilotRepeats | 12 | Measured pilot repeats per cell, distinct from later full sweeps. | 1 |
 | PrefixCorrect | 1,017 | Same-session descriptive prefix-only rule agreements. | 5 |
 | PythiaHigh | 1597.2 | Achieved simulated-bandwidth bracket endpoint in MB/s at the stated matched repeated-text shape; it is not a physical-device bandwidth. | 7 |

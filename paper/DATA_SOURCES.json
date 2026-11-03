@@ -19,6 +19,7 @@
     "figures/paper/short-context-regime.pdf": "170b0911874db62f0449d076cc9cccd52818dd8c6dcf5e13212fc2063bba9ae3",
     "figures/paper/bstar-vs-prefill.pdf": "b56f7692e14e3bca52419456b7829939522a8ab3411089e5bcfa2264704bb6b5",
     "outputs/consolidated_file_observability.csv": "ebb364dceea08fa973e7343cf24ed583729fab70dd4fba449d16b16e5b5791b2",
-    "outputs/results.jsonl.gz": "d3d07cb9a33971fb155d844f4834da2911950c3a3f34846dc0a3af5f3dbc3897"
+    "outputs/results.jsonl.gz": "d3d07cb9a33971fb155d844f4834da2911950c3a3f34846dc0a3af5f3dbc3897",
+    "docs/PILOT_REPORT.md": "d7bf9d8d03dcfd6745112441428576036339e5291eebe63780db7269ab37796b"
   }
 }

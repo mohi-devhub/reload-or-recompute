@@ -7,7 +7,7 @@ source=subprocess.check_output(['git','show','v0.1.0-data:scripts/report_phase3.
 source=source.replace("fig,axes=plt.subplots(2,3,figsize=(11,7)","fig,axes=plt.subplots(3,2,figsize=(7,5.5)")
 source='\n'.join(line for line in source.splitlines() if 'axes.flat[-1].text(' not in line)+'\n'
 source=source.replace('fontsize=7.3)','fontsize=7,labelspacing=.05,borderpad=0,handlelength=1.8)')
-source=source.replace('Frozen adjusted-rule prediction','Frozen adjusted rule').replace('Prefix-only KV bytes/token × tokens/s','Prefix-only bandwidth rule').replace('Censored median bound (up / down)','Censored bound')
+source=source.replace('Frozen adjusted-rule prediction','Frozen adjusted rule').replace('Prefix-only KV bytes/token × tokens/s','Prefix-only bandwidth rule').replace('Censored median bound (up / down)','Outside tested rates')
 assert 'subplots(3,2' in source
 sys.path.insert(0,str(R/'scripts'))
 namespace={'__file__':str(R/'scripts/report_phase3.py'),'__name__':'released_print_renderer'}

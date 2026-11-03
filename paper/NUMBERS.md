@@ -4,9 +4,9 @@ All empirical values in the manuscript use `\N{key}` macros generated from **v0.
 
 ## Coverage
 
-- 289 distinct source-mapped empirical values or table cells occur at 321 TeX locations.
-- 306 registry entries are available; unused entries are not claims in the paper.
-- 4 figure source/data mappings are verified. Three PDFs are byte-identical to the release; only the throughput figure is reflowed for legibility, with unchanged data and predictions.
+- 291 distinct source-mapped empirical values or table cells occur at 325 TeX locations.
+- 308 registry entries are available; unused entries are not claims in the paper.
+- 4 figure source/data mappings are verified. The scorecard and short-context PDFs are byte-identical to the release; GPU-bandwidth legend wording and throughput-panel layout/legend are presentation changes, with unchanged data and predictions.
 - No unclassified numeric literal remains in manuscript TeX after the metadata and layout categories below.
 - Regenerate the macros with `python3 paper/scripts/generate_evidence.py`; verify this map with `python3 paper/scripts/audit_numbers.py`.
 
@@ -14,32 +14,32 @@ All empirical values in the manuscript use `\N{key}` macros generated from **v0.
 
 | Key | Printed value | Release file and exact selector | Claim | TeX locations |
 | --- | --- | --- | --- | --- |
-| A10Correct | 192 | `outputs/consolidated_scorecard.csv`: gpu=A10.correct_decisions | 9 | `main.tex:27`, `main.tex:117` |
-| A10GCorrect | 398 | `outputs/consolidated_scorecard.csv`: gpu=A10G.correct_decisions | 9 | `main.tex:27`, `main.tex:117` |
-| A10GExtrapError | 5,873.459 | `docs/CLAIMS.md`: claim 10 A10G recompute absolute error | 10 | `main.tex:159` |
-| A10GExtrapObs | 13,914.555 | `docs/CLAIMS.md`: claim 10 A10G recompute observed | 10 | `main.tex:159` |
-| A10GExtrapPred | 8,041.096 | `docs/CLAIMS.md`: claim 10 A10G recompute predicted | 10 | `main.tex:159` |
-| A10GMAE | 5.758 | `outputs/consolidated_scorecard.csv`: gpu=A10G.median_absolute_ttft_error_ms | 9 | `main.tex:117` |
-| A10GRatioTotal | 24 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=A10G.RatioTotal | 11 | `main.tex:162` |
-| A10GRatioYes | 20 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=A10G.RatioYes | 11 | `main.tex:162` |
-| A10GResolved | 426 | `outputs/consolidated_scorecard.csv`: gpu=A10G.resolved_decisions | 9 | `main.tex:27`, `main.tex:117` |
-| A10GUnresolved | 3 | `outputs/consolidated_scorecard.csv`: gpu=A10G.unresolved_decisions | 9 | `main.tex:117` |
-| A10MAE | 2.040 | `outputs/consolidated_scorecard.csv`: gpu=A10.median_absolute_ttft_error_ms | 9 | `main.tex:117` |
-| A10RatioTotal | 12 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=A10.RatioTotal | 11 | `main.tex:162` |
-| A10RatioYes | 11 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=A10.RatioYes | 11 | `main.tex:162` |
-| A10Resolved | 206 | `outputs/consolidated_scorecard.csv`: gpu=A10.resolved_decisions | 9 | `main.tex:27`, `main.tex:117` |
-| A10Unresolved | 14 | `outputs/consolidated_scorecard.csv`: gpu=A10.unresolved_decisions | 9 | `main.tex:117` |
-| AdjustedCorrect | 1,237 | `outputs/claims_evidence.json`: phase2_report_totals.rule_counts.ttft_rule_agreements | 5 | `main.tex:135` |
-| AmpereGeneration | 4 | `docs/PHASE3_REPORT.md`: active PCIe generation for A10 and A10G | 15 | `main.tex:80`, `main.tex:80` |
-| AmpereSpreadLong | 22.664 | `docs/CLAIMS.md`: claim 15 N256 matched relative range | 15 | `main.tex:155` |
-| AmpereSpreadShort | 23.611 | `docs/CLAIMS.md`: claim 15 N32 matched relative range | 15 | `main.tex:155` |
-| AnomalyPairs | 4 | `docs/CLAIMS.md`: claim 21 comparisons | 21 | `main.tex:172` |
-| Bootstraps | 10,000 | `outputs/results.jsonl.gz`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:104` |
-| Boundary | 256 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:142` |
-| CI | 95 | `docs/PHASE3_REPORT.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:104` |
-| CalA10Seconds | 42.5 | `docs/PHASE3_REPORT.md`: calibration-a10-main wall seconds | 9 | `main.tex:179` |
-| CalL4Seconds | 63.4 | `docs/PHASE3_REPORT.md`: calibration-l4-main wall seconds | 9 | `main.tex:179` |
-| CalRepeats | 3 | `docs/PHASE3_PROTOCOL.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:106` |
+| A10Correct | 192 | `outputs/consolidated_scorecard.csv`: gpu=A10.correct_decisions | 9 | `main.tex:27`, `main.tex:123` |
+| A10GCorrect | 398 | `outputs/consolidated_scorecard.csv`: gpu=A10G.correct_decisions | 9 | `main.tex:27`, `main.tex:123` |
+| A10GExtrapError | 5,873.459 | `docs/CLAIMS.md`: claim 10 A10G recompute absolute error | 10 | `main.tex:162` |
+| A10GExtrapObs | 13,914.555 | `docs/CLAIMS.md`: claim 10 A10G recompute observed | 10 | `main.tex:162` |
+| A10GExtrapPred | 8,041.096 | `docs/CLAIMS.md`: claim 10 A10G recompute predicted | 10 | `main.tex:162` |
+| A10GMAE | 5.758 | `outputs/consolidated_scorecard.csv`: gpu=A10G.median_absolute_ttft_error_ms | 9 | `main.tex:123` |
+| A10GRatioTotal | 24 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=A10G.RatioTotal | 11 | `main.tex:165` |
+| A10GRatioYes | 20 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=A10G.RatioYes | 11 | `main.tex:165` |
+| A10GResolved | 426 | `outputs/consolidated_scorecard.csv`: gpu=A10G.resolved_decisions | 9 | `main.tex:27`, `main.tex:123` |
+| A10GUnresolved | 3 | `outputs/consolidated_scorecard.csv`: gpu=A10G.unresolved_decisions | 9 | `main.tex:123` |
+| A10MAE | 2.040 | `outputs/consolidated_scorecard.csv`: gpu=A10.median_absolute_ttft_error_ms | 9 | `main.tex:123` |
+| A10RatioTotal | 12 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=A10.RatioTotal | 11 | `main.tex:165` |
+| A10RatioYes | 11 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=A10.RatioYes | 11 | `main.tex:165` |
+| A10Resolved | 206 | `outputs/consolidated_scorecard.csv`: gpu=A10.resolved_decisions | 9 | `main.tex:27`, `main.tex:123` |
+| A10Unresolved | 14 | `outputs/consolidated_scorecard.csv`: gpu=A10.unresolved_decisions | 9 | `main.tex:123` |
+| AdjustedCorrect | 1,237 | `outputs/claims_evidence.json`: phase2_report_totals.rule_counts.ttft_rule_agreements | 5 | `main.tex:141` |
+| AmpereGeneration | 4 | `docs/PHASE3_REPORT.md`: active PCIe generation for A10 and A10G | 15 | `main.tex:85`, `main.tex:85` |
+| AmpereSpreadLong | 22.664 | `docs/CLAIMS.md`: claim 15 N256 matched relative range | 15 | `main.tex:158` |
+| AmpereSpreadShort | 23.611 | `docs/CLAIMS.md`: claim 15 N32 matched relative range | 15 | `main.tex:158` |
+| AnomalyPairs | 4 | `docs/CLAIMS.md`: claim 21 comparisons | 21 | `main.tex:175` |
+| Bootstraps | 10,000 | `outputs/results.jsonl.gz`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:109` |
+| Boundary | 256 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:146` |
+| CI | 95 | `docs/PHASE3_REPORT.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:109` |
+| CalA10Seconds | 42.5 | `docs/PHASE3_REPORT.md`: calibration-a10-main wall seconds | 9 | `main.tex:182` |
+| CalL4Seconds | 63.4 | `docs/PHASE3_REPORT.md`: calibration-l4-main wall seconds | 9 | `main.tex:182` |
+| CalRepeats | 3 | `docs/PHASE3_PROTOCOL.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:111` |
 | Cov0Prefixes | 16, 32, 64, 128, 256, 512, 1,024, 1,792 | `outputs/consolidated_coverage.csv`: row 0.prefixes | 3 | `generated/coverage.tex:5` |
 | Cov0Sessions | 1 | `outputs/consolidated_coverage.csv`: row 0.sessions | 3 | `generated/coverage.tex:5` |
 | Cov0Turn | 32 | `outputs/consolidated_coverage.csv`: row 0.turn_tokens | 3 | `generated/coverage.tex:5` |
@@ -136,18 +136,18 @@ All empirical values in the manuscript use `\N{key}` macros generated from **v0.
 | Cov9Prefixes | 16, 32, 64, 128, 256, 512, 1,024 | `outputs/consolidated_coverage.csv`: row 9.prefixes | 3 | `generated/coverage.tex:14` |
 | Cov9Sessions | 1 | `outputs/consolidated_coverage.csv`: row 9.sessions | 3 | `generated/coverage.tex:14` |
 | Cov9Turn | 32 | `outputs/consolidated_coverage.csv`: row 9.turn_tokens | 3 | `generated/coverage.tex:14` |
-| Example | 512 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:78`, `main.tex:137`, `main.tex:151` |
-| ExtrapLength | 32,736 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:159` |
-| FullRepeats | 10 | `docs/PHASE3_PROTOCOL.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:78`, `main.tex:102` |
-| H100Cells | 26 | `outputs/consolidated_scorecard.csv`: gpu=H100!.complete_cells | 9 | `main.tex:198` |
-| H100Correct | 20 | `outputs/consolidated_scorecard.csv`: gpu=H100!.correct_decisions | 9 | `main.tex:27`, `main.tex:117` |
-| H100Missing | 52 | `docs/CLAIMS.md`: claim 20 unfinished cells | 20 | `main.tex:198` |
-| H100RatioTotal | 1 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=H100.RatioTotal | 11 | `main.tex:162` |
-| H100RatioYes | 0 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=H100.RatioYes | 11 | `main.tex:162` |
-| H100Resolved | 21 | `outputs/consolidated_scorecard.csv`: gpu=H100!.resolved_decisions | 9 | `main.tex:27`, `main.tex:117` |
-| H100Unresolved | 1 | `outputs/consolidated_scorecard.csv`: gpu=H100!.unresolved_decisions | 9 | `main.tex:117` |
-| HalfAdjusted | 2,442.265 | `docs/CLAIMS.md`: claim 6 adjusted B* | 6 | `main.tex:137` |
-| HalfPrefix | 226.626 | `docs/CLAIMS.md`: claim 6 prefix-only B* | 6 | `main.tex:137` |
+| Example | 512 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:83`, `main.tex:141`, `main.tex:154` |
+| ExtrapLength | 32,736 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:162` |
+| FullRepeats | 10 | `docs/PHASE3_PROTOCOL.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:83`, `main.tex:107` |
+| H100Cells | 26 | `outputs/consolidated_scorecard.csv`: gpu=H100!.complete_cells | 9 | `main.tex:205` |
+| H100Correct | 20 | `outputs/consolidated_scorecard.csv`: gpu=H100!.correct_decisions | 9 | `main.tex:123` |
+| H100Missing | 52 | `docs/CLAIMS.md`: claim 20 unfinished cells | 20 | `main.tex:205` |
+| H100RatioTotal | 1 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=H100.RatioTotal | 11 | `main.tex:165` |
+| H100RatioYes | 0 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=H100.RatioYes | 11 | `main.tex:165` |
+| H100Resolved | 21 | `outputs/consolidated_scorecard.csv`: gpu=H100!.resolved_decisions | 9 | `main.tex:123` |
+| H100Unresolved | 1 | `outputs/consolidated_scorecard.csv`: gpu=H100!.unresolved_decisions | 9 | `main.tex:123` |
+| HalfAdjusted | 2,442.265 | `docs/CLAIMS.md`: claim 6 adjusted B* | 6 | `main.tex:141` |
+| HalfPrefix | 226.626 | `docs/CLAIMS.md`: claim 6 prefix-only B* | 6 | `main.tex:141` |
 | KV0 | 12,288 | `outputs/claims_evidence.json`: kv_bytes_per_token.Qwen/Qwen2.5-0.5B | 4 | `generated/models.tex:3` |
 | KV1 | 28,672 | `outputs/claims_evidence.json`: kv_bytes_per_token.Qwen/Qwen2.5-1.5B | 4 | `generated/models.tex:4` |
 | KV2 | 36,864 | `outputs/claims_evidence.json`: kv_bytes_per_token.Qwen/Qwen2.5-3B | 4 | `generated/models.tex:5` |
@@ -155,50 +155,52 @@ All empirical values in the manuscript use `\N{key}` macros generated from **v0.
 | KV4 | 196,608 | `outputs/claims_evidence.json`: kv_bytes_per_token.facebook/opt-1.3b | 4 | `generated/models.tex:7` |
 | KV5 | 327,680 | `outputs/claims_evidence.json`: kv_bytes_per_token.microsoft/phi-2 | 4 | `generated/models.tex:8` |
 | KV6 | 114,688 | `outputs/claims_evidence.json`: kv_bytes_per_token.unsloth/Llama-3.2-3B-Instruct | 4 | `generated/models.tex:9` |
-| KaggleFileSamples | 7,762 | `outputs/consolidated_file_observability.csv`: phase2.sum(samples) | 16 | `main.tex:111` |
-| KaggleMaxBytes | 1,879,052,288 | `outputs/consolidated_file_observability.csv`: phase2.maximum_bytes | 16 | `main.tex:111` |
-| KaggleMinBytes | 196,608 | `outputs/consolidated_file_observability.csv`: phase2.minimum_bytes | 16 | `main.tex:111` |
-| KaggleReads | 7,762 | `outputs/consolidated_file_observability.csv`: phase2.sum(positive) | 16 | `main.tex:111` |
-| L4Correct | 574 | `outputs/consolidated_scorecard.csv`: gpu=L4.correct_decisions | 9 | `main.tex:27`, `main.tex:117` |
-| L4ExtrapError | 4,934.542 | `docs/CLAIMS.md`: claim 10 L4 recompute absolute error | 10 | `main.tex:159` |
-| L4ExtrapObs | 18,022.902 | `docs/CLAIMS.md`: claim 10 L4 recompute observed | 10 | `main.tex:159` |
-| L4ExtrapPred | 13,088.360 | `docs/CLAIMS.md`: claim 10 L4 recompute predicted | 10 | `main.tex:159` |
-| L4MAE | 3.203 | `outputs/consolidated_scorecard.csv`: gpu=L4.median_absolute_ttft_error_ms | 9 | `main.tex:117` |
-| L4RatioTotal | 27 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=L4.RatioTotal | 11 | `main.tex:162` |
-| L4RatioYes | 25 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=L4.RatioYes | 11 | `main.tex:162` |
-| L4Resolved | 636 | `outputs/consolidated_scorecard.csv`: gpu=L4.resolved_decisions | 9 | `main.tex:27`, `main.tex:117` |
-| L4SpreadLong | 4.417 | `docs/CLAIMS.md`: claim 14 L4 N256 median spread | 14 | `main.tex:155` |
-| L4SpreadShort | 4.956 | `docs/CLAIMS.md`: claim 14 L4 N32 median spread | 14 | `main.tex:155` |
-| L4Unresolved | 13 | `outputs/consolidated_scorecard.csv`: gpu=L4.unresolved_decisions | 9 | `main.tex:117` |
-| Long | 256 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:78`, `main.tex:94` |
-| LongPrefix | 8,192 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:78` |
-| MainGrid | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | `outputs/consolidated_coverage.csv`: phase3 main-model prefixes | 3 | `main.tex:94` |
-| Matched | 1,024 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:126`, `main.tex:198` |
-| MaxMain | 16,384 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:198` |
-| MhaGrid | 64, 256, 512, 1,024 | `docs/CLAIMS.md`: claim 18 matched prefixes | 18 | `main.tex:169` |
-| MicroRepeats | 5 | `docs/PHASE3_PROTOCOL.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:106` |
-| ModalFileSamples | 4,575 | `outputs/consolidated_file_observability.csv`: phase3.sum(samples) | 17 | `main.tex:113` |
-| ModalReads | 0 | `outputs/consolidated_file_observability.csv`: phase3.sum(positive) | 17 | `main.tex:113` |
-| ModelCount | 7 | `outputs/claims_evidence.json`: phase2_report_totals.model configurations | 3 | `main.tex:27`, `main.tex:78` |
-| PhiHigh | 1598.4 | `docs/CLAIMS.md`: claim 7 Phi achieved high | 7 | `main.tex:151` |
-| PhiLow | 799.2 | `docs/CLAIMS.md`: claim 7 Phi achieved low | 7 | `main.tex:151` |
-| PilotMid | 2,048 | `outputs/consolidated_coverage.csv`: pilot prefixes | 1 | `main.tex:78` |
-| PilotRepeats | 12 | `docs/CLAIMS.md`: claim 1 measured repeats | 1 | `main.tex:78` |
-| PrefixCorrect | 1,017 | `outputs/claims_evidence.json`: phase2_report_totals.rule_counts.prefix_rule_agreements | 5 | `main.tex:135` |
-| PythiaHigh | 1597.2 | `docs/CLAIMS.md`: claim 7 Pythia achieved high | 7 | `main.tex:151` |
-| PythiaLow | 798.9 | `docs/CLAIMS.md`: claim 7 Pythia achieved low | 7 | `main.tex:151` |
-| QwenMainHigh | 398.4 | `docs/CLAIMS.md`: claim 7 Qwen1.5 achieved high | 7 | `main.tex:151` |
-| QwenMainLow | 199.5 | `docs/CLAIMS.md`: claim 7 Qwen1.5 achieved low | 7 | `main.tex:151` |
-| QwenThreeHigh | 199.7 | `docs/CLAIMS.md`: claim 7 Qwen3 achieved high | 7 | `main.tex:151` |
-| QwenThreeLow | 99.9 | `docs/CLAIMS.md`: claim 7 Qwen3 achieved low | 7 | `main.tex:151` |
-| Rate100 | 100 | `docs/PHASE2_PROTOCOL.md`: simulated-bandwidth target grid | 12 | `main.tex:126` |
-| Rate1600 | 1,600 | `docs/PHASE2_PROTOCOL.md`: simulated-bandwidth target grid | 12 | `main.tex:126`, `main.tex:126` |
-| Rate200 | 200 | `docs/PHASE2_PROTOCOL.md`: simulated-bandwidth target grid | 12 | `main.tex:126`, `main.tex:126` |
-| Rate400 | 400 | `docs/PHASE2_PROTOCOL.md`: simulated-bandwidth target grid | 12 | `main.tex:126`, `main.tex:126` |
-| Rate800 | 800 | `docs/PHASE2_PROTOCOL.md`: simulated-bandwidth target grid | 12 | `main.tex:126`, `main.tex:126`, `main.tex:126` |
-| Rates | 50, 100, 200, 400, 800, 1,600 | `docs/PHASE2_PROTOCOL.md`: Rate-limited copies are simulated bandwidth | 3 | `main.tex:99` |
-| RawNewError | 3.086 | `docs/CLAIMS.md`: claim 19 raw corrected APE | 19 | `main.tex:153` |
-| RawOldError | 3.107 | `docs/CLAIMS.md`: claim 19 raw old APE | 19 | `main.tex:153` |
+| KaggleFileSamples | 7,762 | `outputs/consolidated_file_observability.csv`: phase2.sum(samples) | 16 | `main.tex:116` |
+| KaggleMaxBytes | 1,879,052,288 | `outputs/consolidated_file_observability.csv`: phase2.maximum_bytes | 16 | `main.tex:116` |
+| KaggleMinBytes | 196,608 | `outputs/consolidated_file_observability.csv`: phase2.minimum_bytes | 16 | `main.tex:116` |
+| KaggleReads | 7,762 | `outputs/consolidated_file_observability.csv`: phase2.sum(positive) | 16 | `main.tex:116` |
+| L4Correct | 574 | `outputs/consolidated_scorecard.csv`: gpu=L4.correct_decisions | 9 | `main.tex:27`, `main.tex:123` |
+| L4ExtrapError | 4,934.542 | `docs/CLAIMS.md`: claim 10 L4 recompute absolute error | 10 | `main.tex:162` |
+| L4ExtrapObs | 18,022.902 | `docs/CLAIMS.md`: claim 10 L4 recompute observed | 10 | `main.tex:162` |
+| L4ExtrapPred | 13,088.360 | `docs/CLAIMS.md`: claim 10 L4 recompute predicted | 10 | `main.tex:162` |
+| L4MAE | 3.203 | `outputs/consolidated_scorecard.csv`: gpu=L4.median_absolute_ttft_error_ms | 9 | `main.tex:123` |
+| L4RatioTotal | 27 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=L4.RatioTotal | 11 | `main.tex:165` |
+| L4RatioYes | 25 | `outputs/claims_evidence.json`: hypothesis_scorecards.gpu=L4.RatioYes | 11 | `main.tex:165` |
+| L4Resolved | 636 | `outputs/consolidated_scorecard.csv`: gpu=L4.resolved_decisions | 9 | `main.tex:27`, `main.tex:123` |
+| L4SpreadLong | 4.417 | `docs/CLAIMS.md`: claim 14 L4 N256 median spread | 14 | `main.tex:158` |
+| L4SpreadShort | 4.956 | `docs/CLAIMS.md`: claim 14 L4 N32 median spread | 14 | `main.tex:158` |
+| L4Unresolved | 13 | `outputs/consolidated_scorecard.csv`: gpu=L4.unresolved_decisions | 9 | `main.tex:123` |
+| Long | 256 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:83`, `main.tex:99` |
+| LongPrefix | 8,192 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:32`, `main.tex:83` |
+| MainGrid | 16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384 | `outputs/consolidated_coverage.csv`: phase3 main-model prefixes | 3 | `main.tex:99` |
+| Matched | 1,024 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:27`, `main.tex:132`, `main.tex:205` |
+| MaxMain | 16,384 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:205` |
+| MhaGrid | 64, 256, 512, 1,024 | `docs/CLAIMS.md`: claim 18 matched prefixes | 18 | `main.tex:172` |
+| MicroRepeats | 5 | `docs/PHASE3_PROTOCOL.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:111` |
+| ModalFileSamples | 4,575 | `outputs/consolidated_file_observability.csv`: phase3.sum(samples) | 17 | `main.tex:118` |
+| ModalReads | 0 | `outputs/consolidated_file_observability.csv`: phase3.sum(positive) | 17 | `main.tex:118` |
+| ModelCount | 7 | `outputs/claims_evidence.json`: phase2_report_totals.model configurations | 3 | `main.tex:83` |
+| PhiHigh | 1598.4 | `docs/CLAIMS.md`: claim 7 Phi achieved high | 7 | `main.tex:154` |
+| PhiLow | 799.2 | `docs/CLAIMS.md`: claim 7 Phi achieved low | 7 | `main.tex:154` |
+| PilotMid | 2,048 | `outputs/consolidated_coverage.csv`: pilot prefixes | 1 | `main.tex:83` |
+| PilotPinnedLongShort | 73.724 | `docs/PILOT_REPORT.md`: Raw timing summaries; new turn 32, prefix 8192, cpu_pinned median TTFT (ms) | 1 | `main.tex:32` |
+| PilotRecomputeLongShort | 1,737.026 | `docs/PILOT_REPORT.md`: Raw timing summaries; new turn 32, prefix 8192, recompute median TTFT (ms) | 1 | `main.tex:32` |
+| PilotRepeats | 12 | `docs/CLAIMS.md`: claim 1 measured repeats | 1 | `main.tex:83` |
+| PrefixCorrect | 1,017 | `outputs/claims_evidence.json`: phase2_report_totals.rule_counts.prefix_rule_agreements | 5 | `main.tex:141` |
+| PythiaHigh | 1597.2 | `docs/CLAIMS.md`: claim 7 Pythia achieved high | 7 | `main.tex:154` |
+| PythiaLow | 798.9 | `docs/CLAIMS.md`: claim 7 Pythia achieved low | 7 | `main.tex:154` |
+| QwenMainHigh | 398.4 | `docs/CLAIMS.md`: claim 7 Qwen1.5 achieved high | 7 | `main.tex:154` |
+| QwenMainLow | 199.5 | `docs/CLAIMS.md`: claim 7 Qwen1.5 achieved low | 7 | `main.tex:154` |
+| QwenThreeHigh | 199.7 | `docs/CLAIMS.md`: claim 7 Qwen3 achieved high | 7 | `main.tex:154` |
+| QwenThreeLow | 99.9 | `docs/CLAIMS.md`: claim 7 Qwen3 achieved low | 7 | `main.tex:154` |
+| Rate100 | 100 | `docs/PHASE2_PROTOCOL.md`: simulated-bandwidth target grid | 12 | `main.tex:27`, `main.tex:132` |
+| Rate1600 | 1,600 | `docs/PHASE2_PROTOCOL.md`: simulated-bandwidth target grid | 12 | `main.tex:27`, `main.tex:132` |
+| Rate200 | 200 | `docs/PHASE2_PROTOCOL.md`: simulated-bandwidth target grid | 12 | `main.tex:132`, `main.tex:132` |
+| Rate400 | 400 | `docs/PHASE2_PROTOCOL.md`: simulated-bandwidth target grid | 12 | `main.tex:27`, `main.tex:132`, `main.tex:132` |
+| Rate800 | 800 | `docs/PHASE2_PROTOCOL.md`: simulated-bandwidth target grid | 12 | `main.tex:27`, `main.tex:132`, `main.tex:132` |
+| Rates | 50, 100, 200, 400, 800, 1,600 | `docs/PHASE2_PROTOCOL.md`: Rate-limited copies are simulated bandwidth | 3 | `main.tex:104` |
+| RawNewError | 3.086 | `docs/CLAIMS.md`: claim 19 raw corrected APE | 19 | `main.tex:156` |
+| RawOldError | 3.107 | `docs/CLAIMS.md`: claim 19 raw old APE | 19 | `main.tex:156` |
 | Score12Col2 | 574 / 636 | `docs/PHASE3_REPORT.md`: scorecard table line 13, column 3 | 9 | `generated/scorecards.tex:5` |
 | Score12Col3 | 13 | `docs/PHASE3_REPORT.md`: scorecard table line 13, column 4 | 9 | `generated/scorecards.tex:5` |
 | Score12Col4 | 767 | `docs/PHASE3_REPORT.md`: scorecard table line 13, column 5 | 9 | `generated/scorecards.tex:5` |
@@ -287,33 +289,33 @@ All empirical values in the manuscript use `\N{key}` macros generated from **v0.
 | Score33Col3 | 1 | `docs/PHASE3_REPORT.md`: scorecard table line 34, column 4 | 9 | `generated/scorecards.tex:26` |
 | Score33Col4 | 26 | `docs/PHASE3_REPORT.md`: scorecard table line 34, column 5 | 9 | `generated/scorecards.tex:26` |
 | Score33Col5 | 6.579 | `docs/PHASE3_REPORT.md`: scorecard table line 34, column 6 | 9 | `generated/scorecards.tex:26` |
-| SessionsL4 | 2 | `docs/PHASE3_PROTOCOL.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:80` |
-| SessionsT4 | 3 | `docs/PHASE3_REPORT.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:80` |
-| Short | 32 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:78`, `main.tex:94`, `main.tex:94`, `main.tex:126`, `main.tex:129`, `main.tex:137`, `main.tex:142`, `main.tex:151`, `main.tex:159`, `main.tex:165`, `main.tex:169` |
-| ShortGrid | 16, 64, 128, 256 | `docs/CLAIMS.md`: claim 13 common short prefixes | 13 | `main.tex:142` |
-| T4Held2Correct | 148 | `outputs/claims_evidence.json`: phase2-main-session-2.agreements | 8 | `main.tex:139` |
-| T4Held2Resolved | 149 | `outputs/claims_evidence.json`: phase2-main-session-2.resolved_cells | 8 | `main.tex:139` |
-| T4Held3Correct | 146 | `outputs/claims_evidence.json`: phase2-main-session-3.agreements | 8 | `main.tex:139` |
-| T4Held3Resolved | 150 | `outputs/claims_evidence.json`: phase2-main-session-3.resolved_cells | 8 | `main.tex:139` |
-| T4Invalid | 0 | `outputs/claims_evidence.json`: phase2_report_totals.invalid_measurements | 3 | `main.tex:78` |
-| T4Resolved | 1,258 | `outputs/claims_evidence.json`: phase2_report_totals.rule_counts.resolved_comparisons | 5 | `main.tex:135`, `main.tex:135` |
-| T4Sessions | 10 | `outputs/claims_evidence.json`: phase2_report_totals.full_sessions | 3 | `main.tex:78` |
-| T4SpreadLong | 14.847 | `docs/CLAIMS.md`: claim 14 T4 N256 median spread | 14 | `main.tex:155` |
-| T4SpreadShort | 12.341 | `docs/CLAIMS.md`: claim 14 T4 N32 median spread | 14 | `main.tex:155` |
-| T4Timings | 26,040 | `outputs/claims_evidence.json`: phase2_report_totals.accepted_measurements | 3 | `main.tex:27`, `main.tex:78` |
-| TorchNewError | 3.097 | `docs/CLAIMS.md`: claim 19 torch corrected APE | 19 | `main.tex:153` |
-| TorchOldError | 11.78 | `docs/CLAIMS.md`: claim 19 torch old APE | 19 | `main.tex:153` |
+| SessionsL4 | 2 | `docs/PHASE3_PROTOCOL.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:85` |
+| SessionsT4 | 3 | `docs/PHASE3_REPORT.md`: released measurement protocol / referenced canonical analysis metadata | 3 | `main.tex:85` |
+| Short | 32 | `outputs/consolidated_coverage.csv`: prefix or new-turn length present in coverage | 3 | `main.tex:27`, `main.tex:32`, `main.tex:83`, `main.tex:99`, `main.tex:99`, `main.tex:132`, `main.tex:136`, `main.tex:141`, `main.tex:146`, `main.tex:154`, `main.tex:162`, `main.tex:168`, `main.tex:172` |
+| ShortGrid | 16, 64, 128, 256 | `docs/CLAIMS.md`: claim 13 common short prefixes | 13 | `main.tex:146` |
+| T4Held2Correct | 148 | `outputs/claims_evidence.json`: phase2-main-session-2.agreements | 8 | `main.tex:141` |
+| T4Held2Resolved | 149 | `outputs/claims_evidence.json`: phase2-main-session-2.resolved_cells | 8 | `main.tex:141` |
+| T4Held3Correct | 146 | `outputs/claims_evidence.json`: phase2-main-session-3.agreements | 8 | `main.tex:141` |
+| T4Held3Resolved | 150 | `outputs/claims_evidence.json`: phase2-main-session-3.resolved_cells | 8 | `main.tex:141` |
+| T4Invalid | 0 | `outputs/claims_evidence.json`: phase2_report_totals.invalid_measurements | 3 | `main.tex:83` |
+| T4Resolved | 1,258 | `outputs/claims_evidence.json`: phase2_report_totals.rule_counts.resolved_comparisons | 5 | `main.tex:141`, `main.tex:141` |
+| T4Sessions | 10 | `outputs/claims_evidence.json`: phase2_report_totals.full_sessions | 3 | `main.tex:83` |
+| T4SpreadLong | 14.847 | `docs/CLAIMS.md`: claim 14 T4 N256 median spread | 14 | `main.tex:158` |
+| T4SpreadShort | 12.341 | `docs/CLAIMS.md`: claim 14 T4 N32 median spread | 14 | `main.tex:158` |
+| T4Timings | 26,040 | `outputs/claims_evidence.json`: phase2_report_totals.accepted_measurements | 3 | `main.tex:83` |
+| TorchNewError | 3.097 | `docs/CLAIMS.md`: claim 19 torch corrected APE | 19 | `main.tex:156` |
+| TorchOldError | 11.78 | `docs/CLAIMS.md`: claim 19 torch old APE | 19 | `main.tex:156` |
 
 ## Figures
 
 | Figure | Numeric source | Preservation |
 | --- | --- | --- |
-| bstar-vs-gpu | `outputs/consolidated_crossovers.csv` in the release; exact released PDF and draft SHA-256 in `generated/number_audit.json` | Exact PDF |
+| bstar-vs-gpu | `outputs/consolidated_crossovers.csv` in the release; exact released PDF and draft SHA-256 in `generated/number_audit.json` | Presentation only; `generated/figure_bandwidth_legend.json` |
 | frozen-scorecard | `outputs/consolidated_scorecard.csv` in the release; exact released PDF and draft SHA-256 in `generated/number_audit.json` | Exact PDF |
 | short-context-regime | `outputs/consolidated_results.jsonl` in the release; exact released PDF and draft SHA-256 in `generated/number_audit.json` | Exact PDF |
-| bstar-vs-prefill | `outputs/consolidated_crossovers.csv` in the release; exact released PDF and draft SHA-256 in `generated/number_audit.json` | Layout-only reflow; `generated/figure_reformat.json` |
+| bstar-vs-prefill | `outputs/consolidated_crossovers.csv` in the release; exact released PDF and draft SHA-256 in `generated/number_audit.json` | Presentation only; `generated/figure_reformat.json` |
 
-Axes ticks, figure labels, table/section/equation counters, bibliography labels and page numbers are display/document counters, not additional measurements. The figure data mappings cover plotted values and censoring; axis tick spacing does not constitute another observed bandwidth.
+Axes ticks, figure labels, table/section/equation counters, bibliography labels and page numbers are display/document counters, not additional measurements. The figure data mappings cover plotted values and thresholds outside the tested rates; axis tick spacing does not constitute another observed bandwidth.
 
 ## Identifiers and non-empirical numbers
 

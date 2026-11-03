@@ -15,6 +15,12 @@ def put(key,value,source,field,claim,render=None):
 
 def main():
  evidence=j('outputs/claims_evidence.json');ev=evidence['evidence'];tot=ev['phase2_report_totals'][0]
+ pilot_text=released('docs/PILOT_REPORT.md').decode()
+ for key,condition in [('PilotPinnedLongShort','cpu_pinned'),('PilotRecomputeLongShort','recompute')]:
+  section=pilot_text.split('### New turn: 32 tokens',1)[1].split('### New turn: 256 tokens',1)[0]
+  line=next(line for line in section.splitlines() if line.startswith('| 8192 | '+condition+' |'))
+  value=line.split('|')[3].strip()
+  put(key,float(value),'docs/PILOT_REPORT.md','Raw timing summaries; new turn 32, prefix 8192, '+condition+' median TTFT (ms)',1,format(float(value),',.3f'))
  for key,value,field,claim in [('ModelCount',7,'model configurations',3),('T4Timings',tot['accepted_measurements'],'accepted_measurements',3),('T4Invalid',tot['invalid_measurements'],'invalid_measurements',3),('T4Sessions',tot['full_sessions'],'full_sessions',3),('AdjustedCorrect',tot['rule_counts']['ttft_rule_agreements'],'rule_counts.ttft_rule_agreements',5),('PrefixCorrect',tot['rule_counts']['prefix_rule_agreements'],'rule_counts.prefix_rule_agreements',5),('T4Resolved',tot['rule_counts']['resolved_comparisons'],'rule_counts.resolved_comparisons',5)]:put(key,value,'outputs/claims_evidence.json','phase2_report_totals.'+field,claim,format(value,','))
  for r in ev['scorecards']:
   gpu=r['gpu'].replace('!','')
@@ -62,7 +68,7 @@ def main():
   k='KV'+str(idx);put(k,b,'outputs/claims_evidence.json','kv_bytes_per_token.'+model,4,format(b,','));layout='MHA' if any(x in model for x in ['pythia','phi-2','opt-']) else 'GQA'
   modeltext.append(r'\path{'+model+'} & '+layout+' & '+r'\N{'+k+r'} \\')
  modeltext.extend([r'\bottomrule',r'\end{tabular}']);(PAPER/'generated/models.tex').write_text('\n'.join(modeltext)+'\n')
- coverage=rows('outputs/consolidated_coverage.csv');cov=[r'\begin{longtable}{p{.78in}p{1.43in}crp{2.55in}r}',r'\caption{Complete measured coverage. U is UltraChat; R is repeated text. Sessions counts separate allocations, not repeat rounds. Calibration and incomplete H100 cells are excluded.}\label{tab:coverage}\\',r'\toprule Phase/board & Model & Text & Turn & Prefix tokens & Sessions\\\midrule\endfirsthead',r'\toprule Phase/board & Model & Text & Turn & Prefix tokens & Sessions\\\midrule\endhead']
+ coverage=rows('outputs/consolidated_coverage.csv');cov=[r'\begin{longtable}{p{.78in}p{1.43in}crp{2.55in}r}',r'\caption{Complete measured coverage. U is UltraChat; R is repeated text. Session counts separate GPU instances, not repeat rounds. Calibration and incomplete H100 cells are excluded.}\label{tab:coverage}\\',r'\toprule Phase/board & Model & Text & Turn & Prefix tokens & Sessions\\\midrule\endfirsthead',r'\toprule Phase/board & Model & Text & Turn & Prefix tokens & Sessions\\\midrule\endhead']
  for i,r in enumerate(coverage):
   model=r['model'].split('/')[-1].replace('Qwen2.5-','Qwen ').replace('Llama-3.2-3B-Instruct','Llama 3.2-3B');phase={'pilot':'Pilot','phase2':'T4','phase3':r['gpu'].replace('!','')}[r['phase']];prefix=__import__('ast').literal_eval(r['prefixes']);sessions=__import__('ast').literal_eval(r['sessions'])
   vals=[put('Cov'+str(i)+'Turn',int(r['turn_tokens']),'outputs/consolidated_coverage.csv','row '+str(i)+'.turn_tokens',3),put('Cov'+str(i)+'Prefixes',prefix,'outputs/consolidated_coverage.csv','row '+str(i)+'.prefixes',3,', '.join(format(v,',') for v in prefix)),put('Cov'+str(i)+'Sessions',len(sessions),'outputs/consolidated_coverage.csv','row '+str(i)+'.sessions',3)]

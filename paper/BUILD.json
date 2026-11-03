@@ -5,7 +5,7 @@
   "references_and_appendix_pages": 3,
   "reference_pages": 1,
   "appendix_pages": 2,
-  "pdf_sha256": "60ef0c5e3fcafac77e03569988b2d92738425ddc15e76b31e961241468fc6edd",
+  "pdf_sha256": "bc47dcd3c135ab1ab1b4e78fcb3a17c3588d2cbbb7fdcf16fc57809e99cf4ed4",
   "commands": [
     [
       "pdflatex",

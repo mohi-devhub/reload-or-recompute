@@ -23,6 +23,6 @@ python3 scripts/write_briefing.py
 
 `NUMBERS.md` maps every empirical macro use to its release source and distinguishes identifier, bibliography, formula and layout numbers. `generated/number_registry.json` retains raw values. `DATA_SOURCES.json` records release-file hashes. `CITATIONS.md` records verified titles, authors, versions, venues and dates; `scripts/prepare_citations.py` recreates BibTeX offline from that metadata.
 
-Three figures are unchanged released PDFs. The throughput figure alone is reflowed to a legible two-column panel layout using the released renderer and observations, without new points or refitting. `scripts/print_prefill.py` reproduces that presentation change and `generated/figure_reformat.json` records its hashes.
+The scorecard and short-context figures are unchanged released PDFs. The bandwidth-versus-GPU figure has a plain-language legend, and the throughput figure has a legible two-column panel layout and plain-language legend. Both use released renderers and observations, without new points or refitting. `scripts/print_bandwidth.py` and `scripts/print_prefill.py` reproduce those presentation changes; their metadata in `generated/` records the hashes.
 
 `BRIEFING.md` explains every section, figure and used numerical entry. The introduction retains the requested author-motivation placeholder, and two alternative titles remain LaTeX comments. `BUILD.json` records compilation and PDF pagination. This is a draft for author review; no submission, upload or posting has been performed.
