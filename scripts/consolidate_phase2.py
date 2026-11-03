@@ -6,9 +6,13 @@ ROOT=Path(__file__).resolve().parents[1]
 canonical=ROOT/'outputs/results.jsonl'
 pilot_path=ROOT/'outputs/pilot_results.jsonl'
 phase2=ROOT/'outputs/phase2_results.jsonl'
+later_lines=[]
+if canonical.exists():
+    with canonical.open() as stream:
+        later_lines=[line for line in stream if json.loads(line).get('phase')=='phase3']
 if not pilot_path.exists():
     pilot=[json.loads(line) for line in canonical.read_text().splitlines()]
-    pilot=[r for r in pilot if r.get('phase')!='phase2']
+    pilot=[r for r in pilot if r.get('phase') not in ['phase2','phase3']]
     pilot_path.write_text(''.join(json.dumps(r,allow_nan=False)+'\n' for r in pilot))
 else:
     pilot=[json.loads(line) for line in pilot_path.read_text().splitlines()]
@@ -38,15 +42,17 @@ for r in data:
         if key in unique:raise ValueError('Duplicate phase-two sample key')
         unique.add(key)
 temporary=canonical.with_suffix('.jsonl.tmp')
-temporary.write_text(''.join(json.dumps(r,allow_nan=False)+'\n' for r in pilot+data))
+temporary.write_text(''.join(json.dumps(r,allow_nan=False)+'\n' for r in pilot+data)+''.join(later_lines))
 temporary.replace(canonical)
 budget_doc=ROOT/'docs/BUDGET.md'
-text=budget_doc.read_text().split('\n## Combined study total')[0]
+original_budget=budget_doc.read_text()
+phase3_budget='\n## Phase three'+original_budget.split('\n## Phase three',1)[1] if '\n## Phase three' in original_budget else ''
+text=original_budget.split('\n## Combined study total')[0]
 text=text.replace('Remaining pilot allowance under the conservative process accounting:',
                   'At the pilot stop, remaining pilot allowance under conservative process accounting:')
 text=text.replace('Remaining weekly allowance on that basis:', 'At the pilot stop, remaining weekly allowance on that basis:')
 text+=f"\n## Combined study total\n\nPilot plus redesigned phase: **{study_charge:.6f} conservative GPU-hours**. "
 text+=f"Remaining weekly allowance on this accounting basis: **{30-study_charge:.6f} GPU-hours**. "
 text+='Source: `study_budget_summary` in `outputs/results.jsonl`; the completed phase is stopped.\n'
-budget_doc.write_text(text)
+budget_doc.write_text(text+phase3_budget)
 print(json.dumps(dict(pilot_rows=len(pilot),phase2_rows=len(data),unique_phase2_measurements=len(unique))))

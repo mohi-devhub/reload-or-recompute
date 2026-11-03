@@ -27,7 +27,7 @@ def read(run):
 if __name__=='__main__':
     ledger=json.loads((ROOT/'outputs/phase3_ledger.json').read_text())
     containers=json.loads(subprocess.check_output(['modal','container','list','--json'],text=True))
-    active={c['app_name'].removeprefix('reload-recompute-p3-') for c in containers}
+    active={c['app_name'].removeprefix('reload-recompute-p3-') for c in containers if c['app_name'].startswith('reload-recompute-p3-')}
     runs=[r for r in ledger['runs'] if r['name'] in active and r['purpose']!='prepare']
     with ThreadPoolExecutor(max_workers=4) as pool:progress=list(pool.map(read,runs))
     snapshot=dict(observed_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),active=sorted(active),progress=progress)
