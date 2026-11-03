@@ -1,0 +1,13 @@
+{
+  "schema_version": 3,
+  "phase": "phase3",
+  "record_origin": "analysis",
+  "kind": "phase3_audit",
+  "measurements": 16079,
+  "invalid_measurements": 0,
+  "missing_prediction_cells": 52,
+  "protected_source_all_match": true,
+  "source_run_count": 13,
+  "main_cost_estimate_and_reservation_usd": 4.839242184451149,
+  "h100_cost_estimate_and_reservation_usd": 2.1976
+}

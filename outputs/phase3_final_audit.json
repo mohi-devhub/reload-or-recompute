@@ -1,0 +1,13 @@
+{
+  "kind": "phase3_final_audit",
+  "phase": "phase3",
+  "record_origin": "audit",
+  "passed": true,
+  "failures": [],
+  "measurement_count": 16079,
+  "registered_cells": 1612,
+  "optional_incomplete_cells": 52,
+  "all_registered_cells_complete": false,
+  "main_conservative_usd": 4.839242184451149,
+  "h100_conservative_usd": 2.1976
+}

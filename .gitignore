@@ -10,3 +10,5 @@ __pycache__/
 .DS_Store
 kernels/production/production.py
 kernels/phase2/generated/
+outputs/results.jsonl
+outputs/phase3_analysis.jsonl

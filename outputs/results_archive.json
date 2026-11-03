@@ -1,0 +1,9 @@
+{
+  "kind": "results_archive",
+  "format": "gzip",
+  "canonical_path": "outputs/results.jsonl",
+  "archive_path": "outputs/results.jsonl.gz",
+  "uncompressed_bytes": 127022194,
+  "uncompressed_sha256": "3b0e631b08997c65d03ac4bd1fb963eef1f703e333ea2461a4503ce7339f87b8",
+  "compressed_sha256": "e73ffb7bc2cf9e8121a017ffb756278cf0108d06d22fa14365342223577b99cb"
+}

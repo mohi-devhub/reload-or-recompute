@@ -1,0 +1,109 @@
+{
+  "kind": "phase3_cleanup",
+  "phase": "phase3",
+  "record_origin": "control",
+  "observed_at": "2026-11-03T06:58:18.163913+00:00",
+  "deleted_study_volumes": [
+    "reload-recompute-phase3-models-20261103",
+    "reload-recompute-phase3-results-20261103"
+  ],
+  "study_apps_before_cleanup": [
+    {
+      "app_id": "ap-nWY6z0damSVlJMSku40A8g",
+      "description": "reload-recompute-p3-h100-single-session",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 11:54:07+05:30",
+      "stopped_at": "2026-11-03 12:02:55+05:30"
+    },
+    {
+      "app_id": "ap-VzoTDwarhy45fCoELIWFdu",
+      "description": "reload-recompute-p3-l4-controls",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 11:05:02+05:30",
+      "stopped_at": "2026-11-03 11:51:33+05:30"
+    },
+    {
+      "app_id": "ap-34VRYbpbWe2fzdOJ1lTpXM",
+      "description": "reload-recompute-p3-l4-main-2",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 11:05:00+05:30",
+      "stopped_at": "2026-11-03 11:43:22+05:30"
+    },
+    {
+      "app_id": "ap-hu0DXYhLhYxmiTLbw6L1dk",
+      "description": "reload-recompute-p3-l4-main-1",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 11:04:57+05:30",
+      "stopped_at": "2026-11-03 11:26:26+05:30"
+    },
+    {
+      "app_id": "ap-cPvYQwfkSyAchUfB4c8pLi",
+      "description": "reload-recompute-p3-calibration-l4-controls-retry",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 10:59:21+05:30",
+      "stopped_at": "2026-11-03 10:59:48+05:30"
+    },
+    {
+      "app_id": "ap-hxAvxKXtYZICxChXTxk7I8",
+      "description": "reload-recompute-p3-l4-sandbox-probe",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 10:40:29+05:30",
+      "stopped_at": "2026-11-03 10:53:06+05:30"
+    },
+    {
+      "app_id": "ap-CgBDj8xdKFFfzeyH9Lx1yL",
+      "description": "reload-recompute-p3-calibration-l4-main-smallhost",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 10:30:01+05:30",
+      "stopped_at": "2026-11-03 10:36:37+05:30"
+    },
+    {
+      "app_id": "ap-xlvmR7IkKilskEpk5xvM4j",
+      "description": "reload-recompute-p3-a10-main-2",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 10:26:23+05:30",
+      "stopped_at": "2026-11-03 10:44:54+05:30"
+    },
+    {
+      "app_id": "ap-MeirVUd2TppYaDpL8oKea9",
+      "description": "reload-recompute-p3-a10-controls",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 10:25:47+05:30",
+      "stopped_at": "2026-11-03 11:00:56+05:30"
+    },
+    {
+      "app_id": "ap-CdS9a0vC7hIJIgIL4MAFtr",
+      "description": "reload-recompute-p3-a10-main-1",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 10:25:45+05:30",
+      "stopped_at": "2026-11-03 10:44:13+05:30"
+    },
+    {
+      "app_id": "ap-zXYeDV6sm4KaH0dTrJmLmq",
+      "description": "reload-recompute-p3-calibration-l4-controls",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 10:24:35+05:30",
+      "stopped_at": "2026-11-03 11:02:38+05:30"
+    },
+    {
+      "app_id": "ap-xzFwesLPEN9FPR9wjQrLVs",
+      "description": "reload-recompute-p3-calibration-l4-main",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-11-03 10:20:36+05:30",
+      "stopped_at": "2026-11-03 10:52:35+05:30"
+    }
+  ],
+  "canonical_archive_verified": true
+}
