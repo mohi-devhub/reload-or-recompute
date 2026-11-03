@@ -117,3 +117,7 @@ The first Modal CPU-only preparation app built the pinned image layers, then the
 Displayed per-second Modal tariffs and billing-API hourly tariffs have rounding differences. Cost reservations use the larger of the displayed per-second rate and the current hourly rate divided by 3600, including CPU and capped memory. No credits or free-tier storage are used to reduce the estimate.
 
 The cached-image preparation retry exposed `IndexError: 2` in the wrapper's repository-relative root calculation after Modal relocated the module to `/root`. The wrapper now resolves local upload paths only in `modal.is_local()` and uses fixed container paths remotely. A local test of the remote-import branch passes. This is outside the protected measurement functions; the failed CPU reservation remains in the budget.
+
+Modal CLI 1.6.2 treats a nonexistent local download destination as a file even when the remote path is a directory; an existing directory receives an additional remote-directory component. Collection now creates the destination and normalizes that component after download. The remote records were preserved, and no GPU measurement was repeated for this collection-only correction.
+
+Modal's allocated Ampere device reports `NVIDIA A10`, rather than A10G. The report and records retain that actual name and its observed compute capability. It is the requested Modal A10 service tier; no claim is made that its board branding is A10G.
