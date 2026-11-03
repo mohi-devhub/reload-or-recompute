@@ -1,6 +1,6 @@
 # Reload or Recompute
 
-The redesigned T4 phase is complete: seven fp16 models, three varied-dialogue main-model sessions, 26,040 timing samples, and 9.900916 conservative GPU-hours against the cap of 10. The authorized phase-three study tests frozen predictions on Modal L4 and A10. Read [the phase-two report](docs/PHASE2_REPORT.md), [the hardware-transfer protocol](docs/PHASE3_PROTOCOL.md), [coverage and deviations](docs/NOTES.md), and [the budget](docs/BUDGET.md). The Qwen0.5B 16k point is excluded by the earlier phase's budget; native context limits and a reduced auxiliary control are explicit in its report.
+Phase three is complete and stopped. Frozen predictions correctly classified 574/636 resolved L4 decisions and 590/632 A10-tier decisions; the partial H100 point scored 20/21. Conservative Modal accounting is $4.839242 for the mandatory targets and $2.197600 retained for the interrupted optional H100 allocation. Read [the hardware-transfer report](docs/PHASE3_REPORT.md), [the phase-two report](docs/PHASE2_REPORT.md), [deviations](docs/NOTES.md), and [the budget](docs/BUDGET.md). The calibrated rule transfers approximately, with short-context overhead, native-length extrapolation and unverified cold file reads limiting the claim.
 
 A small systems study of when a returning conversation's KV cache is faster to reload than to recompute on older GPUs. The pilot uses Qwen2.5-1.5B on a Kaggle T4 allocation. The original grid was replaced by the approved simulated-bandwidth study.
 
@@ -36,6 +36,12 @@ The kernel checks the actual GPU before timing. It logs the environment, appends
 ## Analyze completed measurements
 
 The local analysis requires Python and NumPy. Matplotlib is needed only for plots. The GPU kernel installs its reference dependencies itself. Exact runtime versions and model revision are stored with the results.
+
+The public observations are stored losslessly in `outputs/results.jsonl.gz`. Materialize the canonical JSONL and verify both checksums before rebuilding results:
+
+```sh
+python3 scripts/materialize_results.py
+```
 
 ```sh
 python3 -m pip install -r requirements-analysis.txt
@@ -162,7 +168,18 @@ Public observations can rebuild phase-three scores, crossover tables and the fig
 
 ```sh
 python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl
+python3 scripts/audit_phase3.py
 python3 scripts/report_phase3.py
 ```
 
 The analysis preserves each session and scores every complete frozen cell without refitting. Simulated-rate brackets are observations; interpolation between them is explicitly model-assisted. Canonical records include the calibration sources, frozen prediction manifests, timing samples, telemetry and budget ledger.
+
+The optional H100 protocol uses one bounded allocation. Its host follower collects calibration, commits the prediction manifest, and only then releases the two sweeps within that same allocation:
+
+```sh
+python3 scripts/phase3_h100.py plan
+python3 scripts/phase3_h100.py start
+python3 scripts/phase3_h100.py follow
+```
+
+The controller requires completion of the mandatory targets within their cap and refuses a second H100 allocation. These commands document the completed study's workflow; they do not authorize additional spend.
