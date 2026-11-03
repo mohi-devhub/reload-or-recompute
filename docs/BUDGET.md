@@ -47,3 +47,15 @@ All values and submission settings are recorded in `outputs/phase2_ledger.json`.
 ## Combined study total
 
 Pilot plus redesigned phase: **10.037566 conservative GPU-hours**. Remaining weekly allowance on this accounting basis: **19.962434 GPU-hours**. Source: `study_budget_summary` in `outputs/results.jsonl`; the completed phase is stopped.
+
+## Phase three: Modal
+
+Main targets share a hard cap of $6. Optional H100 has a separate $4 cap and at most thirty minutes total. List-price estimates count CPU, capped RAM, GPU, initialization and teardown; credits are not deducted. A separate infrastructure reservation covers image building, temporary storage and result transfer. Tariffs are captured from [Modal pricing](https://modal.com/pricing) at submission.
+
+| Run | GPU | Purpose | Status | Observed function wall seconds | Reserved or estimated USD |
+| --- | --- | --- | --- | --- | --- |
+| preload | CPU | prepare | failed_reservation_retained | Pending | 0.046420 |
+
+Main usage plus reservations: $0.246420 / $6. H100: $0.000000 / $4. Infrastructure reservation: $0.200000.
+
+Measured wall time excludes provider initialization; the estimate adds a conservative initialization/teardown allowance. Provider billing snapshots are retained separately. No unmeasured invoice amount is claimed.

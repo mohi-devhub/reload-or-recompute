@@ -1,0 +1,17 @@
+{
+  "schema_version": 3,
+  "phase": "phase3",
+  "kind": "pricing_snapshot",
+  "captured_at": "2026-11-03T03:04:08.480326+00:00",
+  "source_url": "https://modal.com/pricing",
+  "page_sha256": "b6ae0b6333fb2f9a441a7acda9a815e8ebc87634a747b276324a65aa5e683747",
+  "gpu_usd_per_second": {
+    "L4": 0.000222,
+    "A10": 0.000306,
+    "H100!": 0.001097
+  },
+  "cpu_usd_per_physical_core_second": 1.31e-05,
+  "memory_usd_per_gib_second": 2.22e-06,
+  "volume_usd_per_gib_month": 0.09,
+  "egress_usd_per_gib": 0.04
+}

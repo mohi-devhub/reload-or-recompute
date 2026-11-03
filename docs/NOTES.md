@@ -109,3 +109,9 @@ After every experimental kernel had been uploaded, the local reproduction runner
 ### Near-zero baseline differences
 
 Final plot review exposed a very large point threshold when recompute-minus-resident-hit time is nearly zero. The analysis now bootstraps the paired-round difference of medians with the independently calibrated transfer overhead held fixed. Finite point thresholds whose denominator interval includes zero are flagged; those predictions are omitted from dashed curves and the prediction scatter, while full point estimates and every measured bracket/bound are retained. This adds uncertainty diagnostics without changing measured timings or rule-decision counts. The interval does not include overhead-fit uncertainty or between-session variation.
+
+## Phase three: platform preparation
+
+The first Modal CPU-only preparation app built the pinned image layers, then the client failed with `RetryTimeoutError` after `StreamTerminatedError: Connection lost`. The app was confirmed stopped with zero running tasks and no saved result. Its full reservation remains charged conservatively because no measured function duration was recovered. A cached-image retry is separate in the ledger. No GPU calibration or sweep preceded this failure.
+
+Displayed per-second Modal tariffs and billing-API hourly tariffs have rounding differences. Cost reservations use the larger of the displayed per-second rate and the current hourly rate divided by 3600, including CPU and capped memory. No credits or free-tier storage are used to reduce the estimate.

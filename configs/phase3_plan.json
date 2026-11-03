@@ -1,0 +1,397 @@
+{
+  "schema_version": 3,
+  "phase": "phase3",
+  "kind": "phase3_plan",
+  "main_model": "Qwen/Qwen2.5-1.5B",
+  "models": [
+    "Qwen/Qwen2.5-1.5B",
+    "Qwen/Qwen2.5-3B",
+    "unsloth/Llama-3.2-3B-Instruct",
+    "EleutherAI/pythia-1.4b",
+    "microsoft/phi-2"
+  ],
+  "rates_mb_s": [
+    50,
+    100,
+    200,
+    400,
+    800,
+    1600
+  ],
+  "conditions": [
+    "prefix_only",
+    "recompute",
+    "gpu_hit",
+    "cpu_pageable",
+    "file_torch_direct",
+    "file_raw_staged",
+    "simulated_50_MBps",
+    "simulated_100_MBps",
+    "simulated_200_MBps",
+    "simulated_400_MBps",
+    "simulated_800_MBps",
+    "simulated_1600_MBps",
+    "simulated_unthrottled"
+  ],
+  "main_lengths": [
+    16,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192,
+    16384
+  ],
+  "control_lengths_by_model": {
+    "Qwen/Qwen2.5-3B": [
+      64,
+      256,
+      512,
+      1024,
+      32736
+    ],
+    "unsloth/Llama-3.2-3B-Instruct": [
+      64,
+      256,
+      512,
+      1024
+    ],
+    "EleutherAI/pythia-1.4b": [
+      64,
+      256,
+      512,
+      1024,
+      2016
+    ],
+    "microsoft/phi-2": [
+      64,
+      256,
+      512,
+      1024,
+      2016
+    ]
+  },
+  "calibration_lengths_by_model": {
+    "Qwen/Qwen2.5-1.5B": [
+      64,
+      1024,
+      8192
+    ],
+    "Qwen/Qwen2.5-3B": [
+      64,
+      1024,
+      8192
+    ],
+    "unsloth/Llama-3.2-3B-Instruct": [
+      64,
+      512,
+      1024
+    ],
+    "EleutherAI/pythia-1.4b": [
+      64,
+      512,
+      2016
+    ],
+    "microsoft/phi-2": [
+      64,
+      512,
+      2016
+    ]
+  },
+  "dropped_cells": [
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "prefix_only",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "recompute",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "gpu_hit",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "cpu_pageable",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "file_torch_direct",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "file_raw_staged",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_50_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_100_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_200_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_400_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_800_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_1600_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "L4",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_unthrottled",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "prefix_only",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "recompute",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "gpu_hit",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "cpu_pageable",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "file_torch_direct",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "file_raw_staged",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_50_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_100_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_200_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_400_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_800_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_1600_MBps",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    },
+    {
+      "gpu": "A10",
+      "model": "unsloth/Llama-3.2-3B-Instruct",
+      "workload": "repeated_control",
+      "prefix_tokens": 131040,
+      "turn_tokens": 32,
+      "condition": "simulated_unthrottled",
+      "reason": "projected simultaneous cache and weight footprint exceeds 24 GiB",
+      "projected_reference_bytes": 51511646208,
+      "assumed_capacity_bytes": 25769803776
+    }
+  ],
+  "repeats": 10,
+  "warmups": 1,
+  "calibration_repeats": 3,
+  "calibration_micro_repeats": 5,
+  "main_sessions": 2
+}
