@@ -55,7 +55,11 @@ Main targets share a hard cap of $6. Optional H100 has a separate $4 cap and at 
 | Run | GPU | Purpose | Status | Observed function wall seconds | Reserved or estimated USD |
 | --- | --- | --- | --- | --- | --- |
 | preload | CPU | prepare | failed_reservation_retained | Pending | 0.046420 |
+| preload-retry | CPU | prepare | failed_reservation_retained | Pending | 0.046420 |
+| preload-fixed | CPU | prepare | collected | 175.49629664421082 | 0.010392 |
+| calibration-l4-main | L4 | calibration | submitted | Pending | 0.186780 |
+| calibration-a10-main | A10 | calibration | submitted | Pending | 0.232020 |
 
-Main usage plus reservations: $0.246420 / $6. H100: $0.000000 / $4. Infrastructure reservation: $0.200000.
+Main usage plus reservations: $0.722032 / $6. H100: $0.000000 / $4. Infrastructure reservation: $0.200000.
 
 Measured wall time excludes provider initialization; the estimate adds a conservative initialization/teardown allowance. Provider billing snapshots are retained separately. No unmeasured invoice amount is claimed.

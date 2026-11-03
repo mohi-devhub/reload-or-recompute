@@ -82,13 +82,16 @@ def submit(args):
     if gpu=='H100!':assert args.timeout+overhead<=1800,'H100 session exceeds thirty minutes'
     spec=json.loads(Path(args.spec).read_text()) if args.spec else None
     if spec and spec['purpose']=='sweep':
-        manifest=Path(spec['prediction_manifest'])
+        manifest=ROOT/Path(spec['prediction_manifest'])
         registered=json.loads(manifest.read_text())
         commit=spec['prediction_commit']
         subprocess.run(['git','cat-file','-e',commit+':'+str(manifest.relative_to(ROOT))],cwd=ROOT,check=True)
         frozen=subprocess.check_output(['git','show',commit+':'+str(manifest.relative_to(ROOT))],cwd=ROOT)
         assert hashlib.sha256(frozen).hexdigest()==hashlib.sha256(manifest.read_bytes()).hexdigest(),'Predictions changed after commit'
         assert registered['gpu']==gpu and registered['calibration_only'],'Wrong prediction registration'
+        document=Path('docs')/('PREDICTIONS_'+gpu+'.md')
+        committed_document=subprocess.check_output(['git','show',commit+':'+str(document)],cwd=ROOT)
+        assert committed_document==(ROOT/document).read_bytes(),'Prediction document changed after commit'
     directory=RAW/args.name;directory.mkdir(parents=True,exist_ok=True)
     record=dict(name=args.name,gpu=gpu,purpose='prepare' if args.prepare else spec['purpose'],
                 status='reserved',timeout_s=args.timeout,overhead_allowance_s=overhead,prices=prices,
@@ -109,7 +112,12 @@ def collect(args):
     data=load();run=next(r for r in data['runs'] if r['name']==args.name);directory=RAW/args.name
     result=directory/'host-result.json'
     if not result.exists():
-        print('No completed host result yet; reservation retained');return
+        remote='preload.json' if run['purpose']=='prepare' else run['specification']['run_id']+'/done.json'
+        recovery=subprocess.run(['modal','volume','get',OUTPUT_VOLUME,remote,str(result),'--force'],cwd=ROOT,
+                                stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,timeout=45)
+        (directory/'result-recovery.log').write_text(recovery.stdout)
+        if recovery.returncode:
+            print('No completed result yet; reservation retained');return
     outcome=json.loads(result.read_text())
     remote='preload.json' if run['purpose']=='prepare' else run['specification']['run_id']
     target=directory/'preload.json' if run['purpose']=='prepare' else directory/'output'
