@@ -1,6 +1,6 @@
 # Reload or Recompute
 
-The redesigned phase is complete: seven fp16 models on T4, three varied-dialogue main-model sessions, 26,040 timing samples, and 9.900916 conservative GPU-hours against the cap of 10. Read [the phase-two report](docs/PHASE2_REPORT.md), [coverage and deviations](docs/NOTES.md), [the budget](docs/BUDGET.md), and [the crossover figure](figures/phase2-crossover-bandwidth-by-length.png). The Qwen0.5B 16k point is excluded by budget; native context limits and a reduced auxiliary control are explicit in the report. The study is stopped; further GPU work needs new authorization.
+The redesigned T4 phase is complete: seven fp16 models, three varied-dialogue main-model sessions, 26,040 timing samples, and 9.900916 conservative GPU-hours against the cap of 10. The authorized phase-three study tests frozen predictions on Modal L4 and A10. Read [the phase-two report](docs/PHASE2_REPORT.md), [the hardware-transfer protocol](docs/PHASE3_PROTOCOL.md), [coverage and deviations](docs/NOTES.md), and [the budget](docs/BUDGET.md). The Qwen0.5B 16k point is excluded by the earlier phase's budget; native context limits and a reduced auxiliary control are explicit in its report.
 
 A small systems study of when a returning conversation's KV cache is faster to reload than to recompute on older GPUs. The pilot uses Qwen2.5-1.5B on a Kaggle T4 allocation. The original grid was replaced by the approved simulated-bandwidth study.
 
@@ -123,3 +123,46 @@ The public archive includes individual GPU telemetry samples used in clock summa
 ## Rule of thumb
 
 Use `B* = transfer_bytes / (T_recompute - T_GPU_hit - overhead - deserialization - other_transfer_legs)` as a calibrated threshold: reload above it when the denominator is positive, and recompute otherwise.
+
+## Reproduce hardware transfer
+
+Modal credentials stay outside the repository. The image pins Torch 2.11.0+cu130, Transformers 4.51.3, fp16 and the observed checkpoint revisions. Platform scheduling and persistence wrap the unchanged reference functions; hashes and the scheduling diff are in `outputs/phase3_provenance.json`. Modal's Ampere API tier is named `A10`; actual allocated names are recorded.
+
+The commands below document the study. Existing run names and committed prediction registrations are immutable. Preserve the final ledger and create a separately authorized replication rather than resetting either budget.
+
+```sh
+python3 scripts/phase3_plan.py
+python3 scripts/phase3_control.py submit --name preload --prepare --timeout 1200
+python3 scripts/phase3_control.py collect --name preload
+python3 scripts/phase3_control.py submit --name calibration-l4-main --gpu L4 --timeout 420 \
+  --spec outputs/raw/phase3/control/specs/calibration-l4-main.json
+python3 scripts/phase3_control.py collect --name calibration-l4-main
+python3 scripts/phase3_control.py submit --name calibration-l4-controls --gpu L4 --timeout 600 \
+  --spec outputs/raw/phase3/control/specs/calibration-l4-controls.json
+python3 scripts/phase3_control.py collect --name calibration-l4-controls
+```
+
+After both calibration groups have completed and passed correctness checks, freeze and commit predictions **before** any sweep. Repeat with `A10` / `a10` for the second GPU. The submitter checks the prediction document and JSON against their Git commit, captures current tariffs, reserves cost before starting Modal, and refuses allocations beyond the cap.
+
+```sh
+python3 scripts/predict_phase3.py L4
+git add configs/predictions_L4.json docs/PREDICTIONS_L4.md
+git commit -m 'Preregister L4 predictions before sweep'
+python3 scripts/phase3_sweeps.py --gpu L4 --name l4-main-1 --submit
+python3 scripts/phase3_control.py collect --name l4-main-1
+python3 scripts/phase3_sweeps.py --gpu L4 --name l4-main-2 --submit
+python3 scripts/phase3_control.py collect --name l4-main-2
+python3 scripts/phase3_sweeps.py --gpu L4 --name l4-controls --submit
+python3 scripts/phase3_control.py collect --name l4-controls
+```
+
+Each bounded function appends results, backs up metadata during execution, verifies the GPU and exact runtime, and samples clocks, temperature, power, throttle reasons and PCIe link state. Cache files used for timing remain on local scratch. Named model/log volumes are temporary experiment infrastructure; remove only the study-created volumes after verified collection to stop their storage charges.
+
+Public observations can rebuild phase-three scores, crossover tables and the figure without paid GPU work:
+
+```sh
+python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl
+python3 scripts/report_phase3.py
+```
+
+The analysis preserves each session and scores every complete frozen cell without refitting. Simulated-rate brackets are observations; interpolation between them is explicitly model-assisted. Canonical records include the calibration sources, frozen prediction manifests, timing samples, telemetry and budget ledger.

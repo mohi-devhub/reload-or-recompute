@@ -65,23 +65,25 @@ def price_snapshot():
     return p
 
 
-def rate(prices,gpu):
+def rate(prices,gpu,resources=None):
     cpu,ram=(2,4) if gpu is None else (4,32)
+    if resources:cpu,ram=resources['cpu_physical'],resources['memory_gib']
     return prices['gpu_usd_per_second'].get(gpu,0)+cpu*prices['cpu_usd_per_physical_core_second']+ram*prices['memory_usd_per_gib_second']
 
 
 def submit(args):
     data=load();assert not any(r['name']==args.name for r in data['runs']),'Run name already exists'
     prices=price_snapshot();gpu=None if args.prepare else args.gpu
+    spec=json.loads(Path(args.spec).read_text()) if args.spec else None
+    resources=(dict(cpu_physical=spec.get('platform_cpu',4),memory_gib=spec.get('platform_memory_mib',32768)/1024) if spec else dict(cpu_physical=2,memory_gib=4))
     overhead=120
-    reserved=(args.timeout+overhead)*rate(prices,gpu)
+    reserved=(args.timeout+overhead)*rate(prices,gpu,resources)
     bucket='H100!' if gpu=='H100!' else 'main'
     used=(0 if bucket=='H100!' else data['infrastructure_reservation_usd'])+sum(
         r.get('estimated_cost_usd',r['reserved_cost_usd']) for r in data['runs']
         if (r.get('gpu')=='H100!')==(bucket=='H100!'))
     assert used+reserved<=(4 if gpu=='H100!' else 6),'Dollar reservation exceeds the authorized cap'
     if gpu=='H100!':assert args.timeout+overhead<=1800,'H100 session exceeds thirty minutes'
-    spec=json.loads(Path(args.spec).read_text()) if args.spec else None
     if spec and spec['purpose']=='sweep':
         manifest=ROOT/Path(spec['prediction_manifest'])
         registered=json.loads(manifest.read_text())
@@ -96,11 +98,12 @@ def submit(args):
     directory=RAW/args.name;directory.mkdir(parents=True,exist_ok=True)
     record=dict(name=args.name,gpu=gpu,purpose='prepare' if args.prepare else spec['purpose'],
                 status='reserved',timeout_s=args.timeout,overhead_allowance_s=overhead,prices=prices,
-                reserved_cost_usd=reserved,submitted_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                reserved_cost_usd=reserved,resources=resources,submitted_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 specification=spec)
     data['runs'].append(record);save(data)
     env=os.environ.copy();env.update(PHASE3_GPU=gpu or 'L4',PHASE3_TIMEOUT=str(args.timeout),
-                                    PHASE3_RUN_NAME='reload-recompute-p3-'+args.name)
+                                    PHASE3_RUN_NAME='reload-recompute-p3-'+args.name,
+                                    PHASE3_CPU=str(resources['cpu_physical']),PHASE3_MEMORY_MIB=str(int(resources['memory_gib']*1024)))
     command=['modal','run','-d','--write-result',str(directory/'host-result.json'),str(ROOT/'kernels/phase3/modal_app.py')]
     command+=['--prepare'] if args.prepare else ['--spec-path',str(Path(args.spec).resolve())]
     with (directory/'host.log').open('w') as log:
@@ -131,7 +134,7 @@ def collect(args):
         nested=target/remote
         for path in nested.iterdir():shutil.move(str(path),str(target/path.name))
         nested.rmdir()
-    run.update(duration_s=outcome['duration_s'],estimated_cost_usd=(outcome['duration_s']+run['overhead_allowance_s'])*rate(run['prices'],run['gpu']),
+    run.update(duration_s=outcome['duration_s'],estimated_cost_usd=(outcome['duration_s']+run['overhead_allowance_s'])*rate(run['prices'],run['gpu'],run.get('resources')),
                status='collected',outcome=outcome)
     if run['purpose']!='prepare':
         rows=[json.loads(x) for x in (target/'results.jsonl').read_text().splitlines()]

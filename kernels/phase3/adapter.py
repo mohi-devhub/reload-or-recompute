@@ -49,7 +49,7 @@ def environment():
              lmcache=version('lmcache'),python=sys.version.split()[0],cpu_count=os.cpu_count(),
              cpu_ram_kb=int(Path('/proc/meminfo').read_text().splitlines()[0].split()[1]),
              cgroup_memory_max=Path('/sys/fs/cgroup/memory.max').read_text().strip() if Path('/sys/fs/cgroup/memory.max').exists() else None,
-             cpu_requested_physical=4,memory_requested_gib=32,
+             cpu_requested_physical=spec.get('platform_cpu',4),memory_requested_gib=spec.get('platform_memory_mib',32768)/1024,
              free_working_bytes=os.statvfs(root).f_bavail*os.statvfs(root).f_frsize,
              free_tmp_bytes=os.statvfs('/tmp').f_bavail*os.statvfs('/tmp').f_frsize,
              source_sha256=hashlib.sha256(source.encode()).hexdigest(),requested_gpu=spec['gpu'],platform='Modal')

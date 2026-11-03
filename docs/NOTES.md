@@ -121,3 +121,7 @@ The cached-image preparation retry exposed `IndexError: 2` in the wrapper's repo
 Modal CLI 1.6.2 treats a nonexistent local download destination as a file even when the remote path is a directory; an existing directory receives an additional remote-directory component. Collection now creates the destination and normalizes that component after download. The remote records were preserved, and no GPU measurement was repeated for this collection-only correction.
 
 Modal's allocated Ampere device reports `NVIDIA A10`, rather than A10G. The report and records retain that actual name and its observed compute capability. It is the requested Modal A10 service tier; no claim is made that its board branding is A10G.
+
+### L4 allocation diagnosis
+
+Both original L4 calibration apps stayed at zero running tasks while A10 calibration and three A10 sweep containers started. Before any L4 sweep or prediction fit, a separate main-model calibration requested a smaller host allocation (two physical CPU cores and 16 GiB capped RAM rather than four and 32 GiB). This tests host-resource availability without changing the timing functions. It is not evidence of a GPU performance difference. The ledger retains every request; the final allocation outcome and any adopted host difference must be reported. Source hashes for the platform adapter change when requested-resource metadata is added; all protected function hashes remain identical.

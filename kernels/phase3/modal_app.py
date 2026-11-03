@@ -8,6 +8,8 @@ ROOT=Path(__file__).resolve().parents[2] if modal.is_local() else Path('/study')
 GPU=os.environ.get('PHASE3_GPU','L4')
 LIMIT=int(os.environ.get('PHASE3_TIMEOUT','600'))
 NAME=os.environ.get('PHASE3_RUN_NAME','reload-recompute-phase3')
+CPU=int(os.environ.get('PHASE3_CPU','4'))
+RAM=int(os.environ.get('PHASE3_MEMORY_MIB','32768'))
 CACHE_NAME='reload-recompute-phase3-models-20261103'
 OUTPUT_NAME='reload-recompute-phase3-results-20261103'
 cache=modal.Volume.from_name(CACHE_NAME,create_if_missing=True)
@@ -16,7 +18,8 @@ image=(modal.Image.debian_slim(python_version='3.13')
        .pip_install('torch==2.11.0+cu130',index_url='https://download.pytorch.org/whl/cu130')
        .pip_install('transformers==4.51.3','safetensors','accelerate','numpy==2.4.6')
        .env({'HF_HOME':'/cache/hf','HF_HUB_DISABLE_PROGRESS_BARS':'1','HF_HUB_DISABLE_TELEMETRY':'1',
-             'PHASE3_GPU':GPU,'PHASE3_TIMEOUT':str(LIMIT),'PHASE3_RUN_NAME':NAME})
+             'PHASE3_GPU':GPU,'PHASE3_TIMEOUT':str(LIMIT),'PHASE3_RUN_NAME':NAME,
+             'PHASE3_CPU':str(CPU),'PHASE3_MEMORY_MIB':str(RAM)})
 )
 if modal.is_local():
     image=(image.add_local_file(ROOT/'kernels/phase2/runner.py','/study/reference.py')
@@ -47,7 +50,7 @@ def preload():
     outputs.commit()
     return json.dumps(result)
 
-@app.function(image=image,gpu=GPU,cpu=(4,4),memory=(32768,32768),
+@app.function(image=image,gpu=GPU,cpu=(CPU,CPU),memory=(RAM,RAM),
               volumes={'/cache':cache,'/persist':outputs},timeout=LIMIT,startup_timeout=90,
               scaledown_window=2,max_containers=1,retries=0,single_use_containers=True)
 def execute(spec):
