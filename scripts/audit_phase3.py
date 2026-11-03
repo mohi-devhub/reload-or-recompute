@@ -7,6 +7,9 @@ from pathlib import Path
 import subprocess
 
 ROOT=Path(__file__).resolve().parents[1]
+import sys
+sys.path.insert(0,str(ROOT/'kernels/phase3'))
+from provenance import matches_gpu
 
 
 def audit():
@@ -39,6 +42,10 @@ def audit():
     if any(not r['valid'] for r in samples):failures.append('Invalid measured cache restoration')
     if any(r['wall_ms']<=0 or r['cuda_event_ms']<=0 or r['peak_vram_bytes']<=0 for r in samples):failures.append('Invalid timing/physical allocation')
     for r in rows:
+        if r['kind']=='environment':
+            env=r['environment'];gpu=env['requested_gpu']
+            if env['gpu_count']!=1 or not matches_gpu(env['gpu_names'][0],gpu):failures.append('Actual GPU allocation mismatch: '+r['run_id'])
+            if env['compute_capability']!={'L4':[8,9],'A10':[8,6],'H100!':[9,0]}[gpu]:failures.append('Actual compute capability mismatch: '+r['run_id'])
         if r['kind']=='source_provenance' and r['protected_function_hashes']!=expected:failures.append('Protected source mismatch: '+r['run_id'])
         if r['kind']=='cache_layout' and r['kv_bytes_per_token']!=r['kv_bytes_per_token_tensor']:failures.append('Tensor KV footprint mismatch')
     by=defaultdict(list);orders=defaultdict(dict)

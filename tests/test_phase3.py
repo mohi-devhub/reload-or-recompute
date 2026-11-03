@@ -6,11 +6,18 @@ import numpy as np
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 sys.path.insert(0,str(ROOT/'kernels/phase3'))
-from provenance import adapt,functions
+from provenance import adapt,functions,matches_gpu
 from predict_phase3 import fit,evaluate
 
 
 class FrozenReference(unittest.TestCase):
+    def test_l40s_cannot_pass_as_l4(self):
+        self.assertFalse(matches_gpu('NVIDIA L40S','L4'))
+        self.assertTrue(matches_gpu('NVIDIA L4','L4'))
+
+    def test_a100_cannot_pass_as_ampere_a10_tier(self):
+        self.assertFalse(matches_gpu('NVIDIA A100','A10'))
+        self.assertTrue(matches_gpu('NVIDIA A10G','A10'))
     def test_platform_scheduling_keeps_timed_source_identical(self):
         source=(ROOT/'kernels/phase2/runner.py').read_text()
         self.assertEqual(functions(source),functions(adapt(source)))

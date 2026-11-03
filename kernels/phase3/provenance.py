@@ -5,6 +5,10 @@ import hashlib
 
 PROTECTED=['timed','flat_reload','model_run.forward','model_run.request','read_bytes','evict']
 
+def matches_gpu(name,requested):
+    allowed={'L4':{'L4'},'A10':{'A10','A10G'},'H100!':{'H100'}}
+    return bool(set(name.split()) & allowed.get(requested,set()))
+
 def digest(text):return hashlib.sha256(text.encode()).hexdigest()
 
 def functions(source):

@@ -8,7 +8,7 @@ import subprocess
 import sys
 import time
 import traceback
-from provenance import adapt,functions
+from provenance import adapt,functions,matches_gpu
 
 spec=json.loads(Path(sys.argv[1]).read_text())
 reference=Path('/study/reference.py').read_text()
@@ -63,7 +63,7 @@ def environment():
     expected={'L4':(8,9),'A10':(8,6),'H100!':(9,0)}[spec['gpu']]
     assert env['gpu_count']==1,'Unexpected GPU count'
     assert tuple(env['compute_capability'])==expected,'Unexpected compute capability'
-    assert ('A10' if spec['gpu']=='A10' else spec['gpu'].rstrip('!')) in env['gpu_names'][0],'GPU allocation mismatch'
+    assert matches_gpu(env['gpu_names'][0],spec['gpu']),'GPU allocation mismatch'
     assert env['torch']=='2.11.0+cu130' and env['transformers']=='4.51.3','Pinned runtime mismatch'
     torch.cuda.set_device(0)
     return torch
