@@ -1,6 +1,7 @@
 """Generate every empirical number and appendix table from the immutable data tag."""
 from pathlib import Path
 import csv,hashlib,io,json,re,subprocess
+from evidence_selectors import describe
 ROOT=Path(__file__).resolve().parents[2];PAPER=ROOT/'paper';TAG='v0.1.0-data';sources={};numbers={}
 
 def released(path):
@@ -21,7 +22,7 @@ def main():
   line=next(line for line in section.splitlines() if line.startswith('| 8192 | '+condition+' |'))
   value=line.split('|')[3].strip()
   put(key,float(value),'docs/PILOT_REPORT.md','Raw timing summaries; new turn 32, prefix 8192, '+condition+' median TTFT (ms)',1,format(float(value),',.3f'))
- for key,value,field,claim in [('ModelCount',7,'model configurations',3),('T4Timings',tot['accepted_measurements'],'accepted_measurements',3),('T4Invalid',tot['invalid_measurements'],'invalid_measurements',3),('T4Sessions',tot['full_sessions'],'full_sessions',3),('AdjustedCorrect',tot['rule_counts']['ttft_rule_agreements'],'rule_counts.ttft_rule_agreements',5),('PrefixCorrect',tot['rule_counts']['prefix_rule_agreements'],'rule_counts.prefix_rule_agreements',5),('T4Resolved',tot['rule_counts']['resolved_comparisons'],'rule_counts.resolved_comparisons',5)]:put(key,value,'outputs/claims_evidence.json','phase2_report_totals.'+field,claim,format(value,','))
+ for key,value,field,claim in [('ModelCount',len(ev['kv_bytes_per_token']),'model configurations',3),('T4Timings',tot['accepted_measurements'],'accepted_measurements',3),('T4Invalid',tot['invalid_measurements'],'invalid_measurements',3),('T4Sessions',tot['full_sessions'],'full_sessions',3),('AdjustedCorrect',tot['rule_counts']['ttft_rule_agreements'],'rule_counts.ttft_rule_agreements',5),('PrefixCorrect',tot['rule_counts']['prefix_rule_agreements'],'rule_counts.prefix_rule_agreements',5),('T4Resolved',tot['rule_counts']['resolved_comparisons'],'rule_counts.resolved_comparisons',5)]:put(key,value,'outputs/claims_evidence.json','phase2_report_totals.'+field,claim,format(value,','))
  for r in ev['scorecards']:
   gpu=r['gpu'].replace('!','')
   for suffix,field in [('Correct','correct_decisions'),('Resolved','resolved_decisions'),('Unresolved','unresolved_decisions'),('Cells','complete_cells'),('MAE','median_absolute_ttft_error_ms')]:
@@ -86,6 +87,11 @@ def main():
   for c in [2,3,4,5]:mac.append(put('Score'+str(i)+'Col'+str(c),cells[c],'docs/PHASE3_REPORT.md','scorecard table line '+str(i+1)+', column '+str(c+1),9,cells[c]))
   board.append(label+' & '+scope+' & '+' & '.join(mac)+r' \\')
  board.append(r'\bottomrule\end{longtable}');(PAPER/'generated/scorecards.tex').write_text('\n'.join(board)+'\n')
+ registration=j('configs/predictions_L4.json')
+ for key,model in [('CalQwenAnchors','Qwen/Qwen2.5-1.5B'),('CalLlamaAnchors','unsloth/Llama-3.2-3B-Instruct'),('CalMhaAnchors','EleutherAI/pythia-1.4b')]:
+  anchors=registration['baseline_fits'][model]['32']['recompute']['calibration_x']
+  put(key,anchors,'configs/predictions_L4.json',f'baseline_fits[{model!r}]["32"]["recompute"]["calibration_x"]',3,', '.join(format(v,',') for v in anchors))
+ describe(numbers,ev,coverage,phase3_text)
  for key,r in numbers.items():released(r['source'])
  text=['% Generated only from v0.1.0-data. Do not edit empirical values by hand.',r'\newcommand{\N}[1]{\csname nr@#1\endcsname}']
  for k,r in numbers.items():text.append(r'\expandafter\def\csname nr@'+k+r'\endcsname{'+escape(r['rendered'])+'}')

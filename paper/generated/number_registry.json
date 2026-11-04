@@ -2,876 +2,876 @@
   "PilotPinnedLongShort": {
     "value": 73.724,
     "rendered": "73.724",
-    "source": "docs/PILOT_REPORT.md",
-    "selector": "Raw timing summaries; new turn 32, prefix 8192, cpu_pinned median TTFT (ms)",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='ttft', run_id='pilot-t4-v1', prefix_tokens=8192, turn_tokens=32, condition='cpu_pinned', valid=true; select median(wall_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 1
   },
   "PilotRecomputeLongShort": {
     "value": 1737.026,
     "rendered": "1,737.026",
-    "source": "docs/PILOT_REPORT.md",
-    "selector": "Raw timing summaries; new turn 32, prefix 8192, recompute median TTFT (ms)",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='ttft', run_id='pilot-t4-v1', prefix_tokens=8192, turn_tokens=32, condition='recompute', valid=true; select median(wall_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 1
   },
   "ModelCount": {
     "value": 7,
     "rendered": "7",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2_report_totals.model configurations",
+    "selector": "len(evidence.kv_bytes_per_token.keys()); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "T4Timings": {
     "value": 26040,
     "rendered": "26,040",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2_report_totals.accepted_measurements",
+    "selector": "evidence.phase2_report_totals[0].accepted_measurements; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "T4Invalid": {
     "value": 0,
     "rendered": "0",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2_report_totals.invalid_measurements",
+    "selector": "evidence.phase2_report_totals[0].invalid_measurements; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "T4Sessions": {
     "value": 10,
     "rendered": "10",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2_report_totals.full_sessions",
+    "selector": "evidence.phase2_report_totals[0].full_sessions; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "AdjustedCorrect": {
     "value": 1237,
     "rendered": "1,237",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2_report_totals.rule_counts.ttft_rule_agreements",
+    "selector": "evidence.phase2_report_totals[0].rule_counts.ttft_rule_agreements; render: no rounding; integer, group thousands as displayed",
     "claim": 5
   },
   "PrefixCorrect": {
     "value": 1017,
     "rendered": "1,017",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2_report_totals.rule_counts.prefix_rule_agreements",
+    "selector": "evidence.phase2_report_totals[0].rule_counts.prefix_rule_agreements; render: no rounding; integer, group thousands as displayed",
     "claim": 5
   },
   "T4Resolved": {
     "value": 1258,
     "rendered": "1,258",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2_report_totals.rule_counts.resolved_comparisons",
+    "selector": "evidence.phase2_report_totals[0].rule_counts.resolved_comparisons; render: no rounding; integer, group thousands as displayed",
     "claim": 5
   },
   "L4Correct": {
     "value": 574,
     "rendered": "574",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=L4.correct_decisions",
+    "selector": "where gpu='L4'; select correct_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "L4Resolved": {
     "value": 636,
     "rendered": "636",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=L4.resolved_decisions",
+    "selector": "where gpu='L4'; select resolved_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "L4Unresolved": {
     "value": 13,
     "rendered": "13",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=L4.unresolved_decisions",
+    "selector": "where gpu='L4'; select unresolved_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "L4Cells": {
     "value": 767,
     "rendered": "767",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=L4.complete_cells",
+    "selector": "where gpu='L4'; select complete_cells; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "L4MAE": {
     "value": 3.2030901104188203,
     "rendered": "3.203",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=L4.median_absolute_ttft_error_ms",
+    "selector": "where gpu='L4'; select median_absolute_ttft_error_ms; render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "A10Correct": {
     "value": 192,
     "rendered": "192",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=A10.correct_decisions",
+    "selector": "where gpu='A10'; select correct_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "A10Resolved": {
     "value": 206,
     "rendered": "206",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=A10.resolved_decisions",
+    "selector": "where gpu='A10'; select resolved_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "A10Unresolved": {
     "value": 14,
     "rendered": "14",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=A10.unresolved_decisions",
+    "selector": "where gpu='A10'; select unresolved_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "A10Cells": {
     "value": 260,
     "rendered": "260",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=A10.complete_cells",
+    "selector": "where gpu='A10'; select complete_cells; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "A10MAE": {
     "value": 2.040422598566767,
     "rendered": "2.040",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=A10.median_absolute_ttft_error_ms",
+    "selector": "where gpu='A10'; select median_absolute_ttft_error_ms; render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "A10GCorrect": {
     "value": 398,
     "rendered": "398",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=A10G.correct_decisions",
+    "selector": "where gpu='A10G'; select correct_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "A10GResolved": {
     "value": 426,
     "rendered": "426",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=A10G.resolved_decisions",
+    "selector": "where gpu='A10G'; select resolved_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "A10GUnresolved": {
     "value": 3,
     "rendered": "3",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=A10G.unresolved_decisions",
+    "selector": "where gpu='A10G'; select unresolved_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "A10GCells": {
     "value": 507,
     "rendered": "507",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=A10G.complete_cells",
+    "selector": "where gpu='A10G'; select complete_cells; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "A10GMAE": {
     "value": 5.75844767161767,
     "rendered": "5.758",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=A10G.median_absolute_ttft_error_ms",
+    "selector": "where gpu='A10G'; select median_absolute_ttft_error_ms; render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "H100Correct": {
     "value": 20,
     "rendered": "20",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=H100!.correct_decisions",
+    "selector": "where gpu='H100!'; select correct_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "H100Resolved": {
     "value": 21,
     "rendered": "21",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=H100!.resolved_decisions",
+    "selector": "where gpu='H100!'; select resolved_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "H100Unresolved": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=H100!.unresolved_decisions",
+    "selector": "where gpu='H100!'; select unresolved_decisions; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "H100Cells": {
     "value": 26,
     "rendered": "26",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=H100!.complete_cells",
+    "selector": "where gpu='H100!'; select complete_cells; render: no rounding; integer, group thousands as displayed",
     "claim": 9
   },
   "H100MAE": {
     "value": 6.579464545951296,
     "rendered": "6.579",
     "source": "outputs/consolidated_scorecard.csv",
-    "selector": "gpu=H100!.median_absolute_ttft_error_ms",
+    "selector": "where gpu='H100!'; select median_absolute_ttft_error_ms; render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "KaggleReads": {
     "value": 7762,
     "rendered": "7,762",
     "source": "outputs/consolidated_file_observability.csv",
-    "selector": "phase2.sum(positive)",
+    "selector": "where phase='phase2'; select sum(int(positive)); render: no rounding; integer, group thousands as displayed",
     "claim": 16
   },
   "KaggleFileSamples": {
     "value": 7762,
     "rendered": "7,762",
     "source": "outputs/consolidated_file_observability.csv",
-    "selector": "phase2.sum(samples)",
+    "selector": "where phase='phase2'; select sum(int(samples)); render: no rounding; integer, group thousands as displayed",
     "claim": 16
   },
   "KaggleMinBytes": {
     "value": 196608,
     "rendered": "196,608",
     "source": "outputs/consolidated_file_observability.csv",
-    "selector": "phase2.minimum_bytes",
+    "selector": "where phase='phase2'; select min(int(minimum_bytes)); render: no rounding; integer, group thousands as displayed",
     "claim": 16
   },
   "KaggleMaxBytes": {
     "value": 1879052288,
     "rendered": "1,879,052,288",
     "source": "outputs/consolidated_file_observability.csv",
-    "selector": "phase2.maximum_bytes",
+    "selector": "where phase='phase2'; select max(int(maximum_bytes)); render: no rounding; integer, group thousands as displayed",
     "claim": 16
   },
   "ModalReads": {
     "value": 0,
     "rendered": "0",
     "source": "outputs/consolidated_file_observability.csv",
-    "selector": "phase3.sum(positive)",
+    "selector": "where phase='phase3'; select sum(int(positive)); render: no rounding; integer, group thousands as displayed",
     "claim": 17
   },
   "ModalFileSamples": {
     "value": 4575,
     "rendered": "4,575",
     "source": "outputs/consolidated_file_observability.csv",
-    "selector": "phase3.sum(samples)",
+    "selector": "where phase='phase3'; select sum(int(samples)); render: no rounding; integer, group thousands as displayed",
     "claim": 17
   },
   "ModalMinBytes": {
     "value": 0,
     "rendered": "0",
     "source": "outputs/consolidated_file_observability.csv",
-    "selector": "phase3.minimum_bytes",
+    "selector": "where phase='phase3'; select min(int(minimum_bytes)); render: no rounding; integer, group thousands as displayed",
     "claim": 17
   },
   "ModalMaxBytes": {
     "value": 0,
     "rendered": "0",
     "source": "outputs/consolidated_file_observability.csv",
-    "selector": "phase3.maximum_bytes",
+    "selector": "where phase='phase3'; select max(int(maximum_bytes)); render: no rounding; integer, group thousands as displayed",
     "claim": 17
   },
   "HalfPrefix": {
     "value": 226.626,
     "rendered": "226.626",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 6 prefix-only B*",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='bandwidth_crossover', run_id='phase2-qwen-half-control', model='Qwen/Qwen2.5-0.5B', workload='repeated_control', prefix_tokens=512, turn_tokens=32; select predicted_prefix_bstar_mb_s; render: round to 3 decimal places; commas are thousands separators",
     "claim": 6
   },
   "HalfAdjusted": {
     "value": 2442.265,
     "rendered": "2,442.265",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 6 adjusted B*",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='bandwidth_crossover', run_id='phase2-qwen-half-control', model='Qwen/Qwen2.5-0.5B', workload='repeated_control', prefix_tokens=512, turn_tokens=32; select predicted_ttft_bstar_mb_s; render: round to 3 decimal places; commas are thousands separators",
     "claim": 6
   },
   "PythiaLow": {
     "value": 798.9,
     "rendered": "798.9",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 7 Pythia achieved low",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='bandwidth_crossover', model='EleutherAI/pythia-1.4b', workload='repeated_control', prefix_tokens=512, turn_tokens=32; select measured.brackets[0].achieved_mb_s[0]; render: round to 1 decimal places; commas are thousands separators",
     "claim": 7
   },
   "PythiaHigh": {
     "value": 1597.2,
     "rendered": "1597.2",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 7 Pythia achieved high",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='bandwidth_crossover', model='EleutherAI/pythia-1.4b', workload='repeated_control', prefix_tokens=512, turn_tokens=32; select measured.brackets[0].achieved_mb_s[1]; render: round to 1 decimal places; commas are thousands separators",
     "claim": 7
   },
   "QwenMainLow": {
     "value": 199.5,
     "rendered": "199.5",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 7 Qwen1.5 achieved low",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='bandwidth_crossover', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', prefix_tokens=512, turn_tokens=32; select measured.brackets[0].achieved_mb_s[0]; render: round to 1 decimal places; commas are thousands separators",
     "claim": 7
   },
   "QwenMainHigh": {
     "value": 398.4,
     "rendered": "398.4",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 7 Qwen1.5 achieved high",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='bandwidth_crossover', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', prefix_tokens=512, turn_tokens=32; select measured.brackets[0].achieved_mb_s[1]; render: round to 1 decimal places; commas are thousands separators",
     "claim": 7
   },
   "PhiLow": {
     "value": 799.2,
     "rendered": "799.2",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 7 Phi achieved low",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='bandwidth_crossover', model='microsoft/phi-2', workload='repeated_control', prefix_tokens=512, turn_tokens=32; select measured.brackets[0].achieved_mb_s[0]; render: round to 1 decimal places; commas are thousands separators",
     "claim": 7
   },
   "PhiHigh": {
     "value": 1598.4,
     "rendered": "1598.4",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 7 Phi achieved high",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='bandwidth_crossover', model='microsoft/phi-2', workload='repeated_control', prefix_tokens=512, turn_tokens=32; select measured.brackets[0].achieved_mb_s[1]; render: round to 1 decimal places; commas are thousands separators",
     "claim": 7
   },
   "QwenThreeLow": {
     "value": 99.9,
     "rendered": "99.9",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 7 Qwen3 achieved low",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='bandwidth_crossover', model='Qwen/Qwen2.5-3B', workload='repeated_control', prefix_tokens=512, turn_tokens=32; select measured.brackets[0].achieved_mb_s[0]; render: round to 1 decimal places; commas are thousands separators",
     "claim": 7
   },
   "QwenThreeHigh": {
     "value": 199.7,
     "rendered": "199.7",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 7 Qwen3 achieved high",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='bandwidth_crossover', model='Qwen/Qwen2.5-3B', workload='repeated_control', prefix_tokens=512, turn_tokens=32; select measured.brackets[0].achieved_mb_s[1]; render: round to 1 decimal places; commas are thousands separators",
     "claim": 7
   },
   "A10GExtrapPred": {
     "value": 8041.096,
     "rendered": "8,041.096",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 10 A10G recompute predicted",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', model='Qwen/Qwen2.5-3B', workload='repeated_control', prefix_tokens=32736, turn_tokens=32, condition='recompute'; select predicted_ttft_ms; render: round to 3 decimal places; commas are thousands separators",
     "claim": 10
   },
   "A10GExtrapObs": {
     "value": 13914.555,
     "rendered": "13,914.555",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 10 A10G recompute observed",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', model='Qwen/Qwen2.5-3B', workload='repeated_control', prefix_tokens=32736, turn_tokens=32, condition='recompute'; select observed_ttft_ms; render: round to 3 decimal places; commas are thousands separators",
     "claim": 10
   },
   "A10GExtrapError": {
     "value": 5873.459,
     "rendered": "5,873.459",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 10 A10G recompute absolute error",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', model='Qwen/Qwen2.5-3B', workload='repeated_control', prefix_tokens=32736, turn_tokens=32, condition='recompute'; select absolute_error_ms; render: round to 3 decimal places; commas are thousands separators",
     "claim": 10
   },
   "L4ExtrapPred": {
     "value": 13088.36,
     "rendered": "13,088.360",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 10 L4 recompute predicted",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', model='Qwen/Qwen2.5-3B', workload='repeated_control', prefix_tokens=32736, turn_tokens=32, condition='recompute'; select predicted_ttft_ms; render: round to 3 decimal places; commas are thousands separators",
     "claim": 10
   },
   "L4ExtrapObs": {
     "value": 18022.902,
     "rendered": "18,022.902",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 10 L4 recompute observed",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', model='Qwen/Qwen2.5-3B', workload='repeated_control', prefix_tokens=32736, turn_tokens=32, condition='recompute'; select observed_ttft_ms; render: round to 3 decimal places; commas are thousands separators",
     "claim": 10
   },
   "L4ExtrapError": {
     "value": 4934.542,
     "rendered": "4,934.542",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 10 L4 recompute absolute error",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', model='Qwen/Qwen2.5-3B', workload='repeated_control', prefix_tokens=32736, turn_tokens=32, condition='recompute'; select absolute_error_ms; render: round to 3 decimal places; commas are thousands separators",
     "claim": 10
   },
   "T4SpreadShort": {
     "value": 12.341,
     "rendered": "12.341",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 14 T4 N32 median spread",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='session_spread', gpu='NvidiaTeslaT4', model='Qwen/Qwen2.5-1.5B', condition='recompute', turn_tokens=32; select 100 * median(relative_range) across matched prefix lengths; Ampere rows compare A10 and A10G sessions; render: round to 3 decimal places; commas are thousands separators",
     "claim": 14
   },
   "T4SpreadLong": {
     "value": 14.847,
     "rendered": "14.847",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 14 T4 N256 median spread",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='session_spread', gpu='NvidiaTeslaT4', model='Qwen/Qwen2.5-1.5B', condition='recompute', turn_tokens=256; select 100 * median(relative_range) across matched prefix lengths; Ampere rows compare A10 and A10G sessions; render: round to 3 decimal places; commas are thousands separators",
     "claim": 14
   },
   "L4SpreadShort": {
     "value": 4.956,
     "rendered": "4.956",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 14 L4 N32 median spread",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_session_spread', gpu='L4', model='Qwen/Qwen2.5-1.5B', condition='recompute', turn_tokens=32; select 100 * median(range_over_median) across matched prefix lengths; Ampere rows compare A10 and A10G sessions; render: round to 3 decimal places; commas are thousands separators",
     "claim": 14
   },
   "L4SpreadLong": {
     "value": 4.417,
     "rendered": "4.417",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 14 L4 N256 median spread",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_session_spread', gpu='L4', model='Qwen/Qwen2.5-1.5B', condition='recompute', turn_tokens=256; select 100 * median(range_over_median) across matched prefix lengths; Ampere rows compare A10 and A10G sessions; render: round to 3 decimal places; commas are thousands separators",
     "claim": 14
   },
   "AmpereSpreadShort": {
     "value": 23.611,
     "rendered": "23.611",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 15 N32 matched relative range",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_session_spread', gpu='A10', model='Qwen/Qwen2.5-1.5B', condition='recompute', turn_tokens=32; select 100 * median(range_over_median) across matched prefix lengths; Ampere rows compare A10 and A10G sessions; render: round to 3 decimal places; commas are thousands separators",
     "claim": 15
   },
   "AmpereSpreadLong": {
     "value": 22.664,
     "rendered": "22.664",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 15 N256 matched relative range",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_session_spread', gpu='A10', model='Qwen/Qwen2.5-1.5B', condition='recompute', turn_tokens=256; select 100 * median(range_over_median) across matched prefix lengths; Ampere rows compare A10 and A10G sessions; render: round to 3 decimal places; commas are thousands separators",
     "claim": 15
   },
   "TorchOldError": {
     "value": 11.78,
     "rendered": "11.78",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 19 torch old APE",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='file_rule_residual', phase='phase2', format='torch'; select 100 * median(abs(old_signed_relative_error)); render: round to 2 decimal places; commas are thousands separators",
     "claim": 19
   },
   "TorchNewError": {
     "value": 3.097,
     "rendered": "3.097",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 19 torch corrected APE",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='file_rule_residual', phase='phase2', format='torch'; select 100 * median(abs(new_signed_relative_error)); render: round to 3 decimal places; commas are thousands separators",
     "claim": 19
   },
   "RawOldError": {
     "value": 3.107,
     "rendered": "3.107",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 19 raw old APE",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='file_rule_residual', phase='phase2', format='raw'; select 100 * median(abs(old_signed_relative_error)); render: round to 3 decimal places; commas are thousands separators",
     "claim": 19
   },
   "RawNewError": {
     "value": 3.086,
     "rendered": "3.086",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 19 raw corrected APE",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='file_rule_residual', phase='phase2', format='raw'; select 100 * median(abs(new_signed_relative_error)); render: round to 3 decimal places; commas are thousands separators",
     "claim": 19
   },
   "H100Missing": {
     "value": 52,
     "rendered": "52",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 20 unfinished cells",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_missing_prediction_cell', gpu='H100!'; select count(rows); render: no rounding; integer, group thousands as displayed",
     "claim": 20
   },
   "AnomalyReversals": {
     "value": 0,
     "rendered": "0",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 21 positive lower endpoints",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='prefill_anomaly_pair', prefix_minus_prefix_plus_turn_ms.ci95[0] > 0; select count(rows); render: no rounding; integer, group thousands as displayed",
     "claim": 21
   },
   "AnomalyPairs": {
     "value": 4,
     "rendered": "4",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 21 comparisons",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='prefill_anomaly_pair'; select count(rows); render: no rounding; integer, group thousands as displayed",
     "claim": 21
   },
   "CalA10Seconds": {
     "value": 42.5,
     "rendered": "42.5",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "calibration-a10-main wall seconds",
+    "source": "outputs/phase3_ledger.json",
+    "selector": "runs where name='calibration-a10-main'; select duration_s; render: round to 1 decimal places; commas are thousands separators",
     "claim": 9
   },
   "CalL4Seconds": {
     "value": 63.4,
     "rendered": "63.4",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "calibration-l4-main wall seconds",
+    "source": "outputs/phase3_ledger.json",
+    "selector": "runs where name='calibration-l4-main'; select duration_s; render: round to 1 decimal places; commas are thousands separators",
     "claim": 9
   },
   "L4RatioYes": {
     "value": 25,
     "rendered": "25",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=L4.RatioYes",
+    "selector": "evidence.hypothesis_scorecards where gpu='L4'; select compatible_any; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "L4RatioTotal": {
     "value": 27,
     "rendered": "27",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=L4.RatioTotal",
+    "selector": "evidence.hypothesis_scorecards where gpu='L4'; select resolved; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "L4RatioUnresolved": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=L4.RatioUnresolved",
+    "selector": "evidence.hypothesis_scorecards where gpu='L4'; select unresolved; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "A10RatioYes": {
     "value": 11,
     "rendered": "11",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=A10.RatioYes",
+    "selector": "evidence.hypothesis_scorecards where gpu='A10'; select compatible_any; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "A10RatioTotal": {
     "value": 12,
     "rendered": "12",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=A10.RatioTotal",
+    "selector": "evidence.hypothesis_scorecards where gpu='A10'; select resolved; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "A10RatioUnresolved": {
     "value": 8,
     "rendered": "8",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=A10.RatioUnresolved",
+    "selector": "evidence.hypothesis_scorecards where gpu='A10'; select unresolved; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "A10GRatioYes": {
     "value": 20,
     "rendered": "20",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=A10G.RatioYes",
+    "selector": "evidence.hypothesis_scorecards where gpu='A10G'; select compatible_any; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "A10GRatioTotal": {
     "value": 24,
     "rendered": "24",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=A10G.RatioTotal",
+    "selector": "evidence.hypothesis_scorecards where gpu='A10G'; select resolved; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "A10GRatioUnresolved": {
     "value": 15,
     "rendered": "15",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=A10G.RatioUnresolved",
+    "selector": "evidence.hypothesis_scorecards where gpu='A10G'; select unresolved; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "H100RatioYes": {
     "value": 0,
     "rendered": "0",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=H100.RatioYes",
+    "selector": "evidence.hypothesis_scorecards where gpu='H100!'; select compatible_any; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "H100RatioTotal": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=H100.RatioTotal",
+    "selector": "evidence.hypothesis_scorecards where gpu='H100!'; select resolved; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "H100RatioUnresolved": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/claims_evidence.json",
-    "selector": "hypothesis_scorecards.gpu=H100.RatioUnresolved",
+    "selector": "evidence.hypothesis_scorecards where gpu='H100!'; select unresolved; render: no rounding; integer, group thousands as displayed",
     "claim": 11
   },
   "T4Held2Correct": {
     "value": 148,
     "rendered": "148",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2-main-session-2.agreements",
+    "selector": "evidence.heldout_session_score where run_id='phase2-main-session-2'; select agreements; render: no rounding; integer, group thousands as displayed",
     "claim": 8
   },
   "T4Held2Resolved": {
     "value": 149,
     "rendered": "149",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2-main-session-2.resolved_cells",
+    "selector": "evidence.heldout_session_score where run_id='phase2-main-session-2'; select resolved_cells; render: no rounding; integer, group thousands as displayed",
     "claim": 8
   },
   "T4Held3Correct": {
     "value": 146,
     "rendered": "146",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2-main-session-3.agreements",
+    "selector": "evidence.heldout_session_score where run_id='phase2-main-session-3'; select agreements; render: no rounding; integer, group thousands as displayed",
     "claim": 8
   },
   "T4Held3Resolved": {
     "value": 150,
     "rendered": "150",
     "source": "outputs/claims_evidence.json",
-    "selector": "phase2-main-session-3.resolved_cells",
+    "selector": "evidence.heldout_session_score where run_id='phase2-main-session-3'; select resolved_cells; render: no rounding; integer, group thousands as displayed",
     "claim": 8
   },
   "Short": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Long": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Tiny": {
     "value": 16,
     "rendered": "16",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes)[0]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Small": {
     "value": 64,
     "rendered": "64",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes)[2]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Mid": {
     "value": 128,
     "rendered": "128",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes)[3]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Boundary": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes)[4]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Example": {
     "value": 512,
     "rendered": "512",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes)[5]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Matched": {
     "value": 1024,
     "rendered": "1,024",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes)[6]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "LongPrefix": {
     "value": 8192,
     "rendered": "8,192",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes)[9]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "MaxMain": {
     "value": 16384,
     "rendered": "16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes)[10]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "ExtrapLength": {
     "value": 32736,
     "rendered": "32,736",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "prefix or new-turn length present in coverage",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes)[4]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "FullRepeats": {
     "value": 10,
     "rendered": "10",
-    "source": "docs/PHASE3_PROTOCOL.md",
-    "selector": "released measurement protocol / referenced canonical analysis metadata",
+    "source": "configs/phase3_plan.json",
+    "selector": "repeats; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "CalRepeats": {
     "value": 3,
     "rendered": "3",
-    "source": "docs/PHASE3_PROTOCOL.md",
-    "selector": "released measurement protocol / referenced canonical analysis metadata",
+    "source": "configs/phase3_plan.json",
+    "selector": "calibration_repeats; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "MicroRepeats": {
     "value": 5,
     "rendered": "5",
-    "source": "docs/PHASE3_PROTOCOL.md",
-    "selector": "released measurement protocol / referenced canonical analysis metadata",
+    "source": "configs/phase3_plan.json",
+    "selector": "calibration_micro_repeats; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Warmups": {
     "value": 1,
     "rendered": "1",
-    "source": "docs/PHASE3_PROTOCOL.md",
-    "selector": "released measurement protocol / referenced canonical analysis metadata",
+    "source": "configs/phase3_plan.json",
+    "selector": "warmups; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Bootstraps": {
     "value": 10000,
     "rendered": "10,000",
     "source": "outputs/results.jsonl.gz",
-    "selector": "released measurement protocol / referenced canonical analysis metadata",
+    "selector": "where kind='phase3_analysis_metadata'; select bootstrap_resamples; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "CI": {
     "value": 95,
     "rendered": "95",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "released measurement protocol / referenced canonical analysis metadata",
+    "source": "scripts/analyze_pilot.py",
+    "selector": "interval(): np.quantile(medians, [0.025, 0.975]); nominal coverage = 100 * (0.975 - 0.025); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "SessionsT4": {
     "value": 3,
     "rendered": "3",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "released measurement protocol / referenced canonical analysis metadata",
+    "source": "outputs/consolidated_coverage.csv",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "SessionsL4": {
     "value": 2,
     "rendered": "2",
-    "source": "docs/PHASE3_PROTOCOL.md",
-    "selector": "released measurement protocol / referenced canonical analysis metadata",
+    "source": "outputs/consolidated_coverage.csv",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "RateLow": {
     "value": 50,
     "rendered": "50",
-    "source": "docs/PHASE3_PROTOCOL.md",
-    "selector": "released measurement protocol / referenced canonical analysis metadata",
+    "source": "configs/phase3_plan.json",
+    "selector": "rates_mb_s[0]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "RateHigh": {
     "value": 1600,
     "rendered": "1,600",
-    "source": "docs/PHASE3_PROTOCOL.md",
-    "selector": "released measurement protocol / referenced canonical analysis metadata",
+    "source": "configs/phase3_plan.json",
+    "selector": "rates_mb_s[-1]; render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Rates": {
     "value": "50, 100, 200, 400, 800, 1600",
     "rendered": "50, 100, 200, 400, 800, 1,600",
-    "source": "docs/PHASE2_PROTOCOL.md",
-    "selector": "Rate-limited copies are simulated bandwidth",
+    "source": "configs/phase3_plan.json",
+    "selector": "rates_mb_s; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 3
   },
   "Rate100": {
     "value": 100,
     "rendered": "100",
-    "source": "docs/PHASE2_PROTOCOL.md",
-    "selector": "simulated-bandwidth target grid",
+    "source": "configs/phase3_plan.json",
+    "selector": "rates_mb_s[1]; render: no rounding; integer, group thousands as displayed",
     "claim": 12
   },
   "Rate200": {
     "value": 200,
     "rendered": "200",
-    "source": "docs/PHASE2_PROTOCOL.md",
-    "selector": "simulated-bandwidth target grid",
+    "source": "configs/phase3_plan.json",
+    "selector": "rates_mb_s[2]; render: no rounding; integer, group thousands as displayed",
     "claim": 12
   },
   "Rate400": {
     "value": 400,
     "rendered": "400",
-    "source": "docs/PHASE2_PROTOCOL.md",
-    "selector": "simulated-bandwidth target grid",
+    "source": "configs/phase3_plan.json",
+    "selector": "rates_mb_s[3]; render: no rounding; integer, group thousands as displayed",
     "claim": 12
   },
   "Rate800": {
     "value": 800,
     "rendered": "800",
-    "source": "docs/PHASE2_PROTOCOL.md",
-    "selector": "simulated-bandwidth target grid",
+    "source": "configs/phase3_plan.json",
+    "selector": "rates_mb_s[4]; render: no rounding; integer, group thousands as displayed",
     "claim": 12
   },
   "Rate1600": {
     "value": 1600,
     "rendered": "1,600",
-    "source": "docs/PHASE2_PROTOCOL.md",
-    "selector": "simulated-bandwidth target grid",
+    "source": "configs/phase3_plan.json",
+    "selector": "rates_mb_s[5]; render: no rounding; integer, group thousands as displayed",
     "claim": 12
   },
   "PilotMid": {
     "value": 2048,
     "rendered": "2,048",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "pilot prefixes",
+    "selector": "where phase='pilot', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes)[1]; render: no rounding; integer, group thousands as displayed",
     "claim": 1
   },
   "PilotRepeats": {
     "value": 12,
     "rendered": "12",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 1 measured repeats",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='protocol', run_id='pilot-t4-v1'; select repeats; render: no rounding; integer, group thousands as displayed",
     "claim": 1
   },
   "AmpereGeneration": {
     "value": 4,
     "rendered": "4",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "active PCIe generation for A10 and A10G",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='telemetry_sample', phase='phase3', run_id in ['phase3-a10-main-1', 'phase3-a10-main-2']; select max(sample['pcie.link.gen.current']); render: no rounding; integer, group thousands as displayed",
     "claim": 15
   },
   "MainGrid": {
     "value": "16,64,128,256,512,1024,2048,4096,8192,16384",
     "rendered": "16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
-    "source": "outputs/consolidated_coverage.csv",
-    "selector": "phase3 main-model prefixes",
+    "source": "configs/phase3_plan.json",
+    "selector": "main_lengths; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 3
   },
   "ShortGrid": {
     "value": "16,64,128,256",
     "rendered": "16, 64, 128, 256",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 13 common short prefixes",
+    "source": "configs/phase3_plan.json",
+    "selector": "main_lengths filtered to length <= 256; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 13
   },
   "MhaGrid": {
     "value": "64,256,512,1024",
     "rendered": "64, 256, 512, 1,024",
-    "source": "docs/CLAIMS.md",
-    "selector": "claim 18 matched prefixes",
+    "source": "outputs/consolidated_coverage.csv",
+    "selector": "where model in ['EleutherAI/pythia-1.4b', 'microsoft/phi-2'], turn_tokens='32'; select sorted intersection of ast.literal_eval(prefixes) across rows; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 18
   },
   "KV0": {
     "value": 12288,
     "rendered": "12,288",
     "source": "outputs/claims_evidence.json",
-    "selector": "kv_bytes_per_token.Qwen/Qwen2.5-0.5B",
+    "selector": "evidence.kv_bytes_per_token['Qwen/Qwen2.5-0.5B']; render: no rounding; integer, group thousands as displayed",
     "claim": 4
   },
   "KV1": {
     "value": 28672,
     "rendered": "28,672",
     "source": "outputs/claims_evidence.json",
-    "selector": "kv_bytes_per_token.Qwen/Qwen2.5-1.5B",
+    "selector": "evidence.kv_bytes_per_token['Qwen/Qwen2.5-1.5B']; render: no rounding; integer, group thousands as displayed",
     "claim": 4
   },
   "KV2": {
     "value": 36864,
     "rendered": "36,864",
     "source": "outputs/claims_evidence.json",
-    "selector": "kv_bytes_per_token.Qwen/Qwen2.5-3B",
+    "selector": "evidence.kv_bytes_per_token['Qwen/Qwen2.5-3B']; render: no rounding; integer, group thousands as displayed",
     "claim": 4
   },
   "KV3": {
     "value": 196608,
     "rendered": "196,608",
     "source": "outputs/claims_evidence.json",
-    "selector": "kv_bytes_per_token.EleutherAI/pythia-1.4b",
+    "selector": "evidence.kv_bytes_per_token['EleutherAI/pythia-1.4b']; render: no rounding; integer, group thousands as displayed",
     "claim": 4
   },
   "KV4": {
     "value": 196608,
     "rendered": "196,608",
     "source": "outputs/claims_evidence.json",
-    "selector": "kv_bytes_per_token.facebook/opt-1.3b",
+    "selector": "evidence.kv_bytes_per_token['facebook/opt-1.3b']; render: no rounding; integer, group thousands as displayed",
     "claim": 4
   },
   "KV5": {
     "value": 327680,
     "rendered": "327,680",
     "source": "outputs/claims_evidence.json",
-    "selector": "kv_bytes_per_token.microsoft/phi-2",
+    "selector": "evidence.kv_bytes_per_token['microsoft/phi-2']; render: no rounding; integer, group thousands as displayed",
     "claim": 4
   },
   "KV6": {
     "value": 114688,
     "rendered": "114,688",
     "source": "outputs/claims_evidence.json",
-    "selector": "kv_bytes_per_token.unsloth/Llama-3.2-3B-Instruct",
+    "selector": "evidence.kv_bytes_per_token['unsloth/Llama-3.2-3B-Instruct']; render: no rounding; integer, group thousands as displayed",
     "claim": 4
   },
   "Cov0Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 0.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov0Prefixes": {
@@ -887,21 +887,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 1,792",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 0.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov0Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 0.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov1Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 1.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov1Prefixes": {
@@ -917,21 +917,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 1,792",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 1.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov1Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 1.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov2Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 2.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-0.5B', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov2Prefixes": {
@@ -949,21 +949,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 2.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-0.5B', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov2Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 2.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-0.5B', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov3Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 3.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-0.5B', workload='repeated_control', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov3Prefixes": {
@@ -981,21 +981,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 3.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-0.5B', workload='repeated_control', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov3Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 3.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-0.5B', workload='repeated_control', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov4Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 4.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov4Prefixes": {
@@ -1013,21 +1013,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 1,792, 2,048, 8,192",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 4.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov4Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 4.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov5Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 5.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov5Prefixes": {
@@ -1046,21 +1046,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 5.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov5Sessions": {
     "value": 3,
     "rendered": "3",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 5.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov6Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 6.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov6Prefixes": {
@@ -1079,21 +1079,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 6.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov6Sessions": {
     "value": 3,
     "rendered": "3",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 6.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov7Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 7.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov7Prefixes": {
@@ -1112,21 +1112,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 7.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov7Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 7.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov8Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 8.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov8Prefixes": {
@@ -1145,21 +1145,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 8.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov8Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 8.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov9Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 9.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='facebook/opt-1.3b', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov9Prefixes": {
@@ -1174,21 +1174,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 9.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='facebook/opt-1.3b', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov9Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 9.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='facebook/opt-1.3b', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov10Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 10.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='facebook/opt-1.3b', workload='repeated_control', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov10Prefixes": {
@@ -1203,21 +1203,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 10.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='facebook/opt-1.3b', workload='repeated_control', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov10Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 10.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='facebook/opt-1.3b', workload='repeated_control', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov11Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 11.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='microsoft/phi-2', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov11Prefixes": {
@@ -1233,21 +1233,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 1,792",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 11.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='microsoft/phi-2', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov11Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 11.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='microsoft/phi-2', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov12Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 12.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='microsoft/phi-2', workload='repeated_control', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov12Prefixes": {
@@ -1263,21 +1263,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 1,792",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 12.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='microsoft/phi-2', workload='repeated_control', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov12Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 12.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='microsoft/phi-2', workload='repeated_control', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov13Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 13.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov13Prefixes": {
@@ -1296,21 +1296,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 13.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov13Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 13.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov14Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 14.turn_tokens",
+    "selector": "where phase='phase2', gpu='T4', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov14Prefixes": {
@@ -1329,21 +1329,21 @@
     ],
     "rendered": "16, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 14.prefixes",
+    "selector": "where phase='phase2', gpu='T4', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov14Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 14.sessions",
+    "selector": "where phase='phase2', gpu='T4', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov15Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 15.turn_tokens",
+    "selector": "where phase='phase3', gpu='A10', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov15Prefixes": {
@@ -1361,21 +1361,21 @@
     ],
     "rendered": "16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 15.prefixes",
+    "selector": "where phase='phase3', gpu='A10', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov15Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 15.sessions",
+    "selector": "where phase='phase3', gpu='A10', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov16Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 16.turn_tokens",
+    "selector": "where phase='phase3', gpu='A10', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov16Prefixes": {
@@ -1393,21 +1393,21 @@
     ],
     "rendered": "16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 16.prefixes",
+    "selector": "where phase='phase3', gpu='A10', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov16Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 16.sessions",
+    "selector": "where phase='phase3', gpu='A10', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov17Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 17.turn_tokens",
+    "selector": "where phase='phase3', gpu='A10G', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov17Prefixes": {
@@ -1420,21 +1420,21 @@
     ],
     "rendered": "64, 256, 512, 1,024, 2,016",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 17.prefixes",
+    "selector": "where phase='phase3', gpu='A10G', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov17Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 17.sessions",
+    "selector": "where phase='phase3', gpu='A10G', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov18Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 18.turn_tokens",
+    "selector": "where phase='phase3', gpu='A10G', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov18Prefixes": {
@@ -1452,21 +1452,21 @@
     ],
     "rendered": "16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 18.prefixes",
+    "selector": "where phase='phase3', gpu='A10G', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov18Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 18.sessions",
+    "selector": "where phase='phase3', gpu='A10G', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov19Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 19.turn_tokens",
+    "selector": "where phase='phase3', gpu='A10G', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov19Prefixes": {
@@ -1484,21 +1484,21 @@
     ],
     "rendered": "16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 19.prefixes",
+    "selector": "where phase='phase3', gpu='A10G', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov19Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 19.sessions",
+    "selector": "where phase='phase3', gpu='A10G', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov20Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 20.turn_tokens",
+    "selector": "where phase='phase3', gpu='A10G', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov20Prefixes": {
@@ -1511,21 +1511,21 @@
     ],
     "rendered": "64, 256, 512, 1,024, 32,736",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 20.prefixes",
+    "selector": "where phase='phase3', gpu='A10G', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov20Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 20.sessions",
+    "selector": "where phase='phase3', gpu='A10G', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov21Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 21.turn_tokens",
+    "selector": "where phase='phase3', gpu='A10G', model='microsoft/phi-2', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov21Prefixes": {
@@ -1538,21 +1538,21 @@
     ],
     "rendered": "64, 256, 512, 1,024, 2,016",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 21.prefixes",
+    "selector": "where phase='phase3', gpu='A10G', model='microsoft/phi-2', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov21Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 21.sessions",
+    "selector": "where phase='phase3', gpu='A10G', model='microsoft/phi-2', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov22Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 22.turn_tokens",
+    "selector": "where phase='phase3', gpu='A10G', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov22Prefixes": {
@@ -1564,21 +1564,21 @@
     ],
     "rendered": "64, 256, 512, 1,024",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 22.prefixes",
+    "selector": "where phase='phase3', gpu='A10G', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov22Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 22.sessions",
+    "selector": "where phase='phase3', gpu='A10G', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov23Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 23.turn_tokens",
+    "selector": "where phase='phase3', gpu='H100!', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov23Prefixes": {
@@ -1588,21 +1588,21 @@
     ],
     "rendered": "1,024, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 23.prefixes",
+    "selector": "where phase='phase3', gpu='H100!', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov23Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 23.sessions",
+    "selector": "where phase='phase3', gpu='H100!', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov24Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 24.turn_tokens",
+    "selector": "where phase='phase3', gpu='L4', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov24Prefixes": {
@@ -1615,21 +1615,21 @@
     ],
     "rendered": "64, 256, 512, 1,024, 2,016",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 24.prefixes",
+    "selector": "where phase='phase3', gpu='L4', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov24Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 24.sessions",
+    "selector": "where phase='phase3', gpu='L4', model='EleutherAI/pythia-1.4b', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov25Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 25.turn_tokens",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov25Prefixes": {
@@ -1647,21 +1647,21 @@
     ],
     "rendered": "16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 25.prefixes",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov25Sessions": {
     "value": 2,
     "rendered": "2",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 25.sessions",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov26Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 26.turn_tokens",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov26Prefixes": {
@@ -1679,21 +1679,21 @@
     ],
     "rendered": "16, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 26.prefixes",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov26Sessions": {
     "value": 2,
     "rendered": "2",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 26.sessions",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-1.5B', workload='ultrachat', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov27Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 27.turn_tokens",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov27Prefixes": {
@@ -1706,21 +1706,21 @@
     ],
     "rendered": "64, 256, 512, 1,024, 32,736",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 27.prefixes",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov27Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 27.sessions",
+    "selector": "where phase='phase3', gpu='L4', model='Qwen/Qwen2.5-3B', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov28Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 28.turn_tokens",
+    "selector": "where phase='phase3', gpu='L4', model='microsoft/phi-2', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov28Prefixes": {
@@ -1733,21 +1733,21 @@
     ],
     "rendered": "64, 256, 512, 1,024, 2,016",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 28.prefixes",
+    "selector": "where phase='phase3', gpu='L4', model='microsoft/phi-2', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov28Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 28.sessions",
+    "selector": "where phase='phase3', gpu='L4', model='microsoft/phi-2', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov29Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 29.turn_tokens",
+    "selector": "where phase='phase3', gpu='L4', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov29Prefixes": {
@@ -1759,21 +1759,21 @@
     ],
     "rendered": "64, 256, 512, 1,024",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 29.prefixes",
+    "selector": "where phase='phase3', gpu='L4', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov29Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 29.sessions",
+    "selector": "where phase='phase3', gpu='L4', model='unsloth/Llama-3.2-3B-Instruct', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov30Turn": {
     "value": 32,
     "rendered": "32",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 30.turn_tokens",
+    "selector": "where phase='pilot', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', turn_tokens='32'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov30Prefixes": {
@@ -1784,21 +1784,21 @@
     ],
     "rendered": "512, 2,048, 8,192",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 30.prefixes",
+    "selector": "where phase='pilot', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', turn_tokens='32'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov30Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 30.sessions",
+    "selector": "where phase='pilot', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', turn_tokens='32'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov31Turn": {
     "value": 256,
     "rendered": "256",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 31.turn_tokens",
+    "selector": "where phase='pilot', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', turn_tokens='256'; select int(turn_tokens); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Cov31Prefixes": {
@@ -1809,630 +1809,663 @@
     ],
     "rendered": "512, 2,048, 8,192",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 31.prefixes",
+    "selector": "where phase='pilot', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', turn_tokens='256'; select ast.literal_eval(prefixes); render: no rounding; retain list order, join with comma-space, group thousands",
     "claim": 3
   },
   "Cov31Sessions": {
     "value": 1,
     "rendered": "1",
     "source": "outputs/consolidated_coverage.csv",
-    "selector": "row 31.sessions",
+    "selector": "where phase='pilot', gpu='T4', model='Qwen/Qwen2.5-1.5B', workload='repeated_control', turn_tokens='256'; select len(ast.literal_eval(sessions)); render: no rounding; integer, group thousands as displayed",
     "claim": 3
   },
   "Score12Col2": {
     "value": "574 / 636",
     "rendered": "574 / 636",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 13, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score12Col3": {
     "value": "13",
     "rendered": "13",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 13, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score12Col4": {
     "value": "767",
     "rendered": "767",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 13, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score12Col5": {
     "value": "3.203",
     "rendered": "3.203",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 13, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score13Col2": {
     "value": "246 / 248",
     "rendered": "246 / 248",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 14, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='anchor'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score13Col3": {
     "value": "5",
     "rendered": "5",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 14, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='anchor'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score13Col4": {
     "value": "299",
     "rendered": "299",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 14, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='anchor'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score13Col5": {
     "value": "2.822",
     "rendered": "2.822",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 14, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='anchor'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score14Col2": {
     "value": "231 / 289",
     "rendered": "231 / 289",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 15, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='interpolation'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score14Col3": {
     "value": "8",
     "rendered": "8",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 15, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='interpolation'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score14Col4": {
     "value": "351",
     "rendered": "351",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 15, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='interpolation'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score14Col5": {
     "value": "2.981",
     "rendered": "2.981",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 15, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='interpolation'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score15Col2": {
     "value": "97 / 99",
     "rendered": "97 / 99",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 16, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='extrapolation'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score15Col3": {
     "value": "0",
     "rendered": "0",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 16, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='extrapolation'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score15Col4": {
     "value": "117",
     "rendered": "117",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 16, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='extrapolation'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score15Col5": {
     "value": "4.007",
     "rendered": "4.007",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 16, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', calibration_region='extrapolation'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score16Col2": {
     "value": "193 / 201",
     "rendered": "193 / 201",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 17, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-controls'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score16Col3": {
     "value": "8",
     "rendered": "8",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 17, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-controls'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score16Col4": {
     "value": "247",
     "rendered": "247",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 17, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-controls'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score16Col5": {
     "value": "1.506",
     "rendered": "1.506",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 17, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-controls'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score17Col2": {
     "value": "188 / 216",
     "rendered": "188 / 216",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 18, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-main-1'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score17Col3": {
     "value": "4",
     "rendered": "4",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 18, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-main-1'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score17Col4": {
     "value": "260",
     "rendered": "260",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 18, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-main-1'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score17Col5": {
     "value": "3.681",
     "rendered": "3.681",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 18, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-main-1'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score18Col2": {
     "value": "193 / 219",
     "rendered": "193 / 219",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 19, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-main-2'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score18Col3": {
     "value": "1",
     "rendered": "1",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 19, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-main-2'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score18Col4": {
     "value": "260",
     "rendered": "260",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 19, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-main-2'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score18Col5": {
     "value": "3.654",
     "rendered": "3.654",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 19, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA L4', run_id='phase3-l4-main-2'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score19Col2": {
     "value": "192 / 206",
     "rendered": "192 / 206",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 20, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score19Col3": {
     "value": "14",
     "rendered": "14",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 20, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score19Col4": {
     "value": "260",
     "rendered": "260",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 20, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score19Col5": {
     "value": "2.040",
     "rendered": "2.040",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 20, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score20Col2": {
     "value": "59 / 63",
     "rendered": "59 / 63",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 21, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='anchor'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score20Col3": {
     "value": "3",
     "rendered": "3",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 21, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='anchor'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score20Col4": {
     "value": "78",
     "rendered": "78",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 21, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='anchor'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score20Col5": {
     "value": "2.275",
     "rendered": "2.275",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 21, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='anchor'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score21Col2": {
     "value": "96 / 105",
     "rendered": "96 / 105",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 22, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='interpolation'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score21Col3": {
     "value": "5",
     "rendered": "5",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 22, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='interpolation'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score21Col4": {
     "value": "130",
     "rendered": "130",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 22, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='interpolation'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score21Col5": {
     "value": "2.308",
     "rendered": "2.308",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 22, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='interpolation'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score22Col2": {
     "value": "37 / 38",
     "rendered": "37 / 38",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 23, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='extrapolation'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score22Col3": {
     "value": "6",
     "rendered": "6",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 23, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='extrapolation'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score22Col4": {
     "value": "52",
     "rendered": "52",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 23, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='extrapolation'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score22Col5": {
     "value": "1.341",
     "rendered": "1.341",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 23, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', calibration_region='extrapolation'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score23Col2": {
     "value": "192 / 206",
     "rendered": "192 / 206",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 24, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', run_id='phase3-a10-main-1'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score23Col3": {
     "value": "14",
     "rendered": "14",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 24, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', run_id='phase3-a10-main-1'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score23Col4": {
     "value": "260",
     "rendered": "260",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 24, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', run_id='phase3-a10-main-1'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score23Col5": {
     "value": "2.040",
     "rendered": "2.040",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 24, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10', run_id='phase3-a10-main-1'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score24Col2": {
     "value": "398 / 426",
     "rendered": "398 / 426",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 25, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score24Col3": {
     "value": "3",
     "rendered": "3",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 25, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score24Col4": {
     "value": "507",
     "rendered": "507",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 25, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score24Col5": {
     "value": "5.758",
     "rendered": "5.758",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 25, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score25Col2": {
     "value": "178 / 187",
     "rendered": "178 / 187",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 26, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='anchor'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score25Col3": {
     "value": "0",
     "rendered": "0",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 26, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='anchor'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score25Col4": {
     "value": "221",
     "rendered": "221",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 26, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='anchor'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score25Col5": {
     "value": "5.094",
     "rendered": "5.094",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 26, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='anchor'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score26Col2": {
     "value": "170 / 185",
     "rendered": "170 / 185",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 27, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='interpolation'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score26Col3": {
     "value": "2",
     "rendered": "2",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 27, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='interpolation'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score26Col4": {
     "value": "221",
     "rendered": "221",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 27, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='interpolation'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score26Col5": {
     "value": "5.511",
     "rendered": "5.511",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 27, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='interpolation'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score27Col2": {
     "value": "50 / 54",
     "rendered": "50 / 54",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 28, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='extrapolation'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score27Col3": {
     "value": "1",
     "rendered": "1",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 28, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='extrapolation'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score27Col4": {
     "value": "65",
     "rendered": "65",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 28, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='extrapolation'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score27Col5": {
     "value": "8.371",
     "rendered": "8.371",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 28, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', calibration_region='extrapolation'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score28Col2": {
     "value": "193 / 209",
     "rendered": "193 / 209",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 29, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', run_id='phase3-a10-controls'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score28Col3": {
     "value": "0",
     "rendered": "0",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 29, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', run_id='phase3-a10-controls'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score28Col4": {
     "value": "247",
     "rendered": "247",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 29, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', run_id='phase3-a10-controls'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score28Col5": {
     "value": "5.031",
     "rendered": "5.031",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 29, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', run_id='phase3-a10-controls'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score29Col2": {
     "value": "205 / 217",
     "rendered": "205 / 217",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 30, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', run_id='phase3-a10-main-2'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score29Col3": {
     "value": "3",
     "rendered": "3",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 30, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', run_id='phase3-a10-main-2'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score29Col4": {
     "value": "260",
     "rendered": "260",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 30, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', run_id='phase3-a10-main-2'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score29Col5": {
     "value": "6.433",
     "rendered": "6.433",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 30, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA A10G', run_id='phase3-a10-main-2'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score30Col2": {
     "value": "20 / 21",
     "rendered": "20 / 21",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 31, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score30Col3": {
     "value": "1",
     "rendered": "1",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 31, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score30Col4": {
     "value": "26",
     "rendered": "26",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 31, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score30Col5": {
     "value": "6.579",
     "rendered": "6.579",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 31, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score31Col2": {
     "value": "11 / 11",
     "rendered": "11 / 11",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 32, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', calibration_region='anchor'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score31Col3": {
     "value": "0",
     "rendered": "0",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 32, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', calibration_region='anchor'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score31Col4": {
     "value": "13",
     "rendered": "13",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 32, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', calibration_region='anchor'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score31Col5": {
     "value": "0.332",
     "rendered": "0.332",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 32, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', calibration_region='anchor'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score32Col2": {
     "value": "9 / 10",
     "rendered": "9 / 10",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 33, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', calibration_region='extrapolation'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score32Col3": {
     "value": "1",
     "rendered": "1",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 33, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', calibration_region='extrapolation'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score32Col4": {
     "value": "13",
     "rendered": "13",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 33, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', calibration_region='extrapolation'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score32Col5": {
     "value": "9.999",
     "rendered": "9.999",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 33, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', calibration_region='extrapolation'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
   },
   "Score33Col2": {
     "value": "20 / 21",
     "rendered": "20 / 21",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 34, column 3",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', run_id='phase3-h100-main'; select count(correct is True) / count(correct is not null), joined as numerator / denominator; render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score33Col3": {
     "value": "1",
     "rendered": "1",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 34, column 4",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', run_id='phase3-h100-main'; select count(observed_reload is null and predicted_reload is not null); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score33Col4": {
     "value": "26",
     "rendered": "26",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 34, column 5",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', run_id='phase3-h100-main'; select count(rows); render: no rounding; retain integer/list/count-pair values and displayed separators",
     "claim": 9
   },
   "Score33Col5": {
     "value": "6.579",
     "rendered": "6.579",
-    "source": "docs/PHASE3_REPORT.md",
-    "selector": "scorecard table line 34, column 6",
+    "source": "outputs/results.jsonl.gz",
+    "selector": "where kind='phase3_prediction_score', allocated_gpu_name='NVIDIA H100 80GB HBM3', run_id='phase3-h100-main'; select median(absolute_error_ms); render: round to 3 decimal places; commas are thousands separators",
     "claim": 9
+  },
+  "CalQwenAnchors": {
+    "value": [
+      64,
+      1024,
+      8192
+    ],
+    "rendered": "64, 1,024, 8,192",
+    "source": "configs/predictions_L4.json",
+    "selector": "baseline_fits['Qwen/Qwen2.5-1.5B'][\"32\"][\"recompute\"][\"calibration_x\"]; render: no rounding; retain list order, join with comma-space, group thousands",
+    "claim": 3
+  },
+  "CalLlamaAnchors": {
+    "value": [
+      64,
+      512,
+      1024
+    ],
+    "rendered": "64, 512, 1,024",
+    "source": "configs/predictions_L4.json",
+    "selector": "baseline_fits['unsloth/Llama-3.2-3B-Instruct'][\"32\"][\"recompute\"][\"calibration_x\"]; render: no rounding; retain list order, join with comma-space, group thousands",
+    "claim": 3
+  },
+  "CalMhaAnchors": {
+    "value": [
+      64,
+      512,
+      2016
+    ],
+    "rendered": "64, 512, 2,016",
+    "source": "configs/predictions_L4.json",
+    "selector": "baseline_fits['EleutherAI/pythia-1.4b'][\"32\"][\"recompute\"][\"calibration_x\"]; render: no rounding; retain list order, join with comma-space, group thousands",
+    "claim": 3
   }
 }

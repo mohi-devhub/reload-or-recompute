@@ -1,7 +1,7 @@
 {
-  "reason": "Original three-column plot scales its tick labels below comfortable single-column print size; reflowed to two columns. No observations, predictions, fits or brackets changed. Legend wording is shortened without changing meaning.",
+  "reason": "Original three-column plot scales its tick labels below comfortable single-column print size; reflowed to two columns. No observations, predictions, fits or brackets changed. Legend wording identifies unlocated crossovers without asserting finite crossings.",
   "original_sha256": "b56f7692e14e3bca52419456b7829939522a8ab3411089e5bcfa2264704bb6b5",
-  "print_sha256": "115ecaf6ddd1ea5aac1df9ddcce92c225db75f5eff86e1886d0348468e349fc1",
+  "print_sha256": "9ba9b7537a3a7518ea77b88aa912cff216a395b98b3c511e5664e8f0fec60a56",
   "renderer_source": "v0.1.0-data:scripts/report_phase3.py",
   "changes": [
     "subplot grid 2x3 to 3x2",

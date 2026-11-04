@@ -20,6 +20,10 @@
     "figures/paper/bstar-vs-prefill.pdf": "b56f7692e14e3bca52419456b7829939522a8ab3411089e5bcfa2264704bb6b5",
     "outputs/consolidated_file_observability.csv": "ebb364dceea08fa973e7343cf24ed583729fab70dd4fba449d16b16e5b5791b2",
     "outputs/results.jsonl.gz": "d3d07cb9a33971fb155d844f4834da2911950c3a3f34846dc0a3af5f3dbc3897",
-    "docs/PILOT_REPORT.md": "d7bf9d8d03dcfd6745112441428576036339e5291eebe63780db7269ab37796b"
+    "docs/PILOT_REPORT.md": "d7bf9d8d03dcfd6745112441428576036339e5291eebe63780db7269ab37796b",
+    "configs/predictions_L4.json": "fc4ca0c9f73a18fbcf5d63b75dd9d72b0677b1535caf394cc2b9ae41973f14c7",
+    "outputs/phase3_ledger.json": "3e1614c2eb311bbade76e15cd8bcb74ae8e7e360f914215c8ed1adfca16897f9",
+    "configs/phase3_plan.json": "f811bc73c8245bb42282d284d31de6ed5d873bd95c25b94426eafddaaef3caa2",
+    "scripts/analyze_pilot.py": "2982fc80d7cac432db8b09ead163b56b8b5ba481b91491108083d5045081a7da"
   }
 }

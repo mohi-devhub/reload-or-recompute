@@ -20,4 +20,4 @@ The arXiv landing-page metadata for the file-observability reference says **Char
 
 CacheGen's source also identifies SIGCOMM 2024. We cite its inspected arXiv revision rather than invent conference pagination or DOI metadata. KVServe's source states acceptance at SIGCOMM 2026; this draft likewise cites its inspected preprint. Other venues are not inferred from memory.
 
-Cake explicitly combines computation and loading. The paper describes our scalar rule as a whole-prefix decision boundary, not an evaluated overlap scheduler. py-kvcache is acknowledged as close prior hardware/break-even characterization.
+Cake explicitly combines computation and loading. The rule compares load-only and recompute-only endpoints; it does not determine Cake's optimal partial split. Cake already compares GPUs with simulated I/O bandwidth on MHA/GQA models. py-kvcache already presents offline per-node/model calibration in Section 6.6 and break-even bandwidth frontiers in Section 5.2. The distinction here is timestamped frozen per-cell predictions evaluated on separate sweeps, short calibration and the stated measurement scope.

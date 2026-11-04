@@ -1,9 +1,10 @@
 {
   "passed": true,
+  "check_scope": "provenance, macro coverage, figure hashes and literal classification; no statistic recomputation",
   "release": "v0.1.0-data",
-  "used_values": 291,
-  "empirical_occurrences": 325,
-  "registered_values": 308,
+  "used_values": 297,
+  "empirical_occurrences": 332,
+  "registered_values": 311,
   "unclassified_literals": [],
   "classified_layout_or_definition_literals": [
     {
@@ -120,6 +121,20 @@
     },
     {
       "file": "main.tex",
+      "line": 194,
+      "token": "6.6",
+      "category": "bibliographic section locator verified in CITATIONS.md",
+      "context": "py-kvcache already performs offline per-node/model calibration (its Section~6.6) and presents break-even bandwidth frontiers (Section~5.2), alongside hardware-dependent characterization, asynchronous fetching, and scheduler-aware preloading~\\cite{pykvcache}. Our distinction is timestamped, frozen per-cell predictions evaluated on separate sweeps after short calibration, with commodity/older GPUs, short contexts, and separate CPU-memory and file paths with read observability. Calibration itself is not new; sweep results do not update our predictions."
+    },
+    {
+      "file": "main.tex",
+      "line": 194,
+      "token": "5.2",
+      "category": "bibliographic section locator verified in CITATIONS.md",
+      "context": "py-kvcache already performs offline per-node/model calibration (its Section~6.6) and presents break-even bandwidth frontiers (Section~5.2), alongside hardware-dependent characterization, asynchronous fetching, and scheduler-aware preloading~\\cite{pykvcache}. Our distinction is timestamped, frozen per-cell predictions evaluated on separate sweeps after short calibration, with commodity/older GPUs, short contexts, and separate CPU-memory and file paths with read observability. Calibration itself is not new; sweep results do not update our predictions."
+    },
+    {
+      "file": "main.tex",
       "line": 220,
       "token": "3",
       "category": "typesetting parameter",
@@ -134,98 +149,98 @@
     },
     {
       "file": "main.tex",
-      "line": 232,
+      "line": 249,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 -m venv .venv"
     },
     {
       "file": "main.tex",
-      "line": 234,
+      "line": 251,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 -m pip install -r requirements-analysis.txt"
     },
     {
       "file": "main.tex",
-      "line": 235,
+      "line": 252,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/materialize_results.py"
     },
     {
       "file": "main.tex",
-      "line": 236,
+      "line": 253,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase2.py --from-results outputs/results.jsonl"
     },
     {
       "file": "main.tex",
-      "line": 236,
+      "line": 253,
       "token": "2",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase2.py --from-results outputs/results.jsonl"
     },
     {
       "file": "main.tex",
-      "line": 237,
+      "line": 254,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase2.py"
     },
     {
       "file": "main.tex",
-      "line": 237,
+      "line": 254,
       "token": "2",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase2.py"
     },
     {
       "file": "main.tex",
-      "line": 238,
+      "line": 255,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl"
     },
     {
       "file": "main.tex",
-      "line": 238,
+      "line": 255,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl"
     },
     {
       "file": "main.tex",
-      "line": 239,
+      "line": 256,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/audit_phase3.py"
     },
     {
       "file": "main.tex",
-      "line": 239,
+      "line": 256,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/audit_phase3.py"
     },
     {
       "file": "main.tex",
-      "line": 240,
+      "line": 257,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase3.py"
     },
     {
       "file": "main.tex",
-      "line": 240,
+      "line": 257,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase3.py"
     },
     {
       "file": "main.tex",
-      "line": 241,
+      "line": 258,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/consolidate_study.py --check --figures"
@@ -374,10 +389,10 @@
       "main.tex:85",
       "main.tex:85"
     ],
-    "SessionsL4": [
+    "SessionsT4": [
       "main.tex:85"
     ],
-    "SessionsT4": [
+    "SessionsL4": [
       "main.tex:85"
     ],
     "MainGrid": [
@@ -442,6 +457,19 @@
     ],
     "H100Unresolved": [
       "main.tex:123"
+    ],
+    "H100Cells": [
+      "main.tex:127",
+      "main.tex:205"
+    ],
+    "L4Cells": [
+      "main.tex:127"
+    ],
+    "A10Cells": [
+      "main.tex:127"
+    ],
+    "A10GCells": [
+      "main.tex:127"
     ],
     "Rate200": [
       "main.tex:132",
@@ -592,14 +620,20 @@
     "CalL4Seconds": [
       "main.tex:182"
     ],
-    "H100Cells": [
-      "main.tex:205"
-    ],
     "H100Missing": [
       "main.tex:205"
     ],
     "MaxMain": [
       "main.tex:205"
+    ],
+    "CalQwenAnchors": [
+      "main.tex:231"
+    ],
+    "CalLlamaAnchors": [
+      "main.tex:232"
+    ],
+    "CalMhaAnchors": [
+      "main.tex:233"
     ],
     "Cov0Turn": [
       "generated/coverage.tex:5"
@@ -1179,7 +1213,7 @@
     {
       "name": "bstar-vs-gpu",
       "released_sha256": "21a7f79e7948a0c0cb7643abc4da0d8f787a8f1223e9009849ca06725a41f9b9",
-      "draft_sha256": "58407431bdab3eb52ddf501f6478d22b0b8959280c94fe6f0a62d4c33847391b",
+      "draft_sha256": "8cd8e0f5f715f264805f5f826af214f2a4a06222fbc953a0f35e32c64e268fc0",
       "unchanged": false,
       "source": "v0.1.0-data:figures/paper/bstar-vs-gpu.pdf",
       "data_source": "outputs/consolidated_crossovers.csv"
@@ -1203,7 +1237,7 @@
     {
       "name": "bstar-vs-prefill",
       "released_sha256": "b56f7692e14e3bca52419456b7829939522a8ab3411089e5bcfa2264704bb6b5",
-      "draft_sha256": "115ecaf6ddd1ea5aac1df9ddcce92c225db75f5eff86e1886d0348468e349fc1",
+      "draft_sha256": "9ba9b7537a3a7518ea77b88aa912cff216a395b98b3c511e5664e8f0fec60a56",
       "unchanged": false,
       "source": "v0.1.0-data:figures/paper/bstar-vs-prefill.pdf",
       "data_source": "outputs/consolidated_crossovers.csv"

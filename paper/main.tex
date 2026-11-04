@@ -24,7 +24,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-When a conversation returns, a server must choose whether reloading its key--value (KV) cache or recomputing its prefix gives a faster first token. We compare complete returning-turn time to first token (TTFT) with a break-even bandwidth rule that includes the resident-cache baseline, fixed overhead, and separately measured CPU and transfer costs. Predictions frozen after short GPU-specific calibration correctly classify \N{L4Correct}/\N{L4Resolved} resolved decisions on L4, \N{A10Correct}/\N{A10Resolved} on A10 x16, and \N{A10GCorrect}/\N{A10GResolved} on A10G x8. For Qwen2.5-1.5B with a \N{Matched}-token prefix and a \N{Short}-token new turn, the break-even simulated-bandwidth brackets rise from T4's \N{Rate100}--\N{Rate400} MB/s to \N{Rate800}--\N{Rate1600} MB/s on L4 and A10 x16. Extrapolating short calibration can produce large long-context TTFT errors. We release the measurements, frozen predictions, reference code, and a source-linked claim ledger.
+When a conversation returns, a server must choose whether reloading its key--value (KV) cache or recomputing its prefix gives a faster first token. We evaluate a break-even bandwidth rule for time to first token (TTFT) that includes resident-cache continuation, fixed overhead, and CPU and transfer costs. Building on existing calibration and compute/load analyses, we timestamp and freeze per-cell predictions after short calibration and evaluate separate sweeps on commodity and older GPUs, including short contexts and separate CPU-memory and file paths. Frozen predictions correctly classify \N{L4Correct}/\N{L4Resolved} resolved decisions on L4, \N{A10Correct}/\N{A10Resolved} on A10 x16, and \N{A10GCorrect}/\N{A10GResolved} on A10G x8. For Qwen2.5-1.5B with a \N{Matched}-token prefix and a \N{Short}-token new turn, break-even simulated-bandwidth brackets rise from T4's \N{Rate100}--\N{Rate400} MB/s to \N{Rate800}--\N{Rate1600} MB/s on L4 and A10 x16. Long-context extrapolation can produce large TTFT errors. We release measurements, frozen predictions, reference code, and a source-linked claim ledger.
 \end{abstract}
 \noindent\textbf{Artifacts:} \href{https://github.com/mohi-devhub/reload-or-recompute}{github.com/mohi-devhub/reload-or-recompute}; frozen release \href{https://github.com/mohi-devhub/reload-or-recompute/releases/tag/v0.1.0-data}{v0.1.0-data}.
 
@@ -34,10 +34,10 @@ In the T4 pilot, Qwen2.5-1.5B returned a first token in a median \N{PilotPinnedL
 %% AUTHOR: why I started this study
 \noindent\textit{[Author placeholder: why I started this study. Replace this paragraph with the motivation and deployment experience behind the experiment.]}
 
-py-kvcache already characterizes the reload-versus-recompute trade-off and its hardware dependence~\cite{pykvcache}. Cake already overlaps computation and loading~\cite{cake}. We do not claim novelty for KV reuse, offload, break-even thresholds, or choosing compute versus load. Our question is whether a rule fixed during the T4 study can predict later measurements on other GPUs after only short local calibration.
+py-kvcache already characterizes the reload-versus-recompute trade-off and its hardware dependence, with offline calibration and bandwidth frontiers~\cite{pykvcache}. Cake compares GPUs using simulated I/O bandwidth on MHA and GQA models, and overlaps compute and load~\cite{cake}. We do not claim novelty for KV reuse, offload, break-even thresholds, or choosing compute versus load. Our question is whether a rule fixed during the T4 study can predict later measurements on other GPUs after only short local calibration.
 
 \paragraph{Contributions.}
-First, we test frozen predictions on GPUs beyond the T4 used to develop the rule: after about a minute of main-model calibration on each new GPU, we freeze its cost estimates and test the later sweep without fitting to those sweep results. Second, we measure commodity and older GPUs, including the short contexts where transfer and continuation costs can outweigh reuse. Third, we measure CPU-memory and file paths separately and report whether physical reads were observed. The rule's form is fixed before transfer testing; GPU-specific costs still require calibration.
+The first contribution is timestamped, frozen per-cell predictions evaluated on separate sweeps after short local calibration, including GPUs beyond the T4 used to develop the rule. Main-model calibration takes about a minute. Second, we measure commodity and older GPUs and short contexts where reuse costs can outweigh recomputation. Third, we measure CPU-memory and file paths separately, with physical-read observability. The rule's form is fixed before transfer testing; its costs still require calibration.
 
 The reference path measures one request with a saved cache already available. Choosing whether to persist that cache also requires write cost, capacity, and return probability.
 
@@ -82,7 +82,7 @@ The rule has two tests. The T4 redesign evaluates descriptive agreement with mea
 \subsection{Three phases and observed hardware}
 The pilot tests the main model on T4 at prefixes \N{Example}, \N{PilotMid}, and \N{LongPrefix}, with \N{Short}- and \N{Long}-token turns. The pilot has \N{PilotRepeats} measured repeats per cell; the later sweeps use \N{FullRepeats}. Reload-path medians beat recomputation throughout that pilot grid, so it did not locate a crossover length. The next phase changes the axis to simulated bandwidth and includes short prefixes, multiple model families, separate file legs, and repeated sessions. It contains \N{T4Timings} accepted full-sweep timings, \N{T4Invalid} invalid full-sweep timings, and \N{T4Sessions} sweep sessions across \N{ModelCount} models.
 
-The transfer phase uses L4 and Modal's Ampere allocation tier. The actual boards differ: the main A10 session has an active PCIe generation-\N{AmpereGeneration} x16 link, while the main A10G session and the Ampere control-model session have generation-\N{AmpereGeneration} x8 links. We report them separately. These allocation differences are the likely source of the earlier service-tier spread, but host conditions prevent a causal attribution; each board has only one main-model session. L4 has \N{SessionsL4} main-model sessions; T4 has \N{SessionsT4}. H100 contributes an interrupted optional GPU instance with only complete recovered cells scored.
+The transfer phase uses L4 and Modal's Ampere allocation tier. The observed boards differ: A10 has an active PCIe generation-\N{AmpereGeneration} x16 link, while A10G has generation-\N{AmpereGeneration} x8. We use A10 calibration, transferred unchanged to A10 and A10G. Their spread is confounded by board, host, and link differences; each board has one main-model session. T4 has \N{SessionsT4} main-model sessions and L4 has \N{SessionsL4}, so their observed ranges do not establish relative platform stability. H100 contributes only complete cells from an interrupted optional GPU instance.
 
 All measured weights and caches use fp16. The transfer runs pin Torch \texttt{2.11.0+cu130} and Transformers \texttt{4.51.3} to the T4 redesign versions. Python patch versions and GPU drivers differ between platforms. The efficient/math SDPA selection is fixed, without FlashAttention. Source hashes protect the timing, forward, continuation, transfer, and file-read routines against changes from the T4 reference. Platform wrappers change GPU checks, scheduling, and persistence, not those protected routines.
 
@@ -94,7 +94,7 @@ Table~\ref{tab:models} lists the measured checkpoints and verified cache sizes. 
 \caption{Released fp16 models and verified KV payload. The Llama checkpoint is the ungated mirror. These are different models, not a controlled attention-layout intervention.}\label{tab:models}
 \end{table}
 
-The main model uses a frozen synthetic UltraChat fixture, with distinct conversations stitched for long contexts. Repeated text supplies separate auxiliary-model controls. Neither workload establishes quality or a natural return distribution.
+The main model uses a frozen synthetic UltraChat fixture, with conversations stitched for long contexts. A new turn is a fixed-length token continuation of clipped role-labelled text, not necessarily a complete message at a dialogue boundary. Repeated text supplies auxiliary-model controls. Neither workload establishes quality or a natural return distribution.
 
 The transfer main-model grid has prefixes \N{MainGrid}, with new turns \N{Short} and \N{Long}. Controls use a \N{Short}-token turn and a smaller repeated-text grid, including native-supported limits where feasible. A10 has main-model measurements only; A10G and L4 also have the controls. Context and memory exclusions remain explicit. Appendix~\ref{app:coverage} gives the full completed coverage, including T4-specific reductions and the incomplete H100 subset. We do not replace missing cells with predicted measurements.
 
@@ -108,14 +108,14 @@ Full redesign and transfer sweeps use \N{FullRepeats} measured randomized rounds
 
 Reported within-session intervals use a percentile bootstrap with \N{Bootstraps} resamples and \N{CI}\% coverage. Decision scoring uses a paired-round bootstrap interval for reload-minus-recompute TTFT. We call a decision resolved when that interval identifies one path as faster. Intervals covering zero are excluded from the accuracy denominator. Median absolute TTFT error includes complete baseline and reload cells. Related cells share models, contexts, calibration, and sessions; decision counts are descriptive, not independent Bernoulli trials.
 
-Before each new GPU sweep, calibration measures prefix-only, recompute, and resident-hit baselines at a few lengths, plus independent transfer and file legs. It uses \N{CalRepeats} baseline rounds and \N{MicroRepeats} microbenchmark repeats. Nonnegative quadratic time models predict prefill and recompute; resident-hit and byte-cost legs use nonnegative affine fits. Predictions for every planned cell are committed before its sweep begins. Sweep observations never update coefficients. We distinguish calibration anchors, interpolation, and extrapolation in the released scorecards.
+Before each new GPU sweep, calibration measures prefix-only, recompute, and resident-hit baselines at a few lengths, plus independent transfer and file legs. It uses \N{CalRepeats} baseline rounds and \N{MicroRepeats} microbenchmark repeats. Nonnegative quadratic time models predict prefill and recompute; resident-hit and byte-cost legs use nonnegative affine fits. Predictions for every planned cell are committed before its sweep begins. Sweep observations never update coefficients. We distinguish anchors, interpolation, and extrapolation; Appendix~\ref{app:calibration} specifies anchors and path costs.
 
 Separate session medians are retained. Session spread is the range of those medians divided by their median, not a population interval. Telemetry samples SM and memory clocks, temperature, power, and event reasons at about one sample per second; Modal also records PCIe generation and width. Sampling can miss brief trials, and associations with clocks do not establish a latency cause.
 
 \subsection{File-path observability}\label{sec:files}
 Kaggle file reads were physical according to process I/O counters: \N{KaggleReads}/\N{KaggleFileSamples} recorded file observations have positive \texttt{physical\_read\_bytes}, ranging from \N{KaggleMinBytes} to \N{KaggleMaxBytes} bytes. These counts include calibration and file microbenchmarks. The counters support reads beyond kernel page-cache hits; they are not physical-device traces and do not identify underlying media or host/storage caches.
 
-Modal's were page-cache resident: \N{ModalReads}/\N{ModalFileSamples} file observations have positive physical-read counters. We use the terminology \emph{local file API path (page-cache resident; physical reads not observed)}. Residency is the operational interpretation of those zero counters and the virtualized filesystem, not proof about every hidden cache layer. Global cache dropping was denied on Kaggle, and per-file eviction advice is advisory on both platforms. We did not perform a cached-versus-uncached ablation. The platforms therefore do not provide equivalent physical-file-read conditions.
+Physical reads were not observed on Modal: \N{ModalReads}/\N{ModalFileSamples} file observations have positive physical-read counters. We call this the \emph{local file API path (physical reads not observed)}. Page-cache residency is one interpretation of the zero counters; the cache layer is unverified. Global cache dropping was denied on Kaggle, and per-file eviction advice is advisory on both platforms. Without a cached-versus-uncached ablation, these platforms do not provide equivalent physical-file-read conditions.
 
 \section{Results}\label{sec:results}
 \subsection{Short calibration predicts most decisions on new GPUs}
@@ -124,7 +124,7 @@ Figure~\ref{fig:score} shows \N{L4Correct}/\N{L4Resolved} correct resolved decis
 A10 covers the main model only, L4 and A10G also cover the controls, and H100 is partial.
 \begin{figure}[t]
 \centering\includegraphics[width=\linewidth]{figures/frozen-scorecard.pdf}
-\caption{Frozen decisions and median absolute TTFT errors by GPU. Decision accuracy counts only resolved comparisons; error includes all complete timed conditions. Per-GPU coverage and calibration regions are listed in Appendix~\ref{app:scores}.}\label{fig:score}
+\caption{Frozen decisions and median absolute TTFT errors. Scored decisions compare resident hits and reload paths with recomputation; error includes all complete timed conditions. Coverage is unequal: partial H100 has \N{H100Cells} cells, L4 \N{L4Cells}, A10 x16 \N{A10Cells}, and A10G x8 \N{A10GCells}. A10 covers only the main model. Unresolved decisions are excluded. These bars are not a GPU ranking; Appendix~\ref{app:scores} separates coverage and calibration regions.}\label{fig:score}
 \end{figure}
 
 \subsection{Faster GPUs need more bandwidth before reload wins}
@@ -133,7 +133,7 @@ At main-model prefix \N{Matched} and new turn \N{Short}, the T4 sessions cross b
 These comparisons use Qwen2.5-1.5B on UltraChat.
 \begin{figure}[t]
 \centering\includegraphics[width=\linewidth]{figures/bstar-vs-gpu.pdf}
-\caption{Main-model UltraChat simulated-bandwidth crossovers at matched prefixes, new turn \N{Short}. Bars span achieved-rate endpoints. Circles have resolved endpoints; crosses have an unresolved endpoint. Upward triangles mark a crossover above the highest tested rate. Squares show the rule, descriptive on T4 and frozen on new GPUs. Sessions remain separate.}\label{fig:gpu}
+\caption{Main-model UltraChat simulated-bandwidth crossovers at matched prefixes, new turn \N{Short}. Bars span achieved-rate endpoints. Circles have resolved endpoints; crosses have an unresolved endpoint. Upward triangles mean recompute faster through the highest tested rate; crossover not located. Squares show the rule, descriptive on T4 and frozen on new GPUs. Sessions remain separate.}\label{fig:gpu}
 \end{figure}
 
 \subsection{Returning-turn and fixed costs change the answer}
@@ -165,7 +165,7 @@ The low median TTFT errors conceal large native-limit failures. For Qwen2.5-3B a
 Figure~\ref{fig:prefill} relates the observed simulated-bandwidth boundary to prefix throughput. The frozen throughput-ratio prediction falls inside at least one matched T4 crossover-ratio bracket for \N{L4RatioYes}/\N{L4RatioTotal} ratio-resolved L4 shapes, \N{A10RatioYes}/\N{A10RatioTotal} A10 shapes, and \N{A10GRatioYes}/\N{A10GRatioTotal} A10G shapes. The partial H100 comparison is \N{H100RatioYes}/\N{H100RatioTotal}. These are broad-bracket compatibility counts, not tests proving equality. Thresholds above the highest tested rate or with unresolved endpoints do not supply exact ratios. The adjusted denominator also changes with continuation and fixed costs. Dividing two prefix-only formula estimates would merely restate an identity, not validate hardware transfer.
 \begin{figure}[t]
 \centering\includegraphics[width=\linewidth]{figures/bstar-vs-prefill.pdf}
-\caption{Simulated-bandwidth crossovers versus measured prefill throughput, new turn \N{Short}, five models. T4 is descriptive; L4, A10 x16, A10G x8, and partial H100 predictions are frozen. Bars are achieved-rate brackets, not threshold intervals; crosses have an unresolved endpoint and upward triangles mean above the highest tested rate, and downward triangles below the lowest. Dashed curves are the adjusted rule; dotted lines are KV bytes/token times throughput. Interpolated points are not measured thresholds. Model comparisons are confounded, and H100 has no MHA sweep.}\label{fig:prefill}
+\caption{Simulated-bandwidth crossovers and predictions, new turn \N{Short}, five models. Observations use measured prefill throughput; dashed adjusted-rule curves use calibration-predicted throughput, so offsets mix throughput and bandwidth prediction errors. T4 is descriptive; other predictions are frozen. Bars span achieved-rate brackets; crosses have an unresolved endpoint. Upward triangles mean recompute faster through the highest tested rate; crossover not located. Downward triangles mean reload faster down to the lowest tested rate; crossover not located. Dotted lines are KV bytes/token times throughput. Interpolated points are not measured thresholds. Model comparisons are confounded; H100 is partial with no MHA sweep.}\label{fig:prefill}
 \end{figure}
 
 \paragraph{Uniform MHA file outcomes.}
@@ -189,9 +189,9 @@ LMCache provides external KV storage and engine connectors~\cite{lmcache}. vLLM 
 
 CacheGen compresses and streams KV~\cite{cachegen}. CacheBlend selectively recomputes cached chunks to recover cross-chunk attention~\cite{cacheblend}. We evaluate uncompressed KV for identical prefixes.
 
-Cake overlaps compute and load by computing from the prefix's beginning and loading from its end~\cite{cake}. Our $B^*$ describes the whole-prefix boundary such methods split around, not their optimized overlap time. We did not test overlap.
+Cake compares GPUs with simulated I/O bandwidth on MHA and GQA models, and overlaps computation from the prefix's beginning with loading from its end~\cite{cake}. Our rule compares load-only and recompute-only endpoints; it does not determine Cake's optimal partial split. We did not test overlap.
 
-py-kvcache already characterizes the reload-versus-recompute trade-off and its hardware dependence, including break-even behavior, asynchronous fetching, and scheduler-aware preloading~\cite{pykvcache}. Our distinction is frozen prediction testing on new GPUs from short local calibration, a focus on commodity/older hardware and short contexts, and separate CPU-memory and file paths with read observability. The rule's form is fixed before transfer; costs come from calibration, not sweep fitting.
+py-kvcache already performs offline per-node/model calibration (its Section~6.6) and presents break-even bandwidth frontiers (Section~5.2), alongside hardware-dependent characterization, asynchronous fetching, and scheduler-aware preloading~\cite{pykvcache}. Our distinction is timestamped, frozen per-cell predictions evaluated on separate sweeps after short calibration, with commodity/older GPUs, short contexts, and separate CPU-memory and file paths with read observability. Calibration itself is not new; sweep results do not update our predictions.
 
 He et al. distinguish buffered reads from physical-read evidence in observational deployment snapshots~\cite{fileobservability}. KVServe adapts compression to service conditions~\cite{kvserve}; ShadowServe addresses fetching interference~\cite{shadowserve}. These reinforce costs beyond bandwidth. We adopt no external performance numbers or causal interpretation of host-file differences.
 
@@ -220,11 +220,28 @@ The tables are generated from the immutable release, not a new analysis fit. Ful
 {\footnotesize\setlength{\tabcolsep}{3pt}\input{generated/coverage.tex}}
 
 \section{Per-board frozen scorecards}\label{app:scores}
-The release committed the Ampere predictions under its API tier name before the sweeps. The presentation below separates observed A10 from A10G without changing those predictions. ``Controls'' cover the repeated-text auxiliary models; main sessions use UltraChat. Anchor, interpolation and extrapolation refer to the calibration length range, not observed bandwidth precision. Error includes baseline conditions; correct/resolved counts concern the resident hit and reload decisions.
+The release committed the Ampere predictions under its API tier name before the sweeps: A10 calibration, transferred unchanged to A10 and A10G. The presentation separates observed boards without changing those predictions. ``Controls'' cover the repeated-text auxiliary models; main sessions use UltraChat. Anchor, interpolation and extrapolation refer to the calibration length range, not observed bandwidth precision. Error includes baseline conditions; correct/resolved counts concern the resident hit and reload decisions.
 {\footnotesize\setlength{\tabcolsep}{3pt}\input{generated/scorecards.tex}}
 
+\subsection{Calibration anchors and path costs}\label{app:calibration}
+The frozen registrations use the following prefix anchors for prefix-only, recompute, and resident-hit baselines. L4 and A10 use the same anchors; H100 uses them for its calibrated Qwen2.5-1.5B and Pythia models, although its Pythia sweep did not start.
+\begin{center}\small
+\begin{tabular}{ll}
+\toprule Model & Prefix anchors (tokens)\\\midrule
+Qwen2.5-1.5B and Qwen2.5-3B & \N{CalQwenAnchors}\\
+Llama-3.2-3B-Instruct & \N{CalLlamaAnchors}\\
+Pythia-1.4B and Phi-2 & \N{CalMhaAnchors}\\
+\bottomrule\end{tabular}
+\end{center}
+Prefix-only and recompute times use a three-parameter quadratic fit with nonnegative coefficients, with length scaled by the largest anchor. Resident-hit times and byte-cost legs use nonnegative affine fits. The pinned-transfer fit's intercept supplies fixed overhead for simulated-bandwidth predictions; the unthrottled path uses that fit's full predicted transfer time.
+
+Each file prediction adds resident-hit time to independently measured legs. The raw staged path adds raw read, tensor-view construction, and H2D transfer. The T4 staged torch path adds raw read, deserialization, and H2D transfer. Direct torch loading adds the CPU \texttt{torch.load} leg and H2D transfer. Each leg includes its own measured or fitted overhead; the pinned-transfer intercept is not added again. T4 file residuals use same-session baselines; frozen transfer predictions use calibration fits. The registrations retain every anchor, coefficient, and per-cell prediction. A ``new turn'' is a fixed-length token continuation of clipped role-labelled text, rather than a guaranteed dialogue boundary.
+
 \section{Reproduction without new experiments}\label{app:reproduce}
-The archive is checksum-verified, and the claim inventory and figure sources are part of \texttt{v0.1.0-data}. The following commands reconstruct the released analysis on CPU. They do not authorize or launch GPU work. The manuscript includes released figure PDFs, with only the throughput figure reflowed for print. Its number registry maps empirical values to release files, selectors, and claim numbers; \texttt{NUMBERS.md} lists all uses.
+The archive, claim inventory, and figure sources are part of \texttt{v0.1.0-data}. The manuscript preserves the scorecard and regime PDFs. The GPU-bandwidth figure changes legend wording; the throughput figure changes panel layout and legend wording. Neither changes data or predictions. \texttt{NUMBERS.md} lists source fields, row predicates, aggregations, rounding, and all uses. Its audit script checks provenance and coverage, rather than recomputing every statistic.
+
+\subsection{Data reproduction}
+These commands reconstruct the released analysis on CPU:
 \begin{verbatim}
 git clone https://github.com/mohi-devhub/reload-or-recompute.git
 cd reload-or-recompute
@@ -240,8 +257,11 @@ python3 scripts/audit_phase3.py
 python3 scripts/report_phase3.py
 python3 scripts/consolidate_study.py --check --figures
 \end{verbatim}
-The manuscript is a later local draft over that data tag. From its \texttt{paper/} directory, standard compilation is:
+\subsection{Manuscript reproduction}
+The data tag has no manuscript directory. After data reproduction, check out the separate manuscript tag \texttt{paper-v0.1} and compile its self-contained sources:
 \begin{verbatim}
+git checkout paper-v0.1
+cd paper
 pdflatex -interaction=nonstopmode -halt-on-error main.tex
 bibtex main
 pdflatex -interaction=nonstopmode -halt-on-error main.tex

@@ -7,7 +7,7 @@ source=subprocess.check_output(['git','show','v0.1.0-data:scripts/report_phase3.
 source=source.replace("fig,axes=plt.subplots(2,3,figsize=(11,7)","fig,axes=plt.subplots(3,2,figsize=(7,5.5)")
 source='\n'.join(line for line in source.splitlines() if 'axes.flat[-1].text(' not in line)+'\n'
 source=source.replace('fontsize=7.3)','fontsize=7,labelspacing=.05,borderpad=0,handlelength=1.8)')
-source=source.replace('Frozen adjusted-rule prediction','Frozen adjusted rule').replace('Prefix-only KV bytes/token × tokens/s','Prefix-only bandwidth rule').replace('Censored median bound (up / down)','Outside tested rates')
+source=source.replace('Frozen adjusted-rule prediction','Frozen adjusted rule').replace('Prefix-only KV bytes/token × tokens/s','Prefix-only bandwidth rule').replace('Censored median bound (up / down)','Crossover not located')
 assert 'subplots(3,2' in source
 sys.path.insert(0,str(R/'scripts'))
 namespace={'__file__':str(R/'scripts/report_phase3.py'),'__name__':'released_print_renderer'}
@@ -30,4 +30,4 @@ with tempfile.TemporaryDirectory() as d:
  namespace['figure'](cross,t4)
  for ext in ['pdf','png']:(P/'figures'/('bstar-vs-prefill.'+ext)).write_bytes((root/'figures'/('phase3_bstar_vs_prefill.'+ext)).read_bytes())
 original=subprocess.check_output(['git','show','v0.1.0-data:figures/paper/bstar-vs-prefill.pdf'],cwd=R)
-(P/'generated/figure_reformat.json').write_text(json.dumps(dict(reason='Original three-column plot scales its tick labels below comfortable single-column print size; reflowed to two columns. No observations, predictions, fits or brackets changed. Legend wording is shortened without changing meaning.',original_sha256=hashlib.sha256(original).hexdigest(),print_sha256=hashlib.sha256((P/'figures/bstar-vs-prefill.pdf').read_bytes()).hexdigest(),renderer_source='v0.1.0-data:scripts/report_phase3.py',changes=['subplot grid 2x3 to 3x2','canvas 11x7 to 7x5.5 inches','font defaults for actual print size','compact legend; explanatory note moved to caption','local output directory']),indent=2)+'\n')
+(P/'generated/figure_reformat.json').write_text(json.dumps(dict(reason='Original three-column plot scales its tick labels below comfortable single-column print size; reflowed to two columns. No observations, predictions, fits or brackets changed. Legend wording identifies unlocated crossovers without asserting finite crossings.',original_sha256=hashlib.sha256(original).hexdigest(),print_sha256=hashlib.sha256((P/'figures/bstar-vs-prefill.pdf').read_bytes()).hexdigest(),renderer_source='v0.1.0-data:scripts/report_phase3.py',changes=['subplot grid 2x3 to 3x2','canvas 11x7 to 7x5.5 inches','font defaults for actual print size','compact legend; explanatory note moved to caption','local output directory']),indent=2)+'\n')
