@@ -107,98 +107,105 @@
     },
     {
       "file": "main.tex",
-      "line": 65,
+      "line": 64,
       "token": "0",
       "category": "mathematical boundary definition",
       "context": "-\\widehat h-\\widehat T_{\\mathrm{other}}(L,N)},\\qquad D>0."
     },
     {
       "file": "main.tex",
-      "line": 178,
+      "line": 177,
       "token": "96",
       "category": "typesetting parameter",
       "context": "\\noindent\\fbox{\\begin{minipage}{.96\\linewidth}"
     },
     {
       "file": "main.tex",
-      "line": 194,
+      "line": 193,
       "token": "6.6",
       "category": "bibliographic section locator verified in CITATIONS.md",
       "context": "py-kvcache already performs offline per-node/model calibration (its Section~6.6) and presents break-even bandwidth frontiers (Section~5.2), alongside hardware-dependent characterization, asynchronous fetching, and scheduler-aware preloading~\\cite{pykvcache}. Our distinction is timestamped, frozen per-cell predictions evaluated on separate sweeps after short calibration, with commodity/older GPUs, short contexts, and separate CPU-memory and file paths with read observability. Calibration itself is not new; sweep results do not update our predictions."
     },
     {
       "file": "main.tex",
-      "line": 194,
+      "line": 193,
       "token": "5.2",
       "category": "bibliographic section locator verified in CITATIONS.md",
       "context": "py-kvcache already performs offline per-node/model calibration (its Section~6.6) and presents break-even bandwidth frontiers (Section~5.2), alongside hardware-dependent characterization, asynchronous fetching, and scheduler-aware preloading~\\cite{pykvcache}. Our distinction is timestamped, frozen per-cell predictions evaluated on separate sweeps after short calibration, with commodity/older GPUs, short contexts, and separate CPU-memory and file paths with read observability. Calibration itself is not new; sweep results do not update our predictions."
     },
     {
       "file": "main.tex",
-      "line": 220,
+      "line": 219,
       "token": "3",
       "category": "typesetting parameter",
       "context": "{\\footnotesize\\setlength{\\tabcolsep}{3pt}\\input{generated/coverage.tex}}"
     },
     {
       "file": "main.tex",
-      "line": 224,
+      "line": 223,
       "token": "3",
       "category": "typesetting parameter",
       "context": "{\\footnotesize\\setlength{\\tabcolsep}{3pt}\\input{generated/scorecards.tex}}"
     },
     {
       "file": "main.tex",
-      "line": 249,
+      "line": 248,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 -m venv .venv"
     },
     {
       "file": "main.tex",
-      "line": 251,
+      "line": 250,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 -m pip install -r requirements-analysis.txt"
     },
     {
       "file": "main.tex",
-      "line": 252,
+      "line": 251,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/materialize_results.py"
     },
     {
       "file": "main.tex",
-      "line": 253,
+      "line": 252,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase2.py --from-results outputs/results.jsonl"
     },
     {
       "file": "main.tex",
-      "line": 253,
+      "line": 252,
       "token": "2",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase2.py --from-results outputs/results.jsonl"
     },
     {
       "file": "main.tex",
-      "line": 254,
+      "line": 253,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase2.py"
     },
     {
       "file": "main.tex",
-      "line": 254,
+      "line": 253,
       "token": "2",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase2.py"
     },
     {
       "file": "main.tex",
-      "line": 255,
+      "line": 254,
+      "token": "3",
+      "category": "command or script identifier from released reproduction instructions",
+      "context": "python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl"
+    },
+    {
+      "file": "main.tex",
+      "line": 254,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl"
@@ -208,11 +215,11 @@
       "line": 255,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
-      "context": "python3 scripts/analyze_phase3.py --from-results outputs/results.jsonl"
+      "context": "python3 scripts/audit_phase3.py"
     },
     {
       "file": "main.tex",
-      "line": 256,
+      "line": 255,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/audit_phase3.py"
@@ -222,11 +229,11 @@
       "line": 256,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
-      "context": "python3 scripts/audit_phase3.py"
+      "context": "python3 scripts/report_phase3.py"
     },
     {
       "file": "main.tex",
-      "line": 257,
+      "line": 256,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/report_phase3.py"
@@ -234,13 +241,6 @@
     {
       "file": "main.tex",
       "line": 257,
-      "token": "3",
-      "category": "command or script identifier from released reproduction instructions",
-      "context": "python3 scripts/report_phase3.py"
-    },
-    {
-      "file": "main.tex",
-      "line": 258,
       "token": "3",
       "category": "command or script identifier from released reproduction instructions",
       "context": "python3 scripts/consolidate_study.py --check --figures"
@@ -284,356 +284,356 @@
   "uses": {
     "L4Correct": [
       "main.tex:27",
-      "main.tex:123"
+      "main.tex:122"
     ],
     "L4Resolved": [
       "main.tex:27",
-      "main.tex:123"
+      "main.tex:122"
     ],
     "A10Correct": [
       "main.tex:27",
-      "main.tex:123"
+      "main.tex:122"
     ],
     "A10Resolved": [
       "main.tex:27",
-      "main.tex:123"
+      "main.tex:122"
     ],
     "A10GCorrect": [
       "main.tex:27",
-      "main.tex:123"
+      "main.tex:122"
     ],
     "A10GResolved": [
       "main.tex:27",
-      "main.tex:123"
+      "main.tex:122"
     ],
     "Matched": [
       "main.tex:27",
-      "main.tex:132",
-      "main.tex:205"
+      "main.tex:131",
+      "main.tex:204"
     ],
     "Short": [
       "main.tex:27",
       "main.tex:32",
-      "main.tex:83",
-      "main.tex:99",
-      "main.tex:99",
-      "main.tex:132",
-      "main.tex:136",
-      "main.tex:141",
-      "main.tex:146",
-      "main.tex:154",
-      "main.tex:162",
-      "main.tex:168",
-      "main.tex:172"
+      "main.tex:82",
+      "main.tex:98",
+      "main.tex:98",
+      "main.tex:131",
+      "main.tex:135",
+      "main.tex:140",
+      "main.tex:145",
+      "main.tex:153",
+      "main.tex:161",
+      "main.tex:167",
+      "main.tex:171"
     ],
     "Rate100": [
       "main.tex:27",
-      "main.tex:132"
+      "main.tex:131"
     ],
     "Rate400": [
       "main.tex:27",
-      "main.tex:132",
-      "main.tex:132"
+      "main.tex:131",
+      "main.tex:131"
     ],
     "Rate800": [
       "main.tex:27",
-      "main.tex:132",
-      "main.tex:132"
+      "main.tex:131",
+      "main.tex:131"
     ],
     "Rate1600": [
       "main.tex:27",
-      "main.tex:132"
+      "main.tex:131"
     ],
     "PilotPinnedLongShort": [
       "main.tex:32"
     ],
     "LongPrefix": [
       "main.tex:32",
-      "main.tex:83"
+      "main.tex:82"
     ],
     "PilotRecomputeLongShort": [
       "main.tex:32"
     ],
     "Example": [
-      "main.tex:83",
-      "main.tex:141",
-      "main.tex:154"
+      "main.tex:82",
+      "main.tex:140",
+      "main.tex:153"
     ],
     "PilotMid": [
-      "main.tex:83"
+      "main.tex:82"
     ],
     "Long": [
-      "main.tex:83",
-      "main.tex:99"
+      "main.tex:82",
+      "main.tex:98"
     ],
     "PilotRepeats": [
-      "main.tex:83"
+      "main.tex:82"
     ],
     "FullRepeats": [
-      "main.tex:83",
-      "main.tex:107"
+      "main.tex:82",
+      "main.tex:106"
     ],
     "T4Timings": [
-      "main.tex:83"
+      "main.tex:82"
     ],
     "T4Invalid": [
-      "main.tex:83"
+      "main.tex:82"
     ],
     "T4Sessions": [
-      "main.tex:83"
+      "main.tex:82"
     ],
     "ModelCount": [
-      "main.tex:83"
+      "main.tex:82"
     ],
     "AmpereGeneration": [
-      "main.tex:85",
-      "main.tex:85"
+      "main.tex:84",
+      "main.tex:84"
     ],
     "SessionsT4": [
-      "main.tex:85"
+      "main.tex:84"
     ],
     "SessionsL4": [
-      "main.tex:85"
+      "main.tex:84"
     ],
     "MainGrid": [
-      "main.tex:99"
+      "main.tex:98"
     ],
     "Rates": [
-      "main.tex:104"
+      "main.tex:103"
     ],
     "Bootstraps": [
-      "main.tex:109"
+      "main.tex:108"
     ],
     "CI": [
-      "main.tex:109"
+      "main.tex:108"
     ],
     "CalRepeats": [
-      "main.tex:111"
+      "main.tex:110"
     ],
     "MicroRepeats": [
-      "main.tex:111"
+      "main.tex:110"
     ],
     "KaggleReads": [
-      "main.tex:116"
+      "main.tex:115"
     ],
     "KaggleFileSamples": [
-      "main.tex:116"
+      "main.tex:115"
     ],
     "KaggleMinBytes": [
-      "main.tex:116"
+      "main.tex:115"
     ],
     "KaggleMaxBytes": [
-      "main.tex:116"
+      "main.tex:115"
     ],
     "ModalReads": [
-      "main.tex:118"
+      "main.tex:117"
     ],
     "ModalFileSamples": [
-      "main.tex:118"
+      "main.tex:117"
     ],
     "L4MAE": [
-      "main.tex:123"
+      "main.tex:122"
     ],
     "A10MAE": [
-      "main.tex:123"
+      "main.tex:122"
     ],
     "A10GMAE": [
-      "main.tex:123"
+      "main.tex:122"
     ],
     "L4Unresolved": [
-      "main.tex:123"
+      "main.tex:122"
     ],
     "A10Unresolved": [
-      "main.tex:123"
+      "main.tex:122"
     ],
     "A10GUnresolved": [
-      "main.tex:123"
+      "main.tex:122"
     ],
     "H100Correct": [
-      "main.tex:123"
+      "main.tex:122"
     ],
     "H100Resolved": [
-      "main.tex:123"
+      "main.tex:122"
     ],
     "H100Unresolved": [
-      "main.tex:123"
+      "main.tex:122"
     ],
     "H100Cells": [
-      "main.tex:127",
-      "main.tex:205"
+      "main.tex:126",
+      "main.tex:204"
     ],
     "L4Cells": [
-      "main.tex:127"
+      "main.tex:126"
     ],
     "A10Cells": [
-      "main.tex:127"
+      "main.tex:126"
     ],
     "A10GCells": [
-      "main.tex:127"
+      "main.tex:126"
     ],
     "Rate200": [
-      "main.tex:132",
-      "main.tex:132"
+      "main.tex:131",
+      "main.tex:131"
     ],
     "AdjustedCorrect": [
-      "main.tex:141"
+      "main.tex:140"
     ],
     "T4Resolved": [
-      "main.tex:141",
-      "main.tex:141"
+      "main.tex:140",
+      "main.tex:140"
     ],
     "PrefixCorrect": [
-      "main.tex:141"
+      "main.tex:140"
     ],
     "HalfPrefix": [
-      "main.tex:141"
+      "main.tex:140"
     ],
     "HalfAdjusted": [
-      "main.tex:141"
+      "main.tex:140"
     ],
     "T4Held2Correct": [
-      "main.tex:141"
+      "main.tex:140"
     ],
     "T4Held2Resolved": [
-      "main.tex:141"
+      "main.tex:140"
     ],
     "T4Held3Correct": [
-      "main.tex:141"
+      "main.tex:140"
     ],
     "T4Held3Resolved": [
-      "main.tex:141"
+      "main.tex:140"
     ],
     "ShortGrid": [
-      "main.tex:146"
+      "main.tex:145"
     ],
     "Boundary": [
-      "main.tex:146"
+      "main.tex:145"
     ],
     "PythiaLow": [
-      "main.tex:154"
+      "main.tex:153"
     ],
     "PythiaHigh": [
-      "main.tex:154"
+      "main.tex:153"
     ],
     "QwenMainLow": [
-      "main.tex:154"
+      "main.tex:153"
     ],
     "QwenMainHigh": [
-      "main.tex:154"
+      "main.tex:153"
     ],
     "PhiLow": [
-      "main.tex:154"
+      "main.tex:153"
     ],
     "PhiHigh": [
-      "main.tex:154"
+      "main.tex:153"
     ],
     "QwenThreeLow": [
-      "main.tex:154"
+      "main.tex:153"
     ],
     "QwenThreeHigh": [
-      "main.tex:154"
+      "main.tex:153"
     ],
     "TorchOldError": [
-      "main.tex:156"
+      "main.tex:155"
     ],
     "TorchNewError": [
-      "main.tex:156"
+      "main.tex:155"
     ],
     "RawOldError": [
-      "main.tex:156"
+      "main.tex:155"
     ],
     "RawNewError": [
-      "main.tex:156"
+      "main.tex:155"
     ],
     "T4SpreadShort": [
-      "main.tex:158"
+      "main.tex:157"
     ],
     "T4SpreadLong": [
-      "main.tex:158"
+      "main.tex:157"
     ],
     "L4SpreadShort": [
-      "main.tex:158"
+      "main.tex:157"
     ],
     "L4SpreadLong": [
-      "main.tex:158"
+      "main.tex:157"
     ],
     "AmpereSpreadShort": [
-      "main.tex:158"
+      "main.tex:157"
     ],
     "AmpereSpreadLong": [
-      "main.tex:158"
+      "main.tex:157"
     ],
     "ExtrapLength": [
-      "main.tex:162"
+      "main.tex:161"
     ],
     "A10GExtrapPred": [
-      "main.tex:162"
+      "main.tex:161"
     ],
     "A10GExtrapObs": [
-      "main.tex:162"
+      "main.tex:161"
     ],
     "A10GExtrapError": [
-      "main.tex:162"
+      "main.tex:161"
     ],
     "L4ExtrapPred": [
-      "main.tex:162"
+      "main.tex:161"
     ],
     "L4ExtrapObs": [
-      "main.tex:162"
+      "main.tex:161"
     ],
     "L4ExtrapError": [
-      "main.tex:162"
+      "main.tex:161"
     ],
     "L4RatioYes": [
-      "main.tex:165"
+      "main.tex:164"
     ],
     "L4RatioTotal": [
-      "main.tex:165"
+      "main.tex:164"
     ],
     "A10RatioYes": [
-      "main.tex:165"
+      "main.tex:164"
     ],
     "A10RatioTotal": [
-      "main.tex:165"
+      "main.tex:164"
     ],
     "A10GRatioYes": [
-      "main.tex:165"
+      "main.tex:164"
     ],
     "A10GRatioTotal": [
-      "main.tex:165"
+      "main.tex:164"
     ],
     "H100RatioYes": [
-      "main.tex:165"
+      "main.tex:164"
     ],
     "H100RatioTotal": [
-      "main.tex:165"
+      "main.tex:164"
     ],
     "MhaGrid": [
-      "main.tex:172"
+      "main.tex:171"
     ],
     "AnomalyPairs": [
-      "main.tex:175"
+      "main.tex:174"
     ],
     "CalA10Seconds": [
-      "main.tex:182"
+      "main.tex:181"
     ],
     "CalL4Seconds": [
-      "main.tex:182"
+      "main.tex:181"
     ],
     "H100Missing": [
-      "main.tex:205"
+      "main.tex:204"
     ],
     "MaxMain": [
-      "main.tex:205"
+      "main.tex:204"
     ],
     "CalQwenAnchors": [
-      "main.tex:231"
+      "main.tex:230"
     ],
     "CalLlamaAnchors": [
-      "main.tex:232"
+      "main.tex:231"
     ],
     "CalMhaAnchors": [
-      "main.tex:233"
+      "main.tex:232"
     ],
     "Cov0Turn": [
       "generated/coverage.tex:5"

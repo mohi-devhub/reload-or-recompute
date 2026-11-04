@@ -1,6 +1,6 @@
 # Interview briefing
 
-This explains the draft rather than adding results. The only experimental evidence is v0.1.0-data and its claim inventory. The motivation placeholder is for the author; it is not an invented personal account.
+This explains the draft rather than adding results. The only experimental evidence is v0.1.0-data and its claim inventory. The introduction motivates the returning-conversation latency decision without a personal narrative.
 
 ## The explanation to give first
 
@@ -104,7 +104,7 @@ The conclusion is conditional: local TTFT accounting predicts most resolved deci
 
 ## Appendix and reproduction
 
-The coverage table gives complete cells only, with all prefixes and turns rather than a balanced-grid implication. Model abbreviations refer back to full checkpoint IDs. The scorecard table separates A10 and A10G and reports different calibration regions and sessions. The calibration appendix lists prefix anchors, the three-parameter quadratic baseline fit, the pinned-transfer intercept and separate file legs. A new turn is a fixed-length token continuation of clipped role-labelled text. Data reproduction uses v0.1.0-data; manuscript reproduction uses the separate paper-v0.1 tag. The provenance/coverage script checks mappings and hashes, without recomputing every statistic. The reproduction commands rebuild released statistics on CPU; they do not launch GPU jobs. Standard pdfLaTeX/BibTeX builds the manuscript. No submission or posting is part of this draft task.
+The coverage table gives complete cells only, with all prefixes and turns rather than a balanced-grid implication. Model abbreviations refer back to full checkpoint IDs. The scorecard table separates A10 and A10G and reports different calibration regions and sessions. The calibration appendix lists prefix anchors, the three-parameter quadratic baseline fit, the pinned-transfer intercept and separate file legs. A new turn is a fixed-length token continuation of clipped role-labelled text. Data reproduction uses v0.1.0-data; manuscript reproduction uses the separate paper-v0.1.1 tag. The provenance/coverage script checks mappings and hashes, without recomputing every statistic. The reproduction commands rebuild released statistics on CPU; they do not launch GPU jobs. Standard pdfLaTeX/BibTeX builds the manuscript. No submission or posting is part of this draft task.
 
 ## Numerical defense index
 

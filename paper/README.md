@@ -1,6 +1,6 @@
 # Local manuscript draft
 
-Check out `paper-v0.1` for this manuscript revision. Data reproduction uses the separate `v0.1.0-data` tag, which has no manuscript directory.
+Check out `paper-v0.1.1` for this manuscript revision. Data reproduction uses the separate `v0.1.0-data` tag, which has no manuscript directory.
 
 The manuscript uses only the frozen `v0.1.0-data` measurements and its `docs/CLAIMS.md`. Citation metadata was checked against primary sources separately; those checks add no experiment results. No GPU jobs are needed to build or audit it.
 
@@ -29,4 +29,4 @@ python3 scripts/write_briefing.py
 
 The scorecard and short-context figures are unchanged released PDFs. The bandwidth-versus-GPU figure has a plain-language legend, and the throughput figure has a legible two-column panel layout and plain-language legend. Both use released renderers and observations, without new points or refitting. `scripts/print_bandwidth.py` and `scripts/print_prefill.py` reproduce those presentation changes; their metadata in `generated/` records the hashes.
 
-`BRIEFING.md` explains every section, figure and used numerical entry. The introduction retains the requested author-motivation placeholder, and two alternative titles remain LaTeX comments. `BUILD.json` records compilation, PDF pagination, and both LaTeX and BibTeX warnings. This is a draft for author review; no submission, upload or posting has been performed.
+`BRIEFING.md` explains every section, figure and used numerical entry. The introduction gives a problem-level motivation, and two alternative titles remain LaTeX comments. `BUILD.json` records compilation, PDF pagination, and both LaTeX and BibTeX warnings. This is a draft for author review; no submission, upload or posting has been performed.

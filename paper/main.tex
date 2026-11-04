@@ -31,8 +31,7 @@ When a conversation returns, a server must choose whether reloading its key--val
 \section{Introduction}
 In the T4 pilot, Qwen2.5-1.5B returned a first token in a median \N{PilotPinnedLongShort} ms after reloading a pinned CPU cache for an \N{LongPrefix}-token prefix and a \N{Short}-token new turn; recomputing the same input took \N{PilotRecomputeLongShort} ms. When should a server reload a saved conversation cache, and when should it rebuild the prefix? The answer depends on how much time reuse saves after paying for transfer and continuation.
 
-%% AUTHOR: why I started this study
-\noindent\textit{[Author placeholder: why I started this study. Replace this paragraph with the motivation and deployment experience behind the experiment.]}
+Returning conversations make the choice between reloading a saved prefix and recomputing it a practical latency question for small-model operators on commodity and older GPUs.
 
 py-kvcache already characterizes the reload-versus-recompute trade-off and its hardware dependence, with offline calibration and bandwidth frontiers~\cite{pykvcache}. Cake compares GPUs using simulated I/O bandwidth on MHA and GQA models, and overlaps compute and load~\cite{cake}. We do not claim novelty for KV reuse, offload, break-even thresholds, or choosing compute versus load. Our question is whether a rule fixed during the T4 study can predict later measurements on other GPUs after only short local calibration.
 
@@ -258,14 +257,14 @@ python3 scripts/report_phase3.py
 python3 scripts/consolidate_study.py --check --figures
 \end{verbatim}
 \subsection{Manuscript reproduction}
-The data tag has no manuscript directory. After data reproduction, check out the separate manuscript tag \texttt{paper-v0.1} and compile its self-contained sources:
+The data tag has no manuscript directory. After data reproduction, check out the separate manuscript tag \texttt{paper-v0.1.1} and compile its self-contained sources:
 \begin{verbatim}
-git checkout paper-v0.1
+git checkout paper-v0.1.1
 cd paper
 pdflatex -interaction=nonstopmode -halt-on-error main.tex
 bibtex main
 pdflatex -interaction=nonstopmode -halt-on-error main.tex
 pdflatex -interaction=nonstopmode -halt-on-error main.tex
 \end{verbatim}
-Citation verification records distinguish publication metadata from experiment measurements. New source checks correct bibliography metadata only; they add no experimental results. The author-motivation paragraph in the introduction remains an explicit placeholder for author revision.
+Citation verification records distinguish publication metadata from experiment measurements. New source checks correct bibliography metadata only; they add no experimental results.
 \end{document}
