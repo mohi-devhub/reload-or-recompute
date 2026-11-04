@@ -10,7 +10,7 @@ The data release is complete; no more GPU spending is authorized, and no paper h
 
 Reload when `T_GPU_hit + fixed_overhead + transfer_bytes / effective_bandwidth + other_CPU_and_transfer_legs < T_recompute`; equivalently, use `B* = transfer_bytes / (T_recompute - T_GPU_hit - fixed_overhead - other_legs)` only for a positive denominator, counting read, deserialization and H2D costs once and treating near-zero savings as unresolved.
 
-The Modal tier is the **local file API path (page-cache resident; physical reads not observed)**. Kaggle's file observations have positive process physical-read counters, so they use the qualifier **positive process physical-read counters; underlying storage and host cache unidentified**. Neither platform identifies physical media or isolates GPU speed from host effects. See the [counter audit](docs/FILE_API_AUDIT.md).
+The Modal tier is the **local file API path (physical reads not observed)**. Kaggle's file observations have positive process physical-read counters, so they use the qualifier **positive process physical-read counters; underlying storage and host cache unidentified**. Neither platform identifies physical media or isolates GPU speed from host effects. See the [counter audit](docs/FILE_API_AUDIT.md).
 
 ## Reproduce the released analysis without GPU work
 
@@ -31,7 +31,7 @@ python3 scripts/consolidate_study.py --check --figures
 python3 -m unittest discover -s tests
 ```
 
-The archive has both compressed and uncompressed SHA-256 checksums. Materialization refuses to overwrite a changed local JSONL. Consolidation verifies every numeric claim, evidence table and caption against the archive. It preserves the original record bytes and appends separately labeled presentation records. No coefficients are refitted. A10 and A10G remain separate by observed name and PCIe width; their model coverage differs. Their allocation differences are the likely source of the earlier service-tier spread, with causality unproved.
+The archive has both compressed and uncompressed SHA-256 checksums. Materialization refuses to overwrite a changed local JSONL. Consolidation verifies every numeric claim, evidence table and caption against the archive. It preserves the original record bytes and appends separately labeled presentation records. No coefficients are refitted. A10 and A10G remain separate by observed name and PCIe width; their model coverage differs. The earlier service-tier spread is confounded by board, host and link differences; no cause is identified.
 
 To regenerate the claim inventory after an intentional, reviewed data change, use:
 

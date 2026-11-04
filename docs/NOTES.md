@@ -162,8 +162,15 @@ The optional Kaggle P100 retry was not requested during this phase. The final ca
 
 ## Data-release consolidation
 
-No additional GPU work or provider spend was performed. A CPU-only pass separates observed A10 at PCIe x16 from A10G at x8 in all current presentation aggregates. This board/link allocation difference is the likely source of the earlier service-tier spread; recompute differences cannot be causally assigned to PCIe width from these confounded runs. Historical raw observations and frozen preregistrations are preserved.
+No additional GPU work or provider spend was performed. A CPU-only pass separates observed A10 at PCIe x16 from A10G at x8 in all current presentation aggregates. The earlier service-tier spread is confounded by board, host and link differences; recompute differences cannot be causally assigned to PCIe width. Historical raw observations and frozen preregistrations are preserved.
 
-The requested Modal qualifier is local file API path (page-cache resident; physical reads not observed). Rechecking Kaggle counters found positive process physical-read bytes in every recorded file observation, so applying that same parenthetical there would be false. Kaggle is labeled local file API path (positive process physical-read counters; underlying storage and host cache unidentified). Exact counts and ranges are generated in FILE_API_AUDIT.md and CLAIMS.md. Zero Modal counters make page-cache residency an operational interpretation, not proof of host cache state.
+The requested Modal qualifier is local file API path (physical reads not observed). Rechecking Kaggle counters found positive process physical-read bytes in every recorded file observation, so applying that same parenthetical there would be false. Kaggle is labeled local file API path (positive process physical-read counters; underlying storage and host cache unidentified). Exact counts and ranges are generated in FILE_API_AUDIT.md and CLAIMS.md. Physical reads were not observed on Modal. Page-cache residency is one interpretation of zero counters; the cache layer is unverified.
 
 CLAIMS.md, the evidence tables and print figures are derived from the checksum-verified canonical archive. Consolidation records are appended with their own phase label while the original canonical record bytes remain unchanged. The data release contains no paper draft.
+
+
+## Manuscript audit revision (2026-11-04)
+
+Applied the wording, caption, appendix and build corrections from AUDIT.md using the frozen data release. Modal is now labelled local file API path (physical reads not observed); its cache layer remains unverified. Kaggle's positive process-counter statement and qualifications are retained. A10 calibration was transferred unchanged to A10 and A10G; their spread remains confounded by board, host and link differences, without a causal ranking.
+
+The manuscript now states the existing calibration, bandwidth-frontier and simulated-I/O comparisons in py-kvcache and Cake; its contribution is the timestamped frozen per-cell evaluation and measured scope. Added the released calibration anchors and path-cost decomposition, precise numeric selectors, caption qualifications and BibTeX warning collection. No observation, registered prediction, fitted coefficient or experimental code changed. The author placeholder remains at the author's request. Data reproduction stays on v0.1.0-data; the committed manuscript is tagged locally as paper-v0.1, without posting or GPU work.

@@ -1,6 +1,6 @@
 # Phase three: preregistered hardware transfer
 
-Presentation correction: Modal file timings use the local file API path (page-cache resident; physical reads not observed). A10 at PCIe x16 and A10G at x8 are separate observed boards. The immutable preregistrations retain the historical request-tier label.
+Presentation correction: Modal file timings use the local file API path (physical reads not observed). A10 at PCIe x16 and A10G at x8 are separate observed boards. The immutable preregistrations retain the historical request-tier label.
 
 This phase is authorized for L4 and the Modal A10/A10G allocation, with a combined Modal cap of $6. An optional single H100 container session has a separate ceiling of $4 and at most thirty minutes including initialization and waiting for registration. No credits are subtracted from estimated list-price costs. CPU, RAM, initialization, idle time, output transfer, and temporary storage are included in reservations. Prices are captured from [Modal pricing](https://modal.com/pricing) at submission.
 

@@ -1,6 +1,6 @@
 # Local file API observability
 
-The Modal tier is the **local file API path (page-cache resident; physical reads not observed)**. Page-cache residency is an operational interpretation of the zero process counters, not a verified statement about every host cache layer. Kaggle uses the **local file API path (positive process physical-read counters; underlying storage and host cache unidentified)**. Applying the Modal parenthetical to Kaggle would contradict the recorded counters. Neither platform identifies a physical device or establishes a storage-device benchmark.
+Physical reads were not observed on Modal. Its tier is the **local file API path (physical reads not observed)**. Page-cache residency is one interpretation of the zero process counters; the cache layer is unverified. Kaggle uses the **local file API path (positive process physical-read counters; underlying storage and host cache unidentified)**. Applying the Modal parenthetical to Kaggle would contradict the recorded counters. Neither platform identifies a physical device or establishes a storage-device benchmark.
 
 Counts below include every recorded file observation, including calibration and the recovered partial H100 run. They describe I/O accounting and do not turn incomplete timings into scored cells.
 

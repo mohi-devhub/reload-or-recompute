@@ -156,7 +156,7 @@ def report():
                   'and Pythia has direct-torch wins, so the T4 outcome does not transfer uniformly. A file-path win here concerns the full measured API '
                   'TTFT, including CPU work and H2D transfer.'])
     lines.extend(['','File predictions include independent read/deserialization/H2D legs, or the direct torch-load CPU leg plus H2D. '
-                  'These use the **local file API path (page-cache resident; physical reads not observed)**. Files are on local container scratch. '
+                  'These use the **local file API path (physical reads not observed)**. Files are on local container scratch. '
                   +physical_statement+
                   'Upstream [gVisor ignores fadvise advice](https://github.com/google/gvisor/blob/master/pkg/sentry/syscalls/linux/sys_file.go); '
                   'the deployed runtime revision is not identified, so successful advisory calls cannot establish eviction. '
@@ -219,9 +219,9 @@ def report():
                   'Bitmask `0x4` denotes software power-cap limiting, per the '
                   '[NVIDIA NVML definitions](https://docs.nvidia.com/deploy/archive/R535/nvml-api/group__nvmlClocksEventReasons.html). '
                   'Per-condition clock sample counts and medians are archived separately, since pooled timed intervals include rate-limiter sleeps.','',
-                  'A10 and A10G have only one main-model session each. The Ampere main sessions use A10 at PCIe 4 x16 and A10G at PCIe 4 x8. These allocation differences are the likely source of the previously reported service-tier spread. '
+                  'A10 and A10G have only one main-model session each. The Ampere main sessions use A10 at PCIe 4 x16 and A10G at PCIe 4 x8. The previously reported service-tier spread is confounded by board, host and link differences. '
                   'The slower session does not show lower sampled SM clocks, so clock frequency alone does not explain '
-                  'the recompute difference. This is a likely explanation, not a controlled attribution: host and allocation differences remain confounded.','',
+                  'the recompute difference. No causal attribution follows from these confounded observations.','',
                   '## Rule of thumb and limits','',
                   'Reload when `KV_bytes / effective_bandwidth + CPU_read_and_deserialization + fixed_overhead + resident_new_turn_TTFT < full_recompute_TTFT`; '
                   'otherwise recompute, using locally calibrated baselines and treating near-zero savings as unresolved.','',

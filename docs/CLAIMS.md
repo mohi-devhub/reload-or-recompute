@@ -152,7 +152,7 @@ All numeric evidence is generated from `outputs/results.jsonl.gz`. `python3 scri
 
    Scope: Matched Qwen2.5-1.5B UltraChat cells on A10 and A10G.
 
-   Limit: Different board/PCIe allocations are the likely source of this service-tier difference. Causal attribution is unproved; host changes are confounded, and each board has only one main session.
+   Limit: This service-tier difference is confounded by board, host and link changes. No cause is identified, and each board has only one main session.
 
 16. **Kaggle file counters report physical reads.** Strength: **strong**.
 
@@ -172,7 +172,7 @@ All numeric evidence is generated from `outputs/results.jsonl.gz`. `python3 scri
 
    Scope: L4, A10, A10G, and the recovered H100 observations; file measurements and microbenchmarks.
 
-   Limit: Use local file API path (page-cache resident; physical reads not observed). Page-cache residency is the operational interpretation of zero counters, not proof of the underlying host storage state.
+   Limit: Use local file API path (physical reads not observed). Page-cache residency is one interpretation of zero counters; the cache layer is unverified.
 
 18. **MHA file-path outcomes do not transfer uniformly from T4 to A10G.** Strength: **supported**.
 

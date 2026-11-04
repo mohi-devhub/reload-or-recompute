@@ -164,7 +164,7 @@ The frozen hypothesis ratio is calibration-predicted new-GPU prefill throughput 
 
 Both measured MHA models lose on both L4 file paths. On A10G (PCIe 4 x8), Phi-2 has file-reload wins and Pythia has direct-torch wins, so the T4 outcome does not transfer uniformly. A file-path win here concerns the full measured API TTFT, including CPU work and H2D transfer.
 
-File predictions include independent read/deserialization/H2D legs, or the direct torch-load CPU leg plus H2D. These use the **local file API path (page-cache resident; physical reads not observed)**. Files are on local container scratch. The virtualized filesystem reports zero physical-read bytes in all summarized observations. Upstream [gVisor ignores fadvise advice](https://github.com/google/gvisor/blob/master/pkg/sentry/syscalls/linux/sys_file.go); the deployed runtime revision is not identified, so successful advisory calls cannot establish eviction. These host/storage paths differ from Kaggle, so changes in file wins cannot be assigned solely to GPU speed.
+File predictions include independent read/deserialization/H2D legs, or the direct torch-load CPU leg plus H2D. These use the **local file API path (physical reads not observed)**. Files are on local container scratch. The virtualized filesystem reports zero physical-read bytes in all summarized observations. Upstream [gVisor ignores fadvise advice](https://github.com/google/gvisor/blob/master/pkg/sentry/syscalls/linux/sys_file.go); the deployed runtime revision is not identified, so successful advisory calls cannot establish eviction. These host/storage paths differ from Kaggle, so changes in file wins cannot be assigned solely to GPU speed.
 
 | Run | File observations | Nonzero physical-read counters | Median physical-read / file-byte ratio |
 | --- | --- | --- | --- |
@@ -259,7 +259,7 @@ Telemetry is sampled at approximately one-second intervals and can miss brief sh
 
 Bitmask `0x4` denotes software power-cap limiting, per the [NVIDIA NVML definitions](https://docs.nvidia.com/deploy/archive/R535/nvml-api/group__nvmlClocksEventReasons.html). Per-condition clock sample counts and medians are archived separately, since pooled timed intervals include rate-limiter sleeps.
 
-A10 and A10G have only one main-model session each. The Ampere main sessions use A10 at PCIe 4 x16 and A10G at PCIe 4 x8. These allocation differences are the likely source of the previously reported service-tier spread. The slower session does not show lower sampled SM clocks, so clock frequency alone does not explain the recompute difference. This is a likely explanation, not a controlled attribution: host and allocation differences remain confounded.
+A10 and A10G have only one main-model session each. The Ampere main sessions use A10 at PCIe 4 x16 and A10G at PCIe 4 x8. The previously reported service-tier spread is confounded by board, host and link differences. The slower session does not show lower sampled SM clocks, so clock frequency alone does not explain the recompute difference. No causal attribution follows from these confounded observations.
 
 ## Rule of thumb and limits
 
