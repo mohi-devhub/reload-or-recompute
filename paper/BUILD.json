@@ -1,11 +1,12 @@
 {
   "pdf": "paper/main.pdf",
-  "pages": 12,
+  "pages": 13,
   "body_pages": 8,
-  "references_and_appendix_pages": 4,
-  "reference_pages": 1,
+  "references_and_appendix_pages": 5,
+  "reference_pages": 2,
   "appendix_pages": 3,
-  "pdf_sha256": "b2393b8bd641b1ab3432ca1936e8e37bf57f33f812bb0c7395bc0b8e7f7fa857",
+  "reference_count": 23,
+  "pdf_sha256": "3e690c973f2f9cf32793846d59d8a754e24a6ce04b0669f37933400d8996aceb",
   "commands": [
     [
       "pdflatex",

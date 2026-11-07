@@ -4,6 +4,7 @@
 \usepackage{lmodern,graphicx,booktabs,amsmath,array,longtable}
 \usepackage{placeins}
 \usepackage[hyphens]{url}
+\usepackage[numbers,sort&compress]{natbib}
 \usepackage[hidelinks]{hyperref}
 \setlength{\textfloatsep}{9pt plus 2pt minus 2pt}
 \setlength{\floatsep}{7pt plus 2pt minus 2pt}
@@ -83,17 +84,17 @@ The pilot tests the main model on T4 at prefixes \N{Example}, \N{PilotMid}, and 
 
 The transfer phase uses L4 and Modal's Ampere allocation tier. The observed boards differ: A10 has an active PCIe generation-\N{AmpereGeneration} x16 link, while A10G has generation-\N{AmpereGeneration} x8. We use A10 calibration, transferred unchanged to A10 and A10G. Their spread is confounded by board, host, and link differences; each board has one main-model session. T4 has \N{SessionsT4} main-model sessions and L4 has \N{SessionsL4}, so their observed ranges do not establish relative platform stability. H100 contributes only complete cells from an interrupted optional GPU instance.
 
-All measured weights and caches use fp16. The transfer runs pin Torch \texttt{2.11.0+cu130} and Transformers \texttt{4.51.3} to the T4 redesign versions. Python patch versions and GPU drivers differ between platforms. The efficient/math SDPA selection is fixed, without FlashAttention. Source hashes protect the timing, forward, continuation, transfer, and file-read routines against changes from the T4 reference. Platform wrappers change GPU checks, scheduling, and persistence, not those protected routines.
+All measured weights and caches use fp16. The transfer runs pin Torch \texttt{2.11.0+cu130} and Transformers \texttt{4.51.3} to the T4 redesign versions. Python patch versions and GPU drivers differ between platforms. The efficient/math SDPA selection is fixed, without the I/O-aware FlashAttention algorithm~\citep{flashattention}. Source hashes protect the timing, forward, continuation, transfer, and file-read routines against changes from the T4 reference. Platform wrappers change GPU checks, scheduling, and persistence, not those protected routines. The reference uses PyTorch~\citep{pytorch} and Transformers~\citep{transformers}; analysis and figures use NumPy~\citep{numpy} and Matplotlib~\citep{matplotlib}.
 
 \subsection{Models, workloads, and coverage}
-Table~\ref{tab:models} lists the measured checkpoints and verified cache sizes. The formula for fp16 KV bytes per token counts keys and values, layers, KV heads, head dimension, and bytes per element. Configuration sizes are checked against the tensors.
+Table~\ref{tab:models} lists the measured checkpoints and verified cache sizes. The formula for fp16 KV bytes per token counts keys and values, layers, KV heads, head dimension, and bytes per element. Configuration sizes are checked against the tensors; GQA shares KV heads across query heads~\citep{gqa}. Family reports cover Qwen2.5~\citep{qwen}, Pythia~\citep{pythia}, OPT~\citep{opt}, and Llama~\citep{llama}; Table~\ref{tab:models} identifies the actual checkpoints.
 \begin{table}[t]
 \centering\small
 \input{generated/models.tex}
 \caption{Released fp16 models and verified KV payload. The Llama checkpoint is the ungated mirror. These are different models, not a controlled attention-layout intervention.}\label{tab:models}
 \end{table}
 
-The main model uses a frozen synthetic UltraChat fixture, with conversations stitched for long contexts. A new turn is a fixed-length token continuation of clipped role-labelled text, not necessarily a complete message at a dialogue boundary. Repeated text supplies auxiliary-model controls. Neither workload establishes quality or a natural return distribution.
+The main model uses a frozen synthetic UltraChat fixture~\citep{ultrachat}, with conversations stitched for long contexts. A new turn is a fixed-length token continuation of clipped role-labelled text, not necessarily a complete message at a dialogue boundary. Repeated text supplies auxiliary-model controls. Neither workload establishes quality or a natural return distribution.
 
 The transfer main-model grid has prefixes \N{MainGrid}, with new turns \N{Short} and \N{Long}. Controls use a \N{Short}-token turn and a smaller repeated-text grid, including native-supported limits where feasible. A10 has main-model measurements only; A10G and L4 also have the controls. Context and memory exclusions remain explicit. Appendix~\ref{app:coverage} gives the full completed coverage, including T4-specific reductions and the incomplete H100 subset. We do not replace missing cells with predicted measurements.
 
@@ -184,15 +185,9 @@ Calibration function times of \N{CalA10Seconds} seconds on A10 and \N{CalL4Secon
 The checklist is guidance, not an evaluated deployment. Engine builders must remeasure their actual critical path: buffer preparation, layout, asynchronous copies, and scheduling change it. Overlap scheduling and persistence admission need additional cost models.
 
 \section{Related work}\label{sec:related}
-LMCache provides external KV storage and engine connectors~\cite{lmcache}. vLLM supports prefix reuse and offload~\cite{vllmprefix,vllmoffload}, while SGLang HiCache adds storage tiers and prefetch~\cite{hicache}. These systems already serve repeated-prefix and multi-turn use.
+vLLM/PagedAttention manages KV memory and sharing~\citep{vllm}; SGLang's RadixAttention reuses shared prefixes~\citep{sglang}. CachedAttention, earlier named AttentionStore, combines hierarchical multi-turn caching with prefetch and asynchronous saving~\citep{cachedattention}. LMCache provides external KV storage and engine connectors~\citep{lmcache}, while Mooncake disaggregates prefill, decoding, and cache resources~\citep{mooncake}. CacheGen compresses and streams KV~\citep{cachegen}; CacheBlend selectively recomputes cached chunks for fusion~\citep{cacheblend}. Other work examines file-read observability~\citep{fileobservability}, service-aware compression~\citep{kvserve}, and fetching interference~\citep{shadowserve}.
 
-CacheGen compresses and streams KV~\cite{cachegen}. CacheBlend selectively recomputes cached chunks to recover cross-chunk attention~\cite{cacheblend}. We evaluate uncompressed KV for identical prefixes.
-
-Cake compares GPUs with simulated I/O bandwidth on MHA and GQA models, and overlaps computation from the prefix's beginning with loading from its end~\cite{cake}. Our rule compares load-only and recompute-only endpoints; it does not determine Cake's optimal partial split. We did not test overlap.
-
-py-kvcache already performs offline per-node/model calibration (its Section~6.6) and presents break-even bandwidth frontiers (Section~5.2), alongside hardware-dependent characterization, asynchronous fetching, and scheduler-aware preloading~\cite{pykvcache}. Our distinction is timestamped, frozen per-cell predictions evaluated on separate sweeps after short calibration, with commodity/older GPUs, short contexts, and separate CPU-memory and file paths with read observability. Calibration itself is not new; sweep results do not update our predictions.
-
-He et al. distinguish buffered reads from physical-read evidence in observational deployment snapshots~\cite{fileobservability}. KVServe adapts compression to service conditions~\cite{kvserve}; ShadowServe addresses fetching interference~\cite{shadowserve}. These reinforce costs beyond bandwidth. We adopt no external performance numbers or causal interpretation of host-file differences.
+Cake is the closest prior compute/load system: it overlaps computation from the prefix's beginning with loading from its end and compares GPUs using simulated I/O bandwidth on MHA and GQA models~\citep{cake}. Our rule compares load-only and recompute-only endpoints; it does not determine Cake's optimal partial split, and we did not test overlap. py-kvcache already provides offline per-node/model calibration (Section~6.6) and break-even bandwidth frontiers (Section~5.2)~\citep{pykvcache}. This paper is a smaller, reproducible measurement of that break-even on commodity and older GPUs, including short contexts and separate CPU-memory and file paths with read observability. Its distinction is timestamped, frozen per-cell predictions evaluated on separate sweeps after short calibration. We claim no novelty for KV reuse, offload, calibration, or compute-versus-load thresholds.
 
 \section{Limitations and conclusion}\label{sec:limits}
 Calibration observes baselines and independent cost legs, not combined reload TTFT. Baseline-fit errors, overhead approximation, and GPU-instance variation therefore remain mixed. The new-GPU tests use local calibration; they are not zero-shot predictions from T4 coefficients. The T4 same-session rule counts are descriptive, while the held-out session check keeps the first session's calibration fixed.
@@ -210,7 +205,9 @@ Within the measured scope, local calibration predicts most resolved decisions. O
 \label{main:end}
 \clearpage
 \label{references:start}
-\bibliographystyle{plain}
+\renewcommand{\refname}{References}
+\phantomsection\addcontentsline{toc}{section}{References}
+\bibliographystyle{plainnat}
 {\small\bibliography{references}}
 \clearpage
 \appendix
@@ -257,9 +254,9 @@ python3 scripts/report_phase3.py
 python3 scripts/consolidate_study.py --check --figures
 \end{verbatim}
 \subsection{Manuscript reproduction}
-The data tag has no manuscript directory. After data reproduction, check out the separate manuscript tag \texttt{paper-v0.1.1} and compile its self-contained sources:
+The data tag has no manuscript directory. After data reproduction, check out the separate manuscript tag \texttt{paper-v0.1.2} and compile its self-contained sources:
 \begin{verbatim}
-git checkout paper-v0.1.1
+git checkout paper-v0.1.2
 cd paper
 pdflatex -interaction=nonstopmode -halt-on-error main.tex
 bibtex main
